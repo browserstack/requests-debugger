@@ -1,5 +1,4 @@
-var exec = require('child_process').exec;
-var execSync = require('child_process').execSync;
+var cp = require('child_process');
 var os = require('os');
 var fs = require('fs');
 
@@ -25,7 +24,7 @@ var fetchPropertyValue = function (content, propertyToFetch, separator) {
     var modifiedLine = line.toLowerCase().replace(/\t/g, '');
     if (modifiedLine.startsWith(propertyToFetch)) {
       var splitModifiedLine = modifiedLine.split(separator);
-      if (modifiedLine.length >= 2) {
+      if (splitModifiedLine.length >= 2) {
         splitModifiedLine.shift();
         return splitModifiedLine.join(separator).trim();
       } else {
@@ -53,8 +52,6 @@ var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine
       line = prefix.toString().repeat(remainingCharacters) + " " + line;
     } else if (suffix) {
       line = line + " " + suffix.toString().repeat(remainingCharacters);
-    } else {
-      line = line;
     }
 
     return newLine ? line + os.EOL : line;
@@ -98,7 +95,7 @@ var execMultiple = function (commands, callback) {
   var totalCommandsCompleted = 0;
 
   commands.forEach(function (cmd, index) {
-    exec(cmd, function (err, result) {
+    cp.exec(cmd, function (err, result) {
       if (!err) {
         resultArray[index] = { content: result, generatedAt: new Date() }
       } else {
@@ -117,7 +114,7 @@ var getWmicPath = function () {
     var wmicPath = process.env.WINDIR + '\\system32\\wbem\\wmic.exe';
     if (!fs.existsSync(wmicPath)) {
       try {
-        var whereWmicArray = execSync('WHERE WMIC').toString().split('\r\n');
+        var whereWmicArray = cp.execSync('WHERE WMIC').toString().split('\r\n');
         if (whereWmicArray && whereWmicArray[0]) {
           wmicPath = whereWmicArray[0];
         } else {
@@ -127,8 +124,10 @@ var getWmicPath = function () {
         wmicPath = 'wmic';
       }
     }
+    return wmicPath + ' ';
+  } else {
+    throw Error('Not Windows Platform');
   }
-  return wmicPath + ' ';
 }
 
 var beautifyObject = function (obj, keysTitle, valuesTitle, maxKeyLength, maxValLength) {
@@ -204,5 +203,6 @@ module.exports = {
   execMultiple,
   getWmicPath,
   beautifyObject,
-  isValidCallback
+  isValidCallback,
+  safeToString
 }

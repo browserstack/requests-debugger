@@ -4,14 +4,24 @@
   "description": "Tool to debug failed/dropped requests at client side",
   "main": "src/node.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nyc --reporter=html ./node_modules/mocha/bin/mocha test/**/*.test.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "pkg": "^4.4.8"
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nyc": "^11.9.0",
+    "pkg": "^4.4.8",
+    "sinon": "^7.5.0"
   },
   "dependencies": {
     "winston": "2.4.4"
+  },
+  "nyc": {
+    "exclude": [
+      "**/*.test.js",
+      "node_modules"
+    ]
   }
 }
