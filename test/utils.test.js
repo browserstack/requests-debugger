@@ -189,6 +189,31 @@ describe('Utils', function () {
   });
 
   context('execMultiple', function () {
-    
+    it('should throw error if the commands provided are not in an array', function () {
+      var commands = "it's not going to work";
+      expect(function () { Utils.execMultiple(commands) }).to.throw("COMMANDS_IS_NOT_AN_ARRAY");
+    });
+
+    it('should execute and return results array', function () {
+      var commands = ['commandOne', 'commandTwo'];
+      sinon.stub(cp, 'exec').callsArgWith(1, null, 'executed');
+      Utils.execMultiple(commands, function (resultArray) {
+        resultArray.forEach(function (result) {
+          expect(result.content).to.eql('executed');
+        });
+      });
+      cp.exec.restore();
+    });
+
+    it('should execute and return results array even if err occurs', function () {
+      var commands = ['commandOne', 'commandTwo'];
+      sinon.stub(cp, 'exec').callsArgWith(1, 'some error');
+      Utils.execMultiple(commands, function (resultArray) {
+        resultArray.forEach(function (result) {
+          expect(result.content).to.eql('NO_RESULT_GENERATED' + os.EOL);
+        });
+      });
+      cp.exec.restore();
+    });
   });
 });

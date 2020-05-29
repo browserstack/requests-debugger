@@ -88,7 +88,7 @@ var generateHeaderAndFooter = function (content, title, generatedAt, startTime) 
 
 var execMultiple = function (commands, callback) {
   if (!Array.isArray(commands)) {
-    return "COMMANDS_IS_NOT_AN_ARRAY";
+    throw Error("COMMANDS_IS_NOT_AN_ARRAY");
   }
 
   var resultArray = new Array(commands.length);
@@ -103,7 +103,7 @@ var execMultiple = function (commands, callback) {
       }
 
       if (++totalCommandsCompleted === commands.length) {
-        callback(resultArray);
+        if (isValidCallback(callback)) callback(resultArray);
       } 
     })
   })
