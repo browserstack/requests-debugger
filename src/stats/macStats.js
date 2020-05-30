@@ -67,7 +67,7 @@ MacStats.network = function (callback) {
       finalOutput = finalOutput + Utils.generateHeaderAndFooter(results[i].content, "Network Stat: '" + commands[i] + "'", results[i].generatedAt, startTime);
     }
 
-    if (Utils.isValidCallback(callback)) callback(finalOutput || constants.NO_REPORT_GENERATED + 'Network');
+    if (Utils.isValidCallback(callback)) callback(finalOutput);
   });
 }
 

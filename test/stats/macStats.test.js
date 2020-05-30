@@ -85,4 +85,29 @@ describe('MacStats', function () {
       Utils.beautifyObject.restore();
     });
   });
+
+  context('Network Stats', function () {
+    it('callbacks with the stats content of multiple commands beautified', function () {
+      var results = [{
+        content: 'resultOne',
+        generatedAt: new Date().toISOString()
+      }, {
+        content: 'resultTwo',
+        generatedAt: new Date().toISOString()
+      }, {
+        content: 'resultThree',
+        generatedAt: new Date().toISOString()
+      }];
+  
+      sinon.stub(Utils, 'execMultiple').callsArgWith(1, results);
+      sinon.stub(Utils, 'generateHeaderAndFooter').returns('headerFooterContent');
+  
+      MacStats.network(function (result) {
+        sinon.assert.calledThrice(Utils.generateHeaderAndFooter);
+        expect(result).to.eql('headerFooterContent'.repeat(3));
+      });
+      Utils.generateHeaderAndFooter.restore();
+      Utils.execMultiple.restore();
+    });
+  });
 });
