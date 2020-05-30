@@ -4,7 +4,7 @@
   "description": "Tool to debug failed/dropped requests at client side",
   "main": "src/node.js",
   "scripts": {
-    "test": "nyc --reporter=html ./node_modules/mocha/bin/mocha test/**/*.test.js"
+    "test": "nyc --reporter=html ./node_modules/mocha/bin/mocha 'test/**/*.test.js'"
   },
   "author": "",
   "license": "ISC",

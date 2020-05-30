@@ -36,7 +36,7 @@ var fetchPropertyValue = function (content, propertyToFetch, separator) {
 }
 
 var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine) {
-  line = safeToString(line) || 'null/undefined';
+  line = safeToString(line);
   if (line) {
     var lineLength = line.length;
     idealLength = idealLength || 70;
@@ -80,7 +80,7 @@ var generateHeaderAndFooter = function (content, title, generatedAt, startTime) 
                    + formatAndBeautifyLine("Start Time: " + startTime, "", "=", 90, true)
                    + formatAndBeautifyLine("Generated At: " + generatedAt, "", "=", 90, true)
                    + formatAndBeautifyLine("=", "*", "*", 90, true)
-                   + content.toString()
+                   + content.toString() + os.EOL
                    + formatAndBeautifyLine("=", "*", "*", 90, true);
 
   return content;
@@ -186,7 +186,7 @@ var safeToString = function (val) {
   try {
     val = val.toString();
   } catch (e) {
-    val = JSON.stringify(val);
+    val = JSON.stringify(val) || 'undefined';
   }
   return val;
 }

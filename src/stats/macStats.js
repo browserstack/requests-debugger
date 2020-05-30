@@ -1,6 +1,6 @@
 var os = require('os');
 var BaseStats = require('./baseStats');
-var exec = require('child_process').exec;
+var cp = require('child_process');
 var Utils = require('../utils');
 var constants = require('../../config/constants');
 
@@ -9,7 +9,7 @@ MacStats.description = "System and Network Stats for Mac";
 
 MacStats.cpu = function (callback) {
   var startTime = new Date();
-  exec(constants.MAC.TOP_3_SAMPLES, function (err, result) {
+  cp.exec(constants.MAC.TOP_3_SAMPLES, function (err, result) {
     if (!err) {
       result = result.toString().replace(/Processes:/g, '\n****************** ITERATION ******************\nProcesses:');
       result = Utils.generateHeaderAndFooter(result, 'CPU Information with 3 samples', new Date(), startTime);
@@ -30,7 +30,7 @@ MacStats.mem = function (callback) {
 
   memStats.used = memStats.total - memStats.free;
 
-  exec(constants.MAC.SWAP_USAGE, function (err, result) {
+  cp.exec(constants.MAC.SWAP_USAGE, function (err, result) {
     if (!err) {
       var resultLines  = result.toString().split('\n');
       if (resultLines[0]) {

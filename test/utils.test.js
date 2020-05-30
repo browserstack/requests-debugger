@@ -5,7 +5,6 @@ var Utils = require('../src/utils');
 var os = require('os');
 var fs = require('fs');
 var cp = require('child_process');
-var assert = chai.assert;
 var expect = chai.expect;
 
 describe('Utils', function () {
@@ -114,6 +113,12 @@ describe('Utils', function () {
       var nonStringableValue = null;
       var stringifiedValue = Utils.safeToString(nonStringableValue);
       expect(stringifiedValue).to.eql('null');
+    });
+
+    it("should return 'undefined' if input is undefined", function () {
+      var nonStringableValue = undefined;
+      var stringifiedValue = Utils.safeToString(nonStringableValue);
+      expect(stringifiedValue).to.eql('undefined');
     });
   });
 
