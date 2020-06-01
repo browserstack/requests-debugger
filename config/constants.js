@@ -16,6 +16,12 @@ module.exports.LOGS = Object.freeze({
 module.exports.NwtGlobalConfig = {
   deleteProxy: function () {
     delete this.proxy;
+  },
+  initializeDummyLoggers: function () {
+    this.ConnLogger = {
+      info: function () {},
+      error: function () {}
+    }
   }
 };
 module.exports.COMMON = Object.freeze({
