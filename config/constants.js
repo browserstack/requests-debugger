@@ -3,6 +3,7 @@ module.exports.HUB_STATUS_URL = 'http://hub-cloud.browserstack.com/wd/hub/status
 module.exports.RAILS_AUTOMATE = 'http://automate.browserstack.com';
 module.exports.CONNECTIVITY_REQ_TIMEOUT = 7000;
 module.exports.CLIENT_REQ_TIMEOUT = 50000;
+module.exports.DEFAULT_PROXY_PORT = '3128';
 module.exports.REQ_TIMED_OUT = "Request Timed Out. Did not get any response for " + this.CLIENT_REQ_TIMEOUT + ' ms.';
 module.exports.REQ_FAILED_MSG = "Request Failed At Network Tool";
 module.exports.LOGS = Object.freeze({
@@ -12,7 +13,11 @@ module.exports.LOGS = Object.freeze({
   REQUESTS: 'Requests.log',
   CONNECTIVITY: 'Connectivity.log'
 });
-module.exports.NwtGlobalConfig = {};
+module.exports.NwtGlobalConfig = {
+  deleteProxy: function () {
+    delete this.proxy;
+  }
+};
 module.exports.COMMON = Object.freeze({
   PING_HUB: 'ping -c 5 hub-cloud.browserstack.com',
   PING_AUTOMATE: 'ping -c 5 automate.browserstack.com'

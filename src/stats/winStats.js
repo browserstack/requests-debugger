@@ -1,7 +1,6 @@
 var os = require('os');
 var BaseStats = require('./baseStats');
-var exec = require('child_process').exec;
-var fs = require('fs');
+var cp = require('child_process');
 var Utils = require('../utils');
 var constants = require('../../config/constants');
 
@@ -12,9 +11,9 @@ WinStats.wmicPath = null;
 // Need to add better CPU stats here. Preferably loadavg like linux/unix.
 WinStats.cpu = function (callback) {
   WinStats.wmicPath = WinStats.wmicPath || Utils.getWmicPath();
-  var startTime = startTime();
+  var startTime = new Date();
 
-  exec(WinStats.wmicPath + constants.WIN.LOAD_PERCENTAGE, function (err, result) {
+  cp.exec(WinStats.wmicPath + constants.WIN.LOAD_PERCENTAGE, function (err, result) {
     if (!err) {
       result = Utils.generateHeaderAndFooter(result, "Load Percentage", new Date(), startTime);
     }
@@ -36,7 +35,7 @@ WinStats.mem = function (callback) {
 
   WinStats.wmicPath = WinStats.wmicPath || Utils.getWmicPath();
 
-  exec(WinStats.wmicPath + constants.WIN.SWAP_USAGE, function (err, result) {
+  cp.exec(WinStats.wmicPath + constants.WIN.SWAP_USAGE, function (err, result) {
     if (!err) {
       result = result.split('\r\n').filter(function (line) { return line.trim() !== '' });
       result.shift();
@@ -65,7 +64,7 @@ WinStats.network = function (callback) {
       finalOutput = finalOutput + Utils.generateHeaderAndFooter(results[i].content, "Network Stat: '" + commands[i] + "'", results[i].generatedAt, startTime);
     }
 
-    if (Utils.isValidCallback(callback)) callback(finalOutput || constants.NO_REPORT_GENERATED + 'Network');
+    if (Utils.isValidCallback(callback)) callback(finalOutput);
   });
 }
 

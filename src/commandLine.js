@@ -1,4 +1,5 @@
-var NwtGlobalConfig = require('../config/constants').NwtGlobalConfig;
+var constants = require('../config/constants');
+var NwtGlobalConfig = constants.NwtGlobalConfig;
 
 var CommandLineManager = {
   validArgValue: function (value) {
@@ -19,7 +20,7 @@ var CommandLineManager = {
         NwtGlobalConfig.proxy['port'] = argv[index + 1];
         argv.splice(index, 2);
       } else {
-        NwtGlobalConfig.proxy['port'] = 3128;
+        NwtGlobalConfig.proxy['port'] = constants.DEFAULT_PROXY_PORT;
       }
 
       index = argv.indexOf('--proxy-user');

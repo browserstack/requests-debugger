@@ -1,6 +1,6 @@
 var os = require('os');
 var BaseStats = require('./baseStats');
-var exec = require('child_process').exec;
+var cp = require('child_process');
 var fs = require('fs');
 var Utils = require('../utils');
 var constants = require('../../config/constants');
@@ -10,7 +10,7 @@ LinuxStats.description = "System and Network Related stats for Linux";
 
 LinuxStats.cpu = function (callback) {
   var startTime = new Date();
-  exec(constants.LINUX.TOP_3_SAMPLES, function (err, result) {
+  cp.exec(constants.LINUX.TOP_3_SAMPLES, function (err, result) {
     if (!err) {
       result = result.toString().replace(/top -/g, '\n****************** ITERATION ******************\ntop -');
       result = Utils.generateHeaderAndFooter(result, 'CPU Information with 3 samples', new Date(), startTime);
@@ -60,7 +60,7 @@ LinuxStats.network = function (callback) {
       finalOutput = finalOutput + Utils.generateHeaderAndFooter(results[i].content, "Network Stat: '" + commands[i] + "'", results[i].generatedAt, startTime);
     }
 
-    if (Utils.isValidCallback(callback)) callback(finalOutput || constants.NO_REPORT_GENERATED + 'Network');
+    if (Utils.isValidCallback(callback)) callback(finalOutput);
   });
 }
 

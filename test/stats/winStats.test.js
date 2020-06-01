@@ -1,4 +1,4 @@
-var MacStats = require('../../src/stats/macStats');
+var WinStats = require('../../src/stats/winStats');
 var os = require('os');
 var constants = require('../../config/constants');
 var expect = require('chai').expect;
@@ -6,27 +6,36 @@ var sinon = require('sinon');
 var cp = require('child_process');
 var Utils = require('../../src/utils');
 
-describe('MacStats', function () {
+describe('WinStats', function () {
+  beforeEach(function () {
+    WinStats.wmicPath = null;
+    sinon.stub(Utils, 'getWmicPath').returns('path/to/wmic.exe ');
+  });
+
+  afterEach(function () {
+    Utils.getWmicPath.restore();
+  });
+
   context('CPU Stats', function () {
     it('callbacks with the result of cpu stats', function () {
       var stats = "CPU Stats Generated";
       var statsWithHeaderFooter = "Header" + os.EOL + stats + os.EOL + "Footer" + os.EOL;
-      
+
       sinon.stub(cp, 'exec').callsArgWith(1, null, stats);
       sinon.stub(Utils, 'generateHeaderAndFooter').returns(statsWithHeaderFooter);
-      
-      MacStats.cpu(function (result) {
+
+      WinStats.cpu(function (result) {
         expect(result).to.eql(statsWithHeaderFooter);
       });
-      
+
       cp.exec.restore();
       Utils.generateHeaderAndFooter.restore();
     });
 
     it('callbacks with proper message when no stats are available', function () {
       sinon.stub(cp, 'exec').callsArgWith(1, "err", null);
-      
-      MacStats.cpu(function (result) {
+
+      WinStats.cpu(function (result) {
         expect(result).to.eql(constants.NO_REPORT_GENERATED + 'CPU' + os.EOL);
       });
 
@@ -35,34 +44,13 @@ describe('MacStats', function () {
   });
 
   context('Mem Stats', function () {
-    it('callbacks with the result of mem stats', function () {
-      var stats = "Total=100  Used=50  Free=50\n";
-      sinon.stub(os, 'totalmem').returns(100 * 1024 * 1024);
-      sinon.stub(os, 'freemem').returns(50 * 1024 * 1024);
-      sinon.stub(Utils, 'beautifyObject');
-      sinon.stub(cp, 'exec').callsArgWith(1, null, stats);
-
-      var memStats = {
-        total: 100 * 1024 * 1024,
-        free: 50 * 1024 * 1024,
-        used: 50 * 1024 * 1024,
-        swapTotal: 100 * 1024 * 1024,
-        swapUsed: 50 * 1024 * 1024,
-        swapFree: 50 * 1024 * 1024
-      }
-      MacStats.mem(function (result) {
-        sinon.assert.calledWith(Utils.beautifyObject, memStats, "Memory", "Bytes");
-      });
-
-      os.totalmem.restore();
-      os.freemem.restore();
-      Utils.beautifyObject.restore();
-      cp.exec.restore();
+    it('callbacks with result of mem stats', function () {
+      
     });
 
-    it('callbacks with the total, free & used mem stats except swap if error occurs in exec command', function () {
-      sinon.stub(cp, 'exec').callsArgWith(1, "err", null);
+    it('callbacks with the total, free & used mem stats except swap if error occurs in fs command', function () {
       sinon.stub(Utils, 'beautifyObject');
+      sinon.stub(cp, 'exec').callsArgWith(1, 'err', null);
       sinon.stub(os, 'totalmem').returns(100 * 1024 * 1024);
       sinon.stub(os, 'freemem').returns(50 * 1024 * 1024);
 
@@ -75,7 +63,7 @@ describe('MacStats', function () {
         swapFree: 0
       }
 
-      MacStats.mem(function (result) {
+      WinStats.mem(function (result) {
         sinon.assert.calledWith(Utils.beautifyObject, memStats, "Memory", "Bytes");
       });
 
@@ -97,14 +85,20 @@ describe('MacStats', function () {
       }, {
         content: 'resultThree',
         generatedAt: new Date().toISOString()
+      }, {
+        content: 'resultFour',
+        generatedAt: new Date().toISOString()
+      }, {
+        content: 'resultFive',
+        generatedAt: new Date().toISOString()
       }];
-  
+
       sinon.stub(Utils, 'execMultiple').callsArgWith(1, results);
       sinon.stub(Utils, 'generateHeaderAndFooter').returns('headerFooterContent');
-  
-      MacStats.network(function (result) {
-        sinon.assert.calledThrice(Utils.generateHeaderAndFooter);
-        expect(result).to.eql('headerFooterContent'.repeat(3));
+
+      WinStats.network(function (result) {
+        sinon.assert.callCount(Utils.generateHeaderAndFooter, 5);
+        expect(result).to.eql('headerFooterContent'.repeat(5));
       });
       Utils.generateHeaderAndFooter.restore();
       Utils.execMultiple.restore();

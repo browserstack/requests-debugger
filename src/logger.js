@@ -2,9 +2,9 @@ var winston = require('winston');
 
 var LogManager = {
   getLogger: function (filename) {
-    return new (winston.Logger)({
+    return new winston.Logger({
       transports: [
-        new (winston.transports.File)({
+        new winston.transports.File({
           filename
         })
       ]

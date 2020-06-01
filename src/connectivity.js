@@ -123,12 +123,13 @@ var ConnectivityChecker = {
           var parsedUrl = url.parse(reqUrl);
           var reqOptions = {
             method: 'GET',
-            headers: {
-              'Proxy-Authorization': Utils.proxyAuthToBase64(NwtGlobalConfig.proxy)
-            },
+            headers: {},
             host: NwtGlobalConfig.proxy.host,
             port: NwtGlobalConfig.proxy.port,
             path: parsedUrl.href
+          }
+          if (NwtGlobalConfig.proxy.username && NwtGlobalConfig.proxy.password) {
+            reqOptions.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(NwtGlobalConfig.proxy);
           }
           return reqOptions;
         }
