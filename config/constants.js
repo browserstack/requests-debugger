@@ -14,14 +14,28 @@ module.exports.LOGS = Object.freeze({
   CONNECTIVITY: 'Connectivity.log'
 });
 module.exports.NwtGlobalConfig = {
+  initializeDummyProxy: function () {
+    this.proxy = {
+      host: "dummyhost12345.com",
+      port: "3128",
+      username: "user",
+      password: "pass"
+    }
+  },
+
   deleteProxy: function () {
     delete this.proxy;
   },
+
   initializeDummyLoggers: function () {
     this.ConnLogger = {
       info: function () {},
       error: function () {}
     }
+  },
+
+  deleteLoggers: function () {
+    delete this.ConnLogger;
   }
 };
 module.exports.COMMON = Object.freeze({
