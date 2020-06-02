@@ -11,7 +11,8 @@ var HANDLER_MAPPING = {
 
 var StatsFactory = {
   getHandler: function (type) {
-    var handler = HANDLER_MAPPING[type] || BaseStats;
+    type = type.match(/linux|darwin|win/) || [];
+    var handler = HANDLER_MAPPING[type[0]] || BaseStats;
     return handler;
   }
 }

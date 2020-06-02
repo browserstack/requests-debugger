@@ -53,9 +53,8 @@ var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine
     } else if (suffix) {
       line = line + " " + suffix.toString().repeat(remainingCharacters);
     }
-
-    return newLine ? line + os.EOL : line;
   }
+  return newLine ? line + os.EOL : line;
 }
 
 /**
@@ -184,7 +183,7 @@ var getLongestVal = function (arr) {
 
 var safeToString = function (val) {
   try {
-    val = val.toString();
+    val = val.toString() || 'empty/no data';
   } catch (e) {
     val = JSON.stringify(val) || 'undefined';
   }
