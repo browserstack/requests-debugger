@@ -6,7 +6,7 @@ var Utils = require('../utils');
 var constants = require('../../config/constants');
 
 var LinuxStats = Object.create(BaseStats);
-LinuxStats.description = "System and Network Related stats for Linux";
+LinuxStats.description = "System and Network Stats for Linux";
 
 LinuxStats.cpu = function (callback) {
   var startTime = new Date();

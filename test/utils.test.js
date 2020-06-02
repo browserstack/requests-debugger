@@ -105,7 +105,90 @@ describe('Utils', function () {
   });
 
   context('generateHeaderAndFooter', function () {
+    it('generates header and footer for the given content', function () {
+      var startTime = new Date();
+      var generatedAt = startTime;
+      var expectedContent = "\n******************************************** = *********************************************\n"
+                            + "Title: Heading ============================================================================\n"
+                            + "Start Time: " + startTime.toISOString() + " ======================================================\n"
+                            + "Generated At: " + generatedAt.toISOString() + " ====================================================\n"
+                            + "******************************************** = *********************************************\n"
+                            + "Network Utility Tool\n"
+                            + "******************************************** = *********************************************\n";
+      var content = Utils.generateHeaderAndFooter("Network Utility Tool", "Heading", generatedAt, startTime);
+      expect(content).to.eql(expectedContent);
+    });
 
+    it('returns message if not content is provided or if the content is empty', function () {
+      var startTime = new Date();
+      var generatedAt = startTime;
+      var content = Utils.generateHeaderAndFooter("", "Heading", generatedAt, startTime);
+      expect(content).to.eql("NO_CONTENT_PROVIDED");
+    });
+  });
+
+  context('beautifyObject', function () {
+    it('generates a beautified version of the object for logging', function () {
+      var obj = {
+        "keyOne": "valueOne",
+        "keyTwo": "valueTwo"
+      }
+
+      var expectedOutput = "\n  KEYS   :   VALUES  \n"
+                           + "----------------------------------------------------------------------------------------- -\n"
+                           + " keyOne  :  valueOne \n"
+                           + " keyTwo  :  valueTwo \n\n";
+
+      var beautifiedObject = Utils.beautifyObject(obj, "KEYS", "VALUES");
+      expect(beautifiedObject).to.eql(expectedOutput);
+    });
+
+    it('generates a beautified version of array of objects for logging', function () {
+      var objs = [{
+          "keyOne": "valueOne",
+          "keyTwo": "valueTwo"
+        }, {
+          "keyFour": "valueFour",
+          "keyFour": "valueFour"
+        }
+      ];
+
+      var expectedOutput = "\n\n  KEYS    :   VALUES   \n"
+                           + "----------------------------------------------------------------------------------------- -\n"
+                           + " keyOne   :  valueOne  \n"
+                           + " keyTwo   :  valueTwo  \n"
+                           + "\n\n  KEYS    :   VALUES   \n"
+                           + "----------------------------------------------------------------------------------------- -\n"
+                           + " keyFour  :  valueFour \n\n";
+      var beautifiedObject = Utils.beautifyObject(objs, "KEYS", "VALUES");
+      expect(beautifiedObject).to.eql(expectedOutput);
+    });
+
+    it('returns message if no obj is provided to be beautified', function () {
+      var result = Utils.beautifyObject("random content", "KEYS", "VALUES");
+      expect(result).to.eql('Not an Object' + os.EOL);
+    });
+
+    it('returns message for each non obj passed in an array', function () {
+      var objs = [{
+          "key": "value"
+        }, 
+        "wrongInput",
+        {
+          "keyTwo": "valueTwo"
+        }
+      ];
+
+      var expectedOutput = "\n\n  KEYS   :   VALUES  \n"
+                           + "----------------------------------------------------------------------------------------- -\n"
+                           + "  key    :   value   \n\n"
+                           + "Not an Object\n\n"
+                           + "  KEYS   :   VALUES  \n"
+                           + "----------------------------------------------------------------------------------------- -\n"
+                           + " keyTwo  :  valueTwo \n\n";
+      var result = Utils.beautifyObject(objs, "KEYS", "VALUES");
+      expect(result).to.eql(expectedOutput);
+    });
   });
 
   context('safeToString', function () {

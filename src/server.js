@@ -199,12 +199,34 @@ var NWTHandler = {
 
   },
 
-  startProxy: function () {
-    NWTHandler.generatorForRequestOptionsObject();
-    var server = http.createServer(NWTHandler.requestHandler);
-    server.listen(9687, function () {
-      console.log("Started on 9687");
-    });
+  startProxy: function (port, callback) {
+    try {
+      NWTHandler.generatorForRequestOptionsObject();
+      NWTHandler.server = http.createServer(NWTHandler.requestHandler);
+      NWTHandler.server.listen(port);
+      NWTHandler.server.on('listening', function () {
+        console.log("Network Utility Tool Proxy Started on Port: ", port);
+        callback(null, port);
+      });
+      NWTHandler.server.on('error', function (err) {
+        callback(err.toString(), null);
+      })
+    } catch (e) {
+      callback(e.toString(), null);
+    }
+  },
+
+  stopProxy: function (callback) {
+    try {
+      if (NWTHandler.server) {
+        NWTHandler.server.close();
+        NWTHandler.server = null;
+        console.log("Network Utility Tool Stopped");
+      }
+      callback(null, true);
+    } catch (e) {
+      callback(e.toString(), null);
+    }
   }
 }
 

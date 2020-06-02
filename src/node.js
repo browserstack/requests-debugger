@@ -1,5 +1,6 @@
-var LogFiles = require('../config/constants').LOGS;
-var NwtGlobalConfig = require('../config/constants').NwtGlobalConfig;
+var constants = require('../config/constants');
+var LogFiles = constants.LOGS;
+var NwtGlobalConfig = constants.NwtGlobalConfig;
 var CommandLineManager = require('./commandLine');
 var ConnectivityChecker = require('./connectivity');
 var NWTHandler = require('./server');
@@ -72,7 +73,13 @@ var NwTool = {
     NwtGlobalConfig.NetworkLogHandler("Initial Network");
     NwtGlobalConfig.MemLogHandler("Initial Memory");
     NwtGlobalConfig.ConnHandler("Initial Connectivity", null, function () {
-      NWTHandler.startProxy();
+      NWTHandler.startProxy(constants.NWT_HANDLER_PORT, function (err, result) {
+        if (err) {
+          console.log("Error in starting Network Tool Utility Proxy: ", err);
+          console.log("Exiting the Tool...");
+          process.exit(1);
+        }
+      });
     });
   }
 }

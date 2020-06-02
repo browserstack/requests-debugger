@@ -1,53 +1,10 @@
-var url = require('url');
 var ConnectivityChecker = require('../src/connectivity');
 var constants = require('../config/constants');
 var NwtGlobalConfig = constants.NwtGlobalConfig;
 var Utils = require('../src/utils');
 var nock = require('nock');
 var sinon = require('sinon');
-
-function nockGetRequest(reqUrl, type, data, statusCode) {
-  data = (data && typeof data === 'object') ? data : { "data": "value" };
-  type = (['http', 'https'].indexOf(type) !== -1) ? type : 'http';
-  try {
-    statusCode = parseInt(statusCode);
-  } catch (e) {
-    statusCode = 200;
-  }
-
-  var parsedUrl = url.parse(reqUrl);
-  var port = parsedUrl.port;
-  port = port || (type === 'http' ? '80' : '443');
-  return nock(type + '://' + parsedUrl.hostname + ':' + port)
-    .get(parsedUrl.path)
-    .reply(statusCode, data);
-}
-
-function nockProxyUrl(proxyObj, type, component, data, statusCode) {
-  type = ['http', 'https'].indexOf(type) ? type : 'http';
-  data = (data && typeof data === 'object') ? data : { "data": "value" };
-  try {
-    statusCode = parseInt(statusCode);
-  } catch (e) {
-    statusCode = 200;
-  }
-
-  var proxyUrl = type + '://' + proxyObj.host + ':' + proxyObj.port;
-  return nock(proxyUrl)
-    .get(new RegExp(component))
-    .reply(statusCode, data);
-}
-
-function nockGetRequestWithError(reqUrl, type) {
-  type = (['http', 'https'].indexOf(type) !== -1) ? type : 'http';
-
-  var parsedUrl = url.parse(reqUrl);
-  var port = parsedUrl.port;
-  port = port || (type === 'http' ? '80' : '443');
-  return nock(type + '://' + parsedUrl.hostname + ':' + port)
-    .get(parsedUrl.path)
-    .replyWithError('something terrible');
-}
+var helper = require('./helper');
 
 describe('Connectivity Checker for BrowserStack Components', function () {
   context('without Proxy', function () {
@@ -55,10 +12,10 @@ describe('Connectivity Checker for BrowserStack Components', function () {
       NwtGlobalConfig.deleteProxy();
       NwtGlobalConfig.initializeDummyLoggers();
       ConnectivityChecker.connectionChecks = [];
-      nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
-      nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
-      nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
-      nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
+      helper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
+      helper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
+      helper.nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
+      helper.nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
     });
 
     afterEach(function () {
@@ -110,12 +67,12 @@ describe('Connectivity Checker for BrowserStack Components', function () {
       NwtGlobalConfig.initializeDummyProxy();
       NwtGlobalConfig.initializeDummyLoggers();
       ConnectivityChecker.connectionChecks = [];
-      nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
-      nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
-      nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
-      nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
-      nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'hub', null, 200);
-      nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'automate', null, 301);
+      helper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
+      helper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
+      helper.nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
+      helper.nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
+      helper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'hub', null, 200);
+      helper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'automate', null, 301);
     });
 
     afterEach(function () {
@@ -182,10 +139,10 @@ describe('Connectivity Checker for BrowserStack Components', function () {
       NwtGlobalConfig.deleteProxy();
       NwtGlobalConfig.initializeDummyLoggers();
       ConnectivityChecker.connectionChecks = [];
-      nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
-      nockGetRequestWithError(constants.HUB_STATUS_URL, 'https');
-      nockGetRequestWithError(constants.RAILS_AUTOMATE, 'http');
-      nockGetRequestWithError(constants.RAILS_AUTOMATE, 'https');
+      helper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
+      helper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'https');
+      helper.nockGetRequestWithError(constants.RAILS_AUTOMATE, 'http');
+      helper.nockGetRequestWithError(constants.RAILS_AUTOMATE, 'https');
     });
 
     afterEach(function () {

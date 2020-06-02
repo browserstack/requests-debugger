@@ -20,9 +20,14 @@
     "winston": "2.4.4"
   },
   "nyc": {
+    "all": true,
     "exclude": [
       "**/*.test.js",
-      "node_modules"
+      "test/helper.js",
+      "node_modules",
+      "coverage",
+      "NWT_Logs",
+      "config"
     ]
   }
 }

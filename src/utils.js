@@ -131,7 +131,7 @@ var getWmicPath = function () {
 }
 
 var beautifyObject = function (obj, keysTitle, valuesTitle, maxKeyLength, maxValLength) {
-  if (typeof obj !== 'object') return 'No Object Passed' + os.EOL;
+  if (typeof obj !== 'object') return 'Not an Object' + os.EOL;
   if (Array.isArray(obj)) {
     var longestKeyOfAll = 0;
     var longestValOfAll = 0;

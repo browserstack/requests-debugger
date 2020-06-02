@@ -1,6 +1,8 @@
 module.exports.NO_REPORT_GENERATED = "COULD NOT GENERATE REPORT FOR : ";
 module.exports.HUB_STATUS_URL = 'http://hub-cloud.browserstack.com/wd/hub/status';
 module.exports.RAILS_AUTOMATE = 'http://automate.browserstack.com';
+module.exports.NWT_HANDLER_PORT = 9687;
+module.exports.NWT_HANDLER_PORT_TEST = 8787;
 module.exports.CONNECTIVITY_REQ_TIMEOUT = 7000;
 module.exports.CLIENT_REQ_TIMEOUT = 50000;
 module.exports.DEFAULT_PROXY_PORT = '3128';
@@ -31,11 +33,45 @@ module.exports.NwtGlobalConfig = {
     this.ConnLogger = {
       info: function () {},
       error: function () {}
+    },
+    this.NetworkLogger = {
+      info: function () {},
+      error: function () {}
+    },
+    this.MemLogger = {
+      info: function () {},
+      error: function () {}
+    },
+    this.CPULogger = {
+      info: function () {},
+      error: function () {}
+    },
+    this.ReqLogger = {
+      info: function () {},
+      error: function () {}
     }
   },
 
   deleteLoggers: function () {
     delete this.ConnLogger;
+    delete this.NetworkLogger;
+    delete this.MemLogger;
+    delete this.CPULogger;
+    delete this.ReqLogger;
+  },
+
+  initializeDummyHandlers: function () {
+    this.NetworkLogHandler = function () {};
+    this.ConnHandler = function () {};
+    this.CpuLogHandler = function () {};
+    this.MemLogHandler = function () {};
+  },
+
+  deleteHandlers: function () {
+    delete this.NetworkLogHandler;
+    delete this.ConnHandler;
+    delete this.CpuLogHandler;
+    delete this.MemLogHandler;
   }
 };
 module.exports.COMMON = Object.freeze({
