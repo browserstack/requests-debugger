@@ -7,6 +7,9 @@
     "start": "node src/node.js",
     "test": "nyc --reporter=html ./node_modules/mocha/bin/mocha 'test/**/*.test.js'"
   },
+  "bin": {
+    "NetworkUtilityTool": "src/node.js"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -14,7 +17,7 @@
     "mocha": "5.2.0",
     "nock": "9.6.1",
     "nyc": "11.9.0",
-    "pkg": "4.4.8",
+    "pkg": "4.3.1",
     "sinon": "7.5.0"
   },
   "dependencies": {
