@@ -1,3 +1,8 @@
+/**
+ * Factory pattern handler generator for stats collection
+ * based on the platform
+ */
+
 var MacStats = require('./macStats');
 var WinStats = require('./winStats');
 var LinuxStats = require('./linuxStats');

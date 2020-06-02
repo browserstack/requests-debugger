@@ -1,3 +1,8 @@
+/**
+ * Base stats object which is inherited by objects of other platforms for generating their
+ * stats object.
+ */
+
 var Utils = require('../utils');
 
 var BaseStats = {

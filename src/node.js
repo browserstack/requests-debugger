@@ -1,3 +1,10 @@
+/**
+ * Entry point for setting up of Network Utility Tool.
+ * Initiates actions such as processing of args, setting up loggers,
+ * initiating all connectivity checks and stats collection before starting
+ * the proxy tool.
+ */
+
 var constants = require('../config/constants');
 var LogFiles = constants.LOGS;
 var NwtGlobalConfig = constants.NwtGlobalConfig;
@@ -79,6 +86,7 @@ var NwTool = {
           console.log("Exiting the Tool...");
           process.exit(1);
         }
+        console.log("\nRefer 'NWT_Logs' folder for CPU/Network/Memory Stats and Connectivity Checks with BrowserStack components.")
       });
     });
   }

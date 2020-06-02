@@ -1,3 +1,11 @@
+/**
+ * Connectivity Checker to perform basic connectivity checks with BrowserStack
+ * components, i.e. Hub and Rails.
+ * It performs checks with/without proxy, over HTTP(S).
+ * NOTE : HTTPS with Proxy is not implemented since the tool is anyway capturing HTTP
+ * traffic only. Shall be taken up later.
+ */
+
 var http = require('http');
 var url = require('url');
 var constants = require('../config/constants');
@@ -102,6 +110,11 @@ var ConnectivityChecker = {
   },
 
 
+  /**
+   * Decides the checks to perform based on whether any proxy is provided by the
+   * user or not.Along with the checks, it builds the request options template
+   * required to fire the connectivity check requests.
+   */
   decideConnectionChecks: function () {
     if (!ConnectivityChecker.connectionChecks.length) {
       ConnectivityChecker.connectionChecks = [this.httpToHubWithoutProxy, this.httpToRailsWithoutProxy, this.httpsToHubWithoutProxy, this.httpsToRailsWithoutProxy];
@@ -137,6 +150,12 @@ var ConnectivityChecker = {
     }
   },
 
+  /**
+   * Fires the Connectivity Checks in Async Manner
+   * @param {String} topic 
+   * @param {Number|String} uuid 
+   * @param {Function} callback 
+   */
   fireChecks: function (topic, uuid, callback) {
     ConnectivityChecker.decideConnectionChecks();
     var totalChecksDone = 0;

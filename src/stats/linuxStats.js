@@ -1,3 +1,8 @@
+/**
+ * Stats Object for fetching information from Linux platform.
+ * It implements the inherited functions.
+ */
+
 var os = require('os');
 var BaseStats = require('./baseStats');
 var cp = require('child_process');

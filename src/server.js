@@ -1,3 +1,10 @@
+/**
+ * Server to Intercept the client's requests and handle them on their behalf.
+ * Initiates stats and connectivity checks when a requests fails.
+ * It also responds in selenium understandable error when a request fails
+ * at tool.
+ */
+
 var http = require('http');
 var keepAliveAgent = new http.Agent({ keepAlive: true });
 var url = require('url');
@@ -9,6 +16,10 @@ var NWTHandler = {
 
   _requestCounter: 0,
 
+  /**
+   * Generates the request options template for firing requests based on
+   * whether the user had provided any proxy input or not.
+   */
   generatorForRequestOptionsObject: function () {
     NWTHandler._reqObjTemplate = {
       method: null,
@@ -52,6 +63,13 @@ var NWTHandler = {
     }
   },
 
+  /**
+   * Frames the error response based on the type of request.
+   * i.e., if its a request originating for Hub, the response
+   * is in the format which the client binding would understand.
+   * @param {Object} parsedRequest 
+   * @param {String} errorMessage 
+   */
   _frameErrorResponse: function (parsedRequest, errorMessage) {
     errorMessage += '. ' + constants.REQ_FAILED_MSG;
     var parseSessionId = parsedRequest.path.match(/\/wd\/hub\/session\/([a-z0-9]+)\/*/);
@@ -81,9 +99,12 @@ var NWTHandler = {
   },
 
   /**
-   * 
-   * @param {Socket} source 
-   * @param {Socket} destination 
+   * Reads from the source and pushes to the destination with
+   * backpressuring.
+   * Pipe can be used instead. But any sort of data access/manipulation
+   * will require the given format.
+   * @param {ReadableStream} source 
+   * @param {WritableStream} destination 
    * @param {Buffer} chunk 
    */
   _dataEventHandler: function (source, destination, chunk) {
@@ -95,14 +116,31 @@ var NWTHandler = {
     }
   },
 
+  /**
+   * Handler for Response Data
+   * @param {ReadableStream} source 
+   * @param {WritableStream} destination 
+   * @param {Buffer} chunk 
+   */
   _responseDataHandler: function (source, destination, chunk) {
     NWTHandler._dataEventHandler(source, destination, chunk);
   },
 
+  /**
+   * Handler for Request Data
+   * @param {ReadableStream} source 
+   * @param {WritableStream} destination 
+   * @param {Buffer} chunk 
+   */
   _requestDataHandler: function (source, destination, chunk) {
     NWTHandler._dataEventHandler(source, destination, chunk);
   },
 
+  /**
+   * Executes the HTTP request on behalf of the client request
+   * @param {Object} requestOptions 
+   * @param {Function} callback 
+   */
   _executeRequest: function (requestOptions, callback) {
     var toolToFurtherRequest = http.request(Object.assign({}, requestOptions, { agent: keepAliveAgent }), function (response) {
       callback(response);
@@ -111,6 +149,11 @@ var NWTHandler = {
     return toolToFurtherRequest;
   },
 
+  /**
+   * Handler for incoming requests to Network Utility Tool proxy server.
+   * @param {} clientRequest 
+   * @param {} clientResponse 
+   */
   requestHandler: function (clientRequest, clientResponse) {
     clientRequest.id = ++NWTHandler._requestCounter;
 
@@ -199,6 +242,11 @@ var NWTHandler = {
 
   },
 
+  /**
+   * Starts the proxy server on the given port
+   * @param {String|Number} port 
+   * @param {Function} callback 
+   */
   startProxy: function (port, callback) {
     try {
       NWTHandler.generatorForRequestOptionsObject();
@@ -216,6 +264,10 @@ var NWTHandler = {
     }
   },
 
+  /**
+   * Stops the currently running proxy server
+   * @param {Function} callback 
+   */
   stopProxy: function (callback) {
     try {
       if (NWTHandler.server) {

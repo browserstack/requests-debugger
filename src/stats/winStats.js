@@ -1,3 +1,8 @@
+/**
+ * Stats object for fetching information from Windows platforms
+ * It implements the inherited functions.
+ */
+
 var os = require('os');
 var BaseStats = require('./baseStats');
 var cp = require('child_process');

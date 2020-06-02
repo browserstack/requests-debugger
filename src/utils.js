@@ -2,6 +2,14 @@ var cp = require('child_process');
 var os = require('os');
 var fs = require('fs');
 
+/**
+ * Returns the value for authorization header by performing
+ * base64 operation on the proxy auth params.
+ * Input can be in the form of:
+ * 1. 'user:pass'
+ * 2. { username: 'user', password: 'pass' }
+ * @param {String|Object} proxyObj 
+ */
 var proxyAuthToBase64 = function (proxyObj) {
   if (typeof proxyObj === 'object') {
     var base64Auth = Buffer.from(proxyObj.username + ":" + proxyObj.password);
@@ -35,6 +43,14 @@ var fetchPropertyValue = function (content, propertyToFetch, separator) {
   return '';
 }
 
+/**
+ * Beautifies the lines and add prefix/suffix characters to make the line of the required length.
+ * @param {String} line 
+ * @param {String} prefix 
+ * @param {String} suffix 
+ * @param {Number} idealLength 
+ * @param {Boolean} newLine 
+ */
 var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine) {
   line = safeToString(line);
   if (line) {
@@ -58,7 +74,7 @@ var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine
 }
 
 /**
- * 
+ * Generates header and footer for the given content.
  * @param {String} content 
  * @param {String} title 
  * @param {Date} generatedAt 
@@ -85,6 +101,13 @@ var generateHeaderAndFooter = function (content, title, generatedAt, startTime) 
   return content;
 }
 
+/**
+ * Performs multiple exec commands asynchronously and returns the
+ * result in the same order of the commands array.
+ * @param {Array<String>} commands 
+ * @param {Function} callback 
+ * @returns {Array<Object>}
+ */
 var execMultiple = function (commands, callback) {
   if (!Array.isArray(commands)) {
     throw Error("COMMANDS_IS_NOT_AN_ARRAY");
@@ -108,6 +131,9 @@ var execMultiple = function (commands, callback) {
   })
 }
 
+/**
+ * Fetches the WMIC path in Windows
+ */
 var getWmicPath = function () {
   if (os.type() === 'Windows_NT') {
     var wmicPath = process.env.WINDIR + '\\system32\\wbem\\wmic.exe';
@@ -129,6 +155,15 @@ var getWmicPath = function () {
   }
 }
 
+/**
+ * Beautifies the whole object and returns in a format which can be logged and read easily.
+ * Can take an object or array of objects as input.
+ * @param {Object|Array<Object>} obj 
+ * @param {String} keysTitle 
+ * @param {String} valuesTitle 
+ * @param {Number} maxKeyLength Optional
+ * @param {Number} maxValLength Optional
+ */
 var beautifyObject = function (obj, keysTitle, valuesTitle, maxKeyLength, maxValLength) {
   if (typeof obj !== 'object') return 'Not an Object' + os.EOL;
   if (Array.isArray(obj)) {

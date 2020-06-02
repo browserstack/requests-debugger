@@ -1,3 +1,7 @@
+/**
+ * Base Logger to help initialize loggers for different purposes.
+ */
+
 var winston = require('winston');
 
 var LogManager = {
@@ -11,6 +15,12 @@ var LogManager = {
     })
   },
 
+  /**
+   * Initializes a logger to the given file and returns the methods to
+   * interact with the logger.
+   * Currently, 'info' and 'error' are defined. THe rest can be taken up later if required.
+   * @param {String} filename 
+   */
   initializeLogger: function (filename) {
     var newLogger = LogManager.getLogger(filename);
     newLogger.transports.file.timestamp = function () {
