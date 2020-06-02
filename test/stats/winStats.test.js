@@ -45,7 +45,29 @@ describe('WinStats', function () {
 
   context('Mem Stats', function () {
     it('callbacks with result of mem stats', function () {
-      
+      var execOutput = "AllocatedBaseSize  CurrentUsage  \r\r\n100               50            \r\r\n\r\r\n";
+      sinon.stub(Utils, 'beautifyObject');
+      sinon.stub(cp, 'exec').callsArgWith(1, null, execOutput);
+      sinon.stub(os, 'totalmem').returns(100 * 1024 * 1024);
+      sinon.stub(os, 'freemem').returns(50 * 1024 * 1024);
+
+      var memStats = {
+        total: 100 * 1024 * 1024,
+        free: 50 * 1024 * 1024,
+        used: 50 * 1024 * 1024,
+        swapTotal: 100 * 1024 * 1024,
+        swapUsed: 50 * 1024 * 1024,
+        swapFree: 50 * 1024 * 1024
+      }
+
+      WinStats.mem(function (result) {
+        sinon.assert.calledWith(Utils.beautifyObject, memStats, "Memory", "Bytes");
+      });
+
+      os.totalmem.restore();
+      os.freemem.restore();
+      cp.exec.restore();
+      Utils.beautifyObject.restore();
     });
 
     it('callbacks with the total, free & used mem stats except swap if error occurs in fs command', function () {
