@@ -23,5 +23,14 @@
     - Linux: `./NWTool-Linux <args>`
     - Windows: `NWTool.exe <args>`
   
+## Steps to build the executables
+- Linux
+  - `./node_modules/pkg/lib-es5/bin.js -t node4-linux src/node.js`
+- Mac OS X
+  - `./node_modules/pkg/lib-es5/bin.js -t node4-macos src/node.js`
+- Windows
+  - `./node_modules/pkg/lib-es5/bin.js -t node4-win src/node.js`
+
+
 ## Note
 - The tool is written in a manner to make it compatible with Node 4.
