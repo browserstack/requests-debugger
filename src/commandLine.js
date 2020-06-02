@@ -19,7 +19,7 @@ var CommandLineManager = {
                      + "  --proxy-pass <password>: Password of the Proxy which is required for the client requests\n"
                      + "  --del-logs: Deletes any existing logs from the NWT_Logs/ directory\n"
                      + "              and initializes new files for logging. Refer 'NWT_Logs/' directory in the same directory\n"
-                     + "              where the Network Utility Tool exists\n"
+                     + "              where the Network Utility Tool exists. Default: false, i.e. Append Logs\n"
                      + "  --help: Help for Network Utility Tool\n";
 
     console.log(helpOutput);
