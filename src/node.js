@@ -73,20 +73,28 @@ var NwTool = {
   },
 
   start: function () {
+    console.log(Utils.formatAndBeautifyLine('Starting Network Utility Tool', '-', '-', 60, true));
     CommandLineManager.processArgs(process.argv);
     NwtGlobalConfig.StatsHandler = StatsFactory.getHandler(process.platform);
     NwTool.initLoggers();
-    NwtGlobalConfig.CpuLogHandler("Initial CPU");
-    NwtGlobalConfig.NetworkLogHandler("Initial Network");
-    NwtGlobalConfig.MemLogHandler("Initial Memory");
-    NwtGlobalConfig.ConnHandler("Initial Connectivity", null, function () {
+    NwtGlobalConfig.CpuLogHandler('Initial CPU', null, function () {
+      console.log(Utils.formatAndBeautifyLine('Stats : Initial CPU Stats Collected', '', '-', 60, true));
+    });
+    NwtGlobalConfig.NetworkLogHandler('Initial Network', null, function () {
+      console.log(Utils.formatAndBeautifyLine('Stats : Initial Network Stats Collected', '', '-', 60, true));
+    });
+    NwtGlobalConfig.MemLogHandler('Initial Memory', null, function () {
+      console.log(Utils.formatAndBeautifyLine('Stats : Initial Memory Stats Collected', '', '-', 60, true));
+    });
+    NwtGlobalConfig.ConnHandler('Initial Connectivity', null, function () {
+      console.log(Utils.formatAndBeautifyLine('Checks : Connectivity Checks Performed with BrowserStack', '', '-', 60, true));
       NWTHandler.startProxy(constants.NWT_HANDLER_PORT, function (err, result) {
         if (err) {
-          console.log("Error in starting Network Tool Utility Proxy: ", err);
-          console.log("Exiting the Tool...");
+          console.log('Error in starting Network Tool Utility Proxy: ', err);
+          console.log('Exiting the Tool...');
           process.exit(1);
         }
-        console.log("\nRefer 'NWT_Logs' folder for CPU/Network/Memory Stats and Connectivity Checks with BrowserStack components.")
+        console.log(Utils.formatAndBeautifyLine("Refer 'NWT_Logs' folder for CPU/Network/Memory Stats and Connectivity Checks with BrowserStack components", '', '-', 60, true));
       });
     });
   }

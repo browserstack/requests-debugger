@@ -207,6 +207,11 @@ var NWTHandler = {
                                        clientRequest.id);
 
       var errorResponse = NWTHandler._frameErrorResponse(furtherRequestOptions, err.toString());
+      NwtGlobalConfig.ReqLogger.info("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + errorResponse.statusCode,
+                                        false,
+                                        errorResponse.data,
+                                        clientRequest.id);
+
       clientResponse.writeHead(errorResponse.statusCode);
       clientResponse.end(JSON.stringify(errorResponse.data));
 
@@ -253,7 +258,7 @@ var NWTHandler = {
       NWTHandler.server = http.createServer(NWTHandler.requestHandler);
       NWTHandler.server.listen(port);
       NWTHandler.server.on('listening', function () {
-        console.log("Network Utility Tool Proxy Started on Port: ", port);
+        console.log(Utils.formatAndBeautifyLine('Network Utility Tool Proxy Started on Port: '+ port, '', '-', 60, true));
         callback(null, port);
       });
       NWTHandler.server.on('error', function (err) {
@@ -273,7 +278,7 @@ var NWTHandler = {
       if (NWTHandler.server) {
         NWTHandler.server.close();
         NWTHandler.server = null;
-        console.log("Network Utility Tool Stopped");
+        console.log(Utils.formatAndBeautifyLine('Network Utility Tool Stopped', '', '-', 60, true));
       }
       callback(null, true);
     } catch (e) {
