@@ -34,7 +34,7 @@ var NwTool = {
     try {
       fs.mkdirSync(NwtGlobalConfig.LOGS_DIRECTORY);
     } catch (e) {
-      if (e.code === 'ENOENT' || e.code !== 'EEXIST') {
+      if (e.code !== 'EEXIST') {
         var errorMessage = "Error in creating 'NetworkUtilityLogs' folder at path: " + basePath + "\n"
                            + "Message: " + e.toString() + "\n";
         console.log(errorMessage);
