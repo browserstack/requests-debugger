@@ -34,11 +34,11 @@ var NwTool = {
     try {
       fs.mkdirSync(NwtGlobalConfig.LOGS_DIRECTORY);
     } catch (e) {
-      switch (e.code) {
-        case 'ENOENT': {
-          console.log("Error in creating 'NetworkUtilityLogs' directory in " + basePath + ". Path doesn't exist.\n");
-          process.exit(1);
-        }
+      if (e.code === 'ENOENT' || e.code !== 'EEXIST') {
+        var errorMessage = "Error in creating 'NetworkUtilityLogs' folder at path: " + basePath + "\n"
+                           + "Message: " + e.toString() + "\n";
+        console.log(errorMessage);
+        process.exit(1);
       }
     }
 
