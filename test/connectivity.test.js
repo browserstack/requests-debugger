@@ -7,6 +7,58 @@ var sinon = require('sinon');
 var helper = require('./helper');
 
 describe('Connectivity Checker for BrowserStack Components', function () {
+  var resultWithoutProxy = [{
+    data: '{"data":"value"}',
+    statusCode: 200,
+    errorMessage: null,
+    description: 'HTTP Request To Hub Without Proxy',
+    result: 'Passed'
+  }, {
+    data: '{"data":"value"}',
+    statusCode: 301,
+    errorMessage: null,
+    description: 'HTTP Request To Rails Without Proxy',
+    result: 'Passed'
+  }, {
+    data: '{"data":"value"}',
+    statusCode: 200,
+    errorMessage: null,
+    description: 'HTTPS Request To Hub Without Proxy',
+    result: 'Passed'
+  }, {
+    data: '{"data":"value"}',
+    statusCode: 302,
+    errorMessage: null,
+    description: 'HTTPS Request to Rails Without Proxy',
+    result: 'Passed'
+  }];
+
+  var errorResult = [{
+    data: [],
+    statusCode: null,
+    errorMessage: 'Error: something terrible',
+    description: 'HTTP Request To Hub Without Proxy',
+    result: 'Failed'
+  }, {
+    data: [],
+    statusCode: null,
+    errorMessage: 'Error: something terrible',
+    description: 'HTTP Request To Rails Without Proxy',
+    result: 'Failed'
+  }, {
+    data: [],
+    statusCode: null,
+    errorMessage: 'Error: something terrible',
+    description: 'HTTPS Request To Hub Without Proxy',
+    result: 'Failed'
+  }, {
+    data: [],
+    statusCode: null,
+    errorMessage: 'Error: something terrible',
+    description: 'HTTPS Request to Rails Without Proxy',
+    result: 'Failed'
+  }];
+
   context('without Proxy', function () {
     beforeEach(function () {
       NwtGlobalConfig.deleteProxy();
@@ -27,35 +79,8 @@ describe('Connectivity Checker for BrowserStack Components', function () {
       this.timeout(2000);
       sinon.stub(Utils, 'beautifyObject');
 
-      var result = [{
-          data: '{"data":"value"}',
-          statusCode: 200,
-          errorMessage: null,
-          description: 'HTTP Request To Hub Without Proxy',
-          result: 'Passed'
-        }, {
-          data: '{"data":"value"}',
-          statusCode: 301,
-          errorMessage: null,
-          description: 'HTTP Request To Rails Without Proxy',
-          result: 'Passed'
-        }, {
-          data: '{"data":"value"}',
-          statusCode: 200,
-          errorMessage: null,
-          description: 'HTTPS Request To Hub Without Proxy',
-          result: 'Passed'
-        }, {
-          data: '{"data":"value"}',
-          statusCode: 302,
-          errorMessage: null,
-          description: 'HTTPS Request to Rails Without Proxy',
-          result: 'Passed'
-        }
-      ];
-
       ConnectivityChecker.fireChecks("some topic", 1, function () {
-        sinon.assert.calledOnceWithExactly(Utils.beautifyObject, result, "Result Key", "Result Value");
+        sinon.assert.calledOnceWithExactly(Utils.beautifyObject, resultWithoutProxy, "Result Key", "Result Value");
         Utils.beautifyObject.restore();
         done();
       });
@@ -84,48 +109,22 @@ describe('Connectivity Checker for BrowserStack Components', function () {
     it('HTTP(S) to Hub & Rails', function (done) {
       this.timeout(2000);
       sinon.stub(Utils, 'beautifyObject');
-
-      var result = [{
-          data: '{"data":"value"}',
-          statusCode: 200,
-          errorMessage: null,
-          description: 'HTTP Request To Hub Without Proxy',
-          result: 'Passed'
-        }, {
-          data: '{"data":"value"}',
-          statusCode: 301,
-          errorMessage: null,
-          description: 'HTTP Request To Rails Without Proxy',
-          result: 'Passed'
-        }, {
-          data: '{"data":"value"}',
-          statusCode: 200,
-          errorMessage: null,
-          description: 'HTTPS Request To Hub Without Proxy',
-          result: 'Passed'
-        }, {
-          data: '{"data":"value"}',
-          statusCode: 302,
-          errorMessage: null,
-          description: 'HTTPS Request to Rails Without Proxy',
-          result: 'Passed'
-        }, {
-          data: '{"data":"value"}',
-          description: "HTTP Request To Hub With Proxy",
-          errorMessage: null,
-          result: "Passed",
-          statusCode: 200
-        }, {
-          data: '{"data":"value"}',
-          description: "HTTP Request To Rails With Proxy",
-          errorMessage: null,
-          result: "Passed",
-          statusCode: 301
-        }
-      ];
+      var resultWithProxy = resultWithoutProxy.concat([{
+        data: '{"data":"value"}',
+        description: "HTTP Request To Hub With Proxy",
+        errorMessage: null,
+        result: "Passed",
+        statusCode: 200
+      }, {
+        data: '{"data":"value"}',
+        description: "HTTP Request To Rails With Proxy",
+        errorMessage: null,
+        result: "Passed",
+        statusCode: 301
+      }]);
 
       ConnectivityChecker.fireChecks("some topic", 1, function () {
-        sinon.assert.calledOnceWithExactly(Utils.beautifyObject, result, "Result Key", "Result Value");
+        sinon.assert.calledOnceWithExactly(Utils.beautifyObject, resultWithProxy, "Result Key", "Result Value");
         Utils.beautifyObject.restore();
         done();
       });
@@ -154,35 +153,8 @@ describe('Connectivity Checker for BrowserStack Components', function () {
       this.timeout(2000);
       sinon.stub(Utils, 'beautifyObject');
 
-      var result = [{
-          data: [],
-          statusCode: null,
-          errorMessage: 'Error: something terrible',
-          description: 'HTTP Request To Hub Without Proxy',
-          result: 'Failed'
-        }, {
-          data: [],
-          statusCode: null,
-          errorMessage: 'Error: something terrible',
-          description: 'HTTP Request To Rails Without Proxy',
-          result: 'Failed'
-        }, {
-          data: [],
-          statusCode: null,
-          errorMessage: 'Error: something terrible',
-          description: 'HTTPS Request To Hub Without Proxy',
-          result: 'Failed'
-        }, {
-          data: [],
-          statusCode: null,
-          errorMessage: 'Error: something terrible',
-          description: 'HTTPS Request to Rails Without Proxy',
-          result: 'Failed'
-        }
-      ];
-
       ConnectivityChecker.fireChecks("some topic", 1, function () {
-        sinon.assert.calledOnceWithExactly(Utils.beautifyObject, result, "Result Key", "Result Value");
+        sinon.assert.calledOnceWithExactly(Utils.beautifyObject, errorResult, "Result Key", "Result Value");
         Utils.beautifyObject.restore();
         done();
       });

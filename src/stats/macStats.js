@@ -8,6 +8,7 @@ var BaseStats = require('./baseStats');
 var cp = require('child_process');
 var Utils = require('../utils');
 var constants = require('../../config/constants');
+var NwtGlobalConfig = constants.NwtGlobalConfig;
 
 var MacStats = Object.create(BaseStats);
 MacStats.description = "System and Network Stats for Mac";
@@ -37,25 +38,29 @@ MacStats.mem = function (callback) {
 
   cp.exec(constants.MAC.SWAP_USAGE, function (err, result) {
     if (!err) {
-      var resultLines  = result.toString().split('\n');
-      if (resultLines[0]) {
-        var statLines = resultLines[0].trim().split('  ');
-        for (var swapStat of statLines) {
-          var swapStatType = swapStat.toLowerCase().match(/total|used|free/i);
-          switch (swapStatType && swapStatType[0]) {
-            case 'total':
-              memStats.swapTotal = parseFloat(swapStat.split('=')[1].trim()) * 1024 * 1024;
-              break;
-
-            case 'used':
-              memStats.swapUsed = parseFloat(swapStat.split('=')[1].trim()) * 1024 * 1024;
-              break;
-            
-            case 'free':
-              memStats.swapFree = parseFloat(swapStat.split('=')[1].trim()) * 1024 * 1024;
-              break;
+      try {
+        var resultLines  = result.toString().split('\n');
+        if (resultLines[0]) {
+          var statLines = resultLines[0].trim().split('  ');
+          for (var swapStat of statLines) {
+            var swapStatType = swapStat.toLowerCase().match(/total|used|free/i);
+            switch (swapStatType && swapStatType[0]) {
+              case 'total':
+                memStats.swapTotal = parseFloat(swapStat.split('=')[1].trim()) * 1024 * 1024;
+                break;
+  
+              case 'used':
+                memStats.swapUsed = parseFloat(swapStat.split('=')[1].trim()) * 1024 * 1024;
+                break;
+              
+              case 'free':
+                memStats.swapFree = parseFloat(swapStat.split('=')[1].trim()) * 1024 * 1024;
+                break;
+            }
           }
         }
+      } catch (e) {
+        NwtGlobalConfig.ErrLogger.error('Mac-Mem', e.toString(), false, {});
       }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));

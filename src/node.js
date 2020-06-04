@@ -19,7 +19,8 @@ var Utils = require('./utils');
 
 var NwTool = {
   initLoggers: function () {
-    NwtGlobalConfig.LOGS_DIRECTORY = path.resolve(process.cwd(), 'NWT_Logs');
+    var basePath = NwtGlobalConfig.logsPath ? path.resolve(NwtGlobalConfig.logsPath) : process.cwd();
+    NwtGlobalConfig.LOGS_DIRECTORY = path.resolve(basePath, 'NetworkUtilityLogs');
 
     if (NwtGlobalConfig.deleteExistingLogs) {
       var filesToDelete = Object.keys(LogFiles).map(function (key) { return LogFiles[key]});
@@ -33,9 +34,11 @@ var NwTool = {
     try {
       fs.mkdirSync(NwtGlobalConfig.LOGS_DIRECTORY);
     } catch (e) {
-      if (e.code !== 'EEXIST') {
-        console.log("Error While Creating NWT_Logs Directory. Exiting with status code 1. Error: ", e);
-        process.exit(1);
+      switch (e.code) {
+        case 'ENOENT': {
+          console.log("Error in creating 'NetworkUtilityLogs' directory in " + basePath + ". Path doesn't exist.\n");
+          process.exit(1);
+        }
       }
     }
 
@@ -44,6 +47,7 @@ var NwTool = {
     NwtGlobalConfig.CPULogger = LogManager.initializeLogger(path.resolve(NwtGlobalConfig.LOGS_DIRECTORY, LogFiles.CPU));
     NwtGlobalConfig.ReqLogger = LogManager.initializeLogger(path.resolve(NwtGlobalConfig.LOGS_DIRECTORY, LogFiles.REQUESTS));
     NwtGlobalConfig.ConnLogger = LogManager.initializeLogger(path.resolve(NwtGlobalConfig.LOGS_DIRECTORY, LogFiles.CONNECTIVITY));
+    NwtGlobalConfig.ErrLogger = LogManager.initializeLogger(path.resolve(NwtGlobalConfig.LOGS_DIRECTORY, LogFiles.ERROR));
 
     NwtGlobalConfig.NetworkLogHandler = function (topic, uuid, callback) {
       topic = topic || 'NO_TOPIC';
@@ -77,6 +81,9 @@ var NwTool = {
     CommandLineManager.processArgs(process.argv);
     NwtGlobalConfig.StatsHandler = StatsFactory.getHandler(process.platform);
     NwTool.initLoggers();
+    console.log(Utils.formatAndBeautifyLine("Refer '" + NwtGlobalConfig.LOGS_DIRECTORY + "' folder for CPU/Network/Memory" +
+                                            " Stats and Connectivity Checks with BrowserStack components",
+                                            '', '-', 60, true));
     NwtGlobalConfig.CpuLogHandler('Initial CPU', null, function () {
       console.log(Utils.formatAndBeautifyLine('Stats : Initial CPU Stats Collected', '', '-', 60, true));
     });
@@ -94,7 +101,6 @@ var NwTool = {
           console.log('Exiting the Tool...');
           process.exit(1);
         }
-        console.log(Utils.formatAndBeautifyLine("Refer 'NWT_Logs' folder for CPU/Network/Memory Stats and Connectivity Checks with BrowserStack components", '', '-', 60, true));
       });
     });
   }

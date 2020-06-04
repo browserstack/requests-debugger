@@ -8,6 +8,7 @@ var BaseStats = require('./baseStats');
 var cp = require('child_process');
 var Utils = require('../utils');
 var constants = require('../../config/constants');
+var NwtGlobalConfig = constants.NwtGlobalConfig;
 
 var WinStats = Object.create(BaseStats);
 WinStats.description = "System and Network Stats for Windows";
@@ -42,18 +43,22 @@ WinStats.mem = function (callback) {
 
   cp.exec(WinStats.wmicPath + constants.WIN.SWAP_USAGE, function (err, result) {
     if (!err) {
-      result = result.split('\r\n').filter(function (line) { return line.trim() !== '' });
-      result.shift();
-      var swapTotal = 0;
-      var swapUsed = 0;
-      for (var line of result) {
-        line = line.trim().split(/\s\s+/);
-        swapTotal += parseInt(line[0]);
-        swapUsed += parseInt(line[1]);
+      try {
+        result = result.split('\r\n').filter(function (line) { return line.trim() !== '' });
+        result.shift();
+        var swapTotal = 0;
+        var swapUsed = 0;
+        for (var line of result) {
+          line = line.trim().split(/\s\s+/);
+          swapTotal += parseInt(line[0]);
+          swapUsed += parseInt(line[1]);
+        }
+        memStats.swapTotal = swapTotal * 1024 * 1024;
+        memStats.swapUsed = swapUsed * 1024 * 1024;
+        memStats.swapFree = memStats.swapTotal - memStats.swapUsed;
+      } catch (e) {
+        NwtGlobalConfig.ErrLogger('Win-Mem', e.toString(), false, {});
       }
-      memStats.swapTotal = swapTotal * 1024 * 1024;
-      memStats.swapUsed = swapUsed * 1024 * 1024;
-      memStats.swapFree = memStats.swapTotal - memStats.swapUsed;
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));
   });

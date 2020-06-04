@@ -9,6 +9,7 @@ var cp = require('child_process');
 var fs = require('fs');
 var Utils = require('../utils');
 var constants = require('../../config/constants');
+var NwtGlobalConfig = constants.NwtGlobalConfig;
 
 var LinuxStats = Object.create(BaseStats);
 LinuxStats.description = "System and Network Stats for Linux";
@@ -37,22 +38,25 @@ LinuxStats.mem = function (callback) {
 
   fs.readFile(constants.LINUX.PROC_MEMINFO, function (err, fileContent) {
     if (!err) {
-      var memStatLines = fileContent.toString().split('\n');
-      memStats.total = parseInt(Utils.fetchPropertyValue(memStatLines, 'memtotal'));
-      memStats.total = memStats.total ? memStats.total * 1024 : os.totalmem();
-      memStats.free = parseInt(Utils.fetchPropertyValue(memStatLines, 'memfree'));
-      memStats.free = memStats.free ? memStats.free * 1024 : os.freemem();
-      memStats.used = memStats.total - memStats.free;
-
-      memStats.swapTotal = parseInt(Utils.fetchPropertyValue(memStatLines, 'swaptotal'));
-      memStats.swapTotal = memStats.swapTotal ? memStats.swapTotal * 1024 : 0;
-      memStats.swapFree = parseInt(Utils.fetchPropertyValue(memStatLines, 'swapfree'));
-      memStats.swapFree = memStats.swapFree ? memStats.swapFree * 1024 : 0;
-      memStats.swapUsed = memStats.swapTotal - memStats.swapFree;
+      try {
+        var memStatLines = fileContent.toString().split('\n');
+        memStats.total = parseInt(Utils.fetchPropertyValue(memStatLines, 'memtotal'));
+        memStats.total = memStats.total ? memStats.total * 1024 : os.totalmem();
+        memStats.free = parseInt(Utils.fetchPropertyValue(memStatLines, 'memfree'));
+        memStats.free = memStats.free ? memStats.free * 1024 : os.freemem();
+        memStats.used = memStats.total - memStats.free;
+  
+        memStats.swapTotal = parseInt(Utils.fetchPropertyValue(memStatLines, 'swaptotal'));
+        memStats.swapTotal = memStats.swapTotal ? memStats.swapTotal * 1024 : 0;
+        memStats.swapFree = parseInt(Utils.fetchPropertyValue(memStatLines, 'swapfree'));
+        memStats.swapFree = memStats.swapFree ? memStats.swapFree * 1024 : 0;
+        memStats.swapUsed = memStats.swapTotal - memStats.swapFree;
+      } catch (e) {
+        NwtGlobalConfig.ErrLogger.error('Linux-Mem', e.toString(), false, {});
+      }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));
   });
-
 }
 
 LinuxStats.network = function (callback) {

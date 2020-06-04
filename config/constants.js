@@ -13,7 +13,8 @@ module.exports.LOGS = Object.freeze({
   CPU: 'CPUStats.log',
   MEM: 'MemStats.log',
   REQUESTS: 'Requests.log',
-  CONNECTIVITY: 'Connectivity.log'
+  CONNECTIVITY: 'Connectivity.log',
+  ERROR: 'NWT_Error.log'
 });
 module.exports.NwtGlobalConfig = {
   initializeDummyProxy: function () {
@@ -49,6 +50,10 @@ module.exports.NwtGlobalConfig = {
     this.ReqLogger = {
       info: function () {},
       error: function () {}
+    },
+    this.ErrLogger = {
+      info: function () {},
+      error: function () {}
     }
   },
 
@@ -58,6 +63,7 @@ module.exports.NwtGlobalConfig = {
     delete this.MemLogger;
     delete this.CPULogger;
     delete this.ReqLogger;
+    delete this.ErrLogger;
   },
 
   initializeDummyHandlers: function () {
