@@ -49,8 +49,8 @@ var CommandLineManager = {
     index = argv.indexOf('--proxy-host');
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
-        NwtGlobalConfig['proxy'] = NwtGlobalConfig['proxy'] || {};
-        NwtGlobalConfig.proxy['host'] = argv[index + 1];
+        NwtGlobalConfig.proxy = NwtGlobalConfig.proxy || {};
+        NwtGlobalConfig.proxy.host = argv[index + 1];
         argv.splice(index, 2);
       } else {
         invalidArgs.add('--proxy-host');
@@ -63,7 +63,7 @@ var CommandLineManager = {
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         if (NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.host) {
-          NwtGlobalConfig.proxy['port'] = argv[index + 1];
+          NwtGlobalConfig.proxy.port = argv[index + 1];
         } else {
           if (!invalidArgs.has('--proxy-host')) missingArgs.add('--proxy-host');
         }
@@ -77,7 +77,7 @@ var CommandLineManager = {
     // if proxy port value in invalid or doesn't exist and host exists, set the default value
     if (NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.host && (invalidArgs.has('--proxy-port') || !NwtGlobalConfig.proxy.port)) {
       console.log('Setting Default Proxy Port:', constants.DEFAULT_PROXY_PORT, '\n');
-      NwtGlobalConfig.proxy['port'] = constants.DEFAULT_PROXY_PORT;
+      NwtGlobalConfig.proxy.port = constants.DEFAULT_PROXY_PORT;
       invalidArgs.delete('--proxy-port');
     }
 
@@ -85,9 +85,9 @@ var CommandLineManager = {
     index = argv.indexOf('--proxy-user');
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
-        if (NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.host) {
-          NwtGlobalConfig.proxy['username'] = argv[index + 1];
-        } else {
+        NwtGlobalConfig.proxy = NwtGlobalConfig.proxy || {};
+        NwtGlobalConfig.proxy.username = argv[index + 1];
+        if (!(NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.host)) {
           if (!invalidArgs.has('--proxy-host')) missingArgs.add('--proxy-host');
         }
         argv.splice(index, 2);
@@ -102,7 +102,7 @@ var CommandLineManager = {
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         if (NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.username) {
-          NwtGlobalConfig.proxy['password'] = argv[index + 1];
+          NwtGlobalConfig.proxy.password = argv[index + 1];
         } else {
           if (!invalidArgs.has('--proxy-user')) missingArgs.add('--proxy-user');
         }
@@ -116,7 +116,7 @@ var CommandLineManager = {
     // if proxy pass is invalid or doesn't exist and username exists, set the password as empty
     if (NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.username && (invalidArgs.has('--proxy-pass') || !NwtGlobalConfig.proxy.password)) {
       console.log('Setting Proxy Password as Empty\n');
-      NwtGlobalConfig.proxy['password'] = '';
+      NwtGlobalConfig.proxy.password = '';
       invalidArgs.delete('--proxy-pass');
     }
 
@@ -165,7 +165,7 @@ var CommandLineManager = {
     // exit the tool by logging the args helper
     if (exitAfterProcessArgs) {
       CommandLineManager.helpForArgs();
-      process.exit(0);
+      process.exit(1);
     }
   }
 }

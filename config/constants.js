@@ -1,8 +1,7 @@
 module.exports.NO_REPORT_GENERATED = "COULD NOT GENERATE REPORT FOR : ";
 module.exports.HUB_STATUS_URL = 'http://hub-cloud.browserstack.com/wd/hub/status';
 module.exports.RAILS_AUTOMATE = 'http://automate.browserstack.com';
-module.exports.NWT_HANDLER_PORT = 9687;
-module.exports.NWT_HANDLER_PORT_TEST = 8787;
+module.exports.NWT_HANDLER_PORT = process.env.NODE_ENV === 'test' ? 8787 : 9687;
 module.exports.CONNECTIVITY_REQ_TIMEOUT = 20000;
 module.exports.CLIENT_REQ_TIMEOUT = 50000;
 module.exports.DEFAULT_PROXY_PORT = '3128';
@@ -16,70 +15,7 @@ module.exports.LOGS = Object.freeze({
   CONNECTIVITY: 'Connectivity.log',
   ERROR: 'NWT_Error.log'
 });
-module.exports.NwtGlobalConfig = {
-  initializeDummyProxy: function () {
-    this.proxy = {
-      host: "dummyhost12345.com",
-      port: "3128",
-      username: "user",
-      password: "pass"
-    }
-  },
-
-  deleteProxy: function () {
-    delete this.proxy;
-  },
-
-  initializeDummyLoggers: function () {
-    this.ConnLogger = {
-      info: function () {},
-      error: function () {}
-    },
-    this.NetworkLogger = {
-      info: function () {},
-      error: function () {}
-    },
-    this.MemLogger = {
-      info: function () {},
-      error: function () {}
-    },
-    this.CPULogger = {
-      info: function () {},
-      error: function () {}
-    },
-    this.ReqLogger = {
-      info: function () {},
-      error: function () {}
-    },
-    this.ErrLogger = {
-      info: function () {},
-      error: function () {}
-    }
-  },
-
-  deleteLoggers: function () {
-    delete this.ConnLogger;
-    delete this.NetworkLogger;
-    delete this.MemLogger;
-    delete this.CPULogger;
-    delete this.ReqLogger;
-    delete this.ErrLogger;
-  },
-
-  initializeDummyHandlers: function () {
-    this.NetworkLogHandler = function () {};
-    this.ConnHandler = function () {};
-    this.CpuLogHandler = function () {};
-    this.MemLogHandler = function () {};
-  },
-
-  deleteHandlers: function () {
-    delete this.NetworkLogHandler;
-    delete this.ConnHandler;
-    delete this.CpuLogHandler;
-    delete this.MemLogHandler;
-  }
-};
+module.exports.NwtGlobalConfig = {};
 module.exports.COMMON = Object.freeze({
   PING_HUB: 'ping -c 5 hub-cloud.browserstack.com',
   PING_AUTOMATE: 'ping -c 5 automate.browserstack.com'

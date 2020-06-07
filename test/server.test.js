@@ -1,24 +1,21 @@
-var url = require('url');
 var constants = require('../config/constants');
 var NwtGlobalConfig = constants.NwtGlobalConfig;
-var Utils = require('../src/utils');
 var nock = require('nock');
-var sinon = require('sinon');
 var NWTHandler = require('../src/server');
 var http = require('http');
 var assert = require('chai').assert;
-var helper = require('./helper');
+var testHelper = require('./testHelper');
 
 describe('NWTHandler', function () {
   context('Proxy Server', function () {
 
     before(function (done) {
       this.timeout = 5000;
-      helper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
-      NwtGlobalConfig.initializeDummyLoggers();
-      NwtGlobalConfig.initializeDummyHandlers();
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
+      testHelper.initializeDummyLoggers();
+      testHelper.initializeDummyHandlers();
       
-      NWTHandler.startProxy(constants.NWT_HANDLER_PORT_TEST, function (port) {
+      NWTHandler.startProxy(constants.NWT_HANDLER_PORT, function (port) {
         done();
       });
     });
@@ -28,8 +25,8 @@ describe('NWTHandler', function () {
       NWTHandler.stopProxy(function () {
         done();
       });
-      NwtGlobalConfig.deleteLoggers();
-      NwtGlobalConfig.deleteHandlers();
+      testHelper.deleteLoggers();
+      testHelper.deleteHandlers();
       nock.cleanAll();
     });
 
@@ -38,7 +35,7 @@ describe('NWTHandler', function () {
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: constants.NWT_HANDLER_PORT_TEST,
+        port: constants.NWT_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
       }
@@ -61,13 +58,13 @@ describe('NWTHandler', function () {
 
     it('Requests on behalf of the client via external proxy and returns the response', function (done) {
       this.timeout = 5000;
-      NwtGlobalConfig.initializeDummyProxy();
-      helper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'hub', null, 200);
+      testHelper.initializeDummyProxy();
+      testHelper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'hub', null, 200);
       NWTHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: constants.NWT_HANDLER_PORT_TEST,
+        port: constants.NWT_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
       }
@@ -86,17 +83,17 @@ describe('NWTHandler', function () {
       });
 
       request.end();
-      NwtGlobalConfig.deleteProxy();
+      testHelper.deleteProxy();
     });
 
     it('Requests on behalf of the client via external proxy and returns the response even if request by tool fails', function (done) {
       this.timeout = 5000;
-      helper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
+      testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
       NWTHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: constants.NWT_HANDLER_PORT_TEST,
+        port: constants.NWT_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
       }

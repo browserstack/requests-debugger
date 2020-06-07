@@ -4,9 +4,18 @@ var NwtGlobalConfig = constants.NwtGlobalConfig;
 var Utils = require('../src/utils');
 var nock = require('nock');
 var sinon = require('sinon');
-var helper = require('./helper');
+var testHelper = require('./testHelper');
 
 describe('Connectivity Checker for BrowserStack Components', function () {
+
+  before(function () {
+    testHelper.initializeDummyLoggers();
+  });
+
+  after(function () {
+     testHelper.deleteLoggers();
+  });
+
   var resultWithoutProxy = [{
     data: '{"data":"value"}',
     statusCode: 200,
@@ -61,18 +70,16 @@ describe('Connectivity Checker for BrowserStack Components', function () {
 
   context('without Proxy', function () {
     beforeEach(function () {
-      NwtGlobalConfig.deleteProxy();
-      NwtGlobalConfig.initializeDummyLoggers();
+      testHelper.deleteProxy();
       ConnectivityChecker.connectionChecks = [];
-      helper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
-      helper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
-      helper.nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
-      helper.nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
+      testHelper.nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
+      testHelper.nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
     });
 
     afterEach(function () {
       nock.cleanAll();
-      NwtGlobalConfig.deleteLoggers();
     });
 
     it('HTTP(S) to Hub & Rails', function (done) {
@@ -89,21 +96,19 @@ describe('Connectivity Checker for BrowserStack Components', function () {
 
   context('with Proxy', function () {
     beforeEach(function () {
-      NwtGlobalConfig.initializeDummyProxy();
-      NwtGlobalConfig.initializeDummyLoggers();
+      testHelper.initializeDummyProxy();
       ConnectivityChecker.connectionChecks = [];
-      helper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
-      helper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
-      helper.nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
-      helper.nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
-      helper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'hub', null, 200);
-      helper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'automate', null, 301);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
+      testHelper.nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
+      testHelper.nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
+      testHelper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'hub', null, 200);
+      testHelper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'automate', null, 301);
     });
 
     afterEach(function () {
       nock.cleanAll();
-      NwtGlobalConfig.deleteLoggers();
-      NwtGlobalConfig.deleteProxy();
+      testHelper.deleteProxy();
     });
 
     it('HTTP(S) to Hub & Rails', function (done) {
@@ -135,18 +140,16 @@ describe('Connectivity Checker for BrowserStack Components', function () {
   // Thus, no need to show it for 'with proxy' case
   context('without Proxy error case', function () {
     beforeEach(function () {
-      NwtGlobalConfig.deleteProxy();
-      NwtGlobalConfig.initializeDummyLoggers();
+      testHelper.deleteProxy();
       ConnectivityChecker.connectionChecks = [];
-      helper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
-      helper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'https');
-      helper.nockGetRequestWithError(constants.RAILS_AUTOMATE, 'http');
-      helper.nockGetRequestWithError(constants.RAILS_AUTOMATE, 'https');
+      testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
+      testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'https');
+      testHelper.nockGetRequestWithError(constants.RAILS_AUTOMATE, 'http');
+      testHelper.nockGetRequestWithError(constants.RAILS_AUTOMATE, 'https');
     });
 
     afterEach(function () {
       nock.cleanAll();
-      NwtGlobalConfig.deleteLoggers();
     });
 
     it('HTTP(S) to Hub & Rails', function (done) {

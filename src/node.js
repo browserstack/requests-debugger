@@ -84,24 +84,33 @@ var NwTool = {
     console.log(Utils.formatAndBeautifyLine("Refer '" + NwtGlobalConfig.LOGS_DIRECTORY + "' folder for CPU/Network/Memory" +
                                             " Stats and Connectivity Checks with BrowserStack components",
                                             '', '-', 60, true));
+
+    console.log(Utils.formatAndBeautifyLine('Stats : Checking CPU Stats', '', '-', 60, true));
     NwtGlobalConfig.CpuLogHandler('Initial CPU', null, function () {
       console.log(Utils.formatAndBeautifyLine('Stats : Initial CPU Stats Collected', '', '-', 60, true));
     });
+
+    console.log(Utils.formatAndBeautifyLine('Stats : Checking Network Stats', '', '-', 60, true));
     NwtGlobalConfig.NetworkLogHandler('Initial Network', null, function () {
       console.log(Utils.formatAndBeautifyLine('Stats : Initial Network Stats Collected', '', '-', 60, true));
     });
+
+    console.log(Utils.formatAndBeautifyLine('Stats : Checking Memory Stats', '', '-', 60, true));
     NwtGlobalConfig.MemLogHandler('Initial Memory', null, function () {
       console.log(Utils.formatAndBeautifyLine('Stats : Initial Memory Stats Collected', '', '-', 60, true));
     });
+
+    console.log(Utils.formatAndBeautifyLine('Checks : Checking Connectivity With BrowserStack', '', '-', 60, true));
     NwtGlobalConfig.ConnHandler('Initial Connectivity', null, function () {
       console.log(Utils.formatAndBeautifyLine('Checks : Connectivity Checks Performed with BrowserStack', '', '-', 60, true));
-      NWTHandler.startProxy(constants.NWT_HANDLER_PORT, function (err, result) {
-        if (err) {
-          console.log('Error in starting Network Tool Utility Proxy: ', err);
-          console.log('Exiting the Tool...');
-          process.exit(1);
-        }
-      });
+    });
+
+    NWTHandler.startProxy(constants.NWT_HANDLER_PORT, function (err, result) {
+      if (err) {
+        console.log('Error in starting Network Tool Utility Proxy: ', err);
+        console.log('Exiting the Tool...');
+        process.exit(1);
+      }
     });
   }
 }

@@ -3,6 +3,7 @@ var constants = require('../config/constants');
 var NwtGlobalConfig = constants.NwtGlobalConfig;
 var expect = require('chai').expect;
 var sinon = require('sinon');
+var testHelper = require('./testHelper');
 
 describe('CommandLineManager', function () {
 
@@ -19,7 +20,7 @@ describe('CommandLineManager', function () {
   beforeEach(function () {
     argv = ['node', 'file/path/file.js'];
     sinon.stub(process, 'exit');
-    NwtGlobalConfig.deleteProxy();
+    testHelper.deleteProxy();
   });
 
   afterEach(function () {
