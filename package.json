@@ -32,10 +32,10 @@
     "all": true,
     "exclude": [
       "**/*.test.js",
-      "test/helper.js",
+      "test/testHelper.js",
       "node_modules",
       "coverage",
-      "NWT_Logs",
+      "NetworkUtilityLogs",
       "config"
     ]
   }
