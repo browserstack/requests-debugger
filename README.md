@@ -26,11 +26,11 @@
   
 ## Steps to build the executables
 - Linux
-  - `./node_modules/pkg/lib-es5/bin.js -t node4-linux src/node.js; mv node NwTool-Linux`
+  - `npm run build:linux`
 - Mac OS X
-  - `./node_modules/pkg/lib-es5/bin.js -t node4-macos src/node.js; mv node NwTool-Mac`
+  - `npm run build:mac`
 - Windows
-  - `./node_modules/pkg/lib-es5/bin.js -t node4-win src/node.js; mv node.exe NwTool.exe`
+  - `npm run build:win`
 
 
 ## Note
