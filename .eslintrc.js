@@ -12,7 +12,8 @@ module.exports = {
   "rules": {
     "indent": ["error", 2],
     "linebreak-style": [ "error", "unix"],
-    "semi": ["error", "always"]
+    "semi": ["error", "always"],
+    "eol-last": ["error", "always"]
   },
   "overrides": [{
     "files": ["src/node.js", "src/commandLine.js", "test/**/*.test.js"],
