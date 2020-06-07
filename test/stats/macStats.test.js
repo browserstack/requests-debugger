@@ -49,7 +49,8 @@ describe('MacStats', function () {
         swapTotal: 100 * 1024 * 1024,
         swapUsed: 50 * 1024 * 1024,
         swapFree: 50 * 1024 * 1024
-      }
+      };
+      /* eslint-disable-next-line no-unused-vars */
       MacStats.mem(function (result) {
         sinon.assert.calledWith(Utils.beautifyObject, memStats, "Memory", "Bytes");
       });
@@ -73,8 +74,8 @@ describe('MacStats', function () {
         swapTotal: 0,
         swapUsed: 0,
         swapFree: 0
-      }
-
+      };
+      /* eslint-disable-next-line no-unused-vars */
       MacStats.mem(function (result) {
         sinon.assert.calledWith(Utils.beautifyObject, memStats, "Memory", "Bytes");
       });

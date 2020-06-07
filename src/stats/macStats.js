@@ -22,7 +22,7 @@ MacStats.cpu = function (callback) {
     }
     if (Utils.isValidCallback(callback)) callback(result || constants.NO_REPORT_GENERATED + 'CPU' + os.EOL);
   });
-}
+};
 
 MacStats.mem = function (callback) {
 
@@ -32,7 +32,7 @@ MacStats.mem = function (callback) {
     swapTotal: 0,
     swapUsed: 0,
     swapFree: 0
-  }
+  };
 
   memStats.used = memStats.total - memStats.free;
 
@@ -42,21 +42,23 @@ MacStats.mem = function (callback) {
         var resultLines  = result.toString().split('\n');
         if (resultLines[0]) {
           var statLines = resultLines[0].trim().split('  ');
-          for (var swapStat of statLines) {
-            var swapStatType = swapStat.toLowerCase().match(/total|used|free/i);
+          for (var index in statLines) {
+            var swapStatType = statLines[index].toLowerCase().match(/total|used|free/i);
+            /* eslint-disable indent */
             switch (swapStatType && swapStatType[0]) {
               case 'total':
-                memStats.swapTotal = parseFloat(swapStat.split('=')[1].trim()) * 1024 * 1024;
+                memStats.swapTotal = parseFloat(statLines[index].split('=')[1].trim()) * 1024 * 1024;
                 break;
   
               case 'used':
-                memStats.swapUsed = parseFloat(swapStat.split('=')[1].trim()) * 1024 * 1024;
+                memStats.swapUsed = parseFloat(statLines[index].split('=')[1].trim()) * 1024 * 1024;
                 break;
               
               case 'free':
-                memStats.swapFree = parseFloat(swapStat.split('=')[1].trim()) * 1024 * 1024;
+                memStats.swapFree = parseFloat(statLines[index].split('=')[1].trim()) * 1024 * 1024;
                 break;
             }
+            /* eslint-enable indent */
           }
         }
       } catch (e) {
@@ -65,7 +67,7 @@ MacStats.mem = function (callback) {
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));
   });
-}
+};
 
 MacStats.network = function (callback) {
   var startTime = new Date();
@@ -79,7 +81,7 @@ MacStats.network = function (callback) {
 
     if (Utils.isValidCallback(callback)) callback(finalOutput);
   });
-}
+};
 
 module.exports = MacStats;
 

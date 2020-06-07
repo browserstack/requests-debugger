@@ -20,9 +20,9 @@ var fireRequest = function (requestOptions, requestType, description, successCod
     data: [],
     statusCode: null,
     errorMessage: null,
-    description,
+    description: description,
     result: 'Failed'
-  }
+  };
 
   var request = httpOrHttps.request(requestOptions, function (response) {
     responseData.statusCode = response.statusCode;
@@ -51,7 +51,7 @@ var fireRequest = function (requestOptions, requestType, description, successCod
   });
 
   request.end();
-}
+};
 
 
 var ConnectivityChecker = {
@@ -126,12 +126,13 @@ var ConnectivityChecker = {
           host: parsedUrl.hostname,
           port: parsedUrl.port || ( reqType === 'http' ? 80 : 443 ),
           path: parsedUrl.path
-        }
+        };
         return reqOptions;
-      }
+      };
 
       if (NwtGlobalConfig.proxy) {
         ConnectivityChecker.connectionChecks.push(this.httpToHubWithProxy, this.httpToRailsWithProxy);
+        /* eslint-disable-next-line no-unused-vars */
         ConnectivityChecker.reqOpsWithProxy = function (reqUrl, reqType) {
           var parsedUrl = url.parse(reqUrl);
           var reqOptions = {
@@ -140,12 +141,12 @@ var ConnectivityChecker = {
             host: NwtGlobalConfig.proxy.host,
             port: NwtGlobalConfig.proxy.port,
             path: parsedUrl.href
-          }
+          };
           if (NwtGlobalConfig.proxy.username && NwtGlobalConfig.proxy.password) {
             reqOptions.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(NwtGlobalConfig.proxy);
           }
           return reqOptions;
-        }
+        };
       }
     }
   },
@@ -172,6 +173,6 @@ var ConnectivityChecker = {
       });
     });
   }
-}
+};
 
 module.exports = ConnectivityChecker;

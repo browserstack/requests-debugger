@@ -23,10 +23,11 @@ var NwTool = {
     NwtGlobalConfig.LOGS_DIRECTORY = path.resolve(basePath, 'NetworkUtilityLogs');
 
     if (NwtGlobalConfig.deleteExistingLogs) {
-      var filesToDelete = Object.keys(LogFiles).map(function (key) { return LogFiles[key]});
+      var filesToDelete = Object.keys(LogFiles).map(function (key) { return LogFiles[key]; });
       filesToDelete.forEach(function (file) {
         try {
-          fs.unlinkSync(path.resolve(NwtGlobalConfig.LOGS_DIRECTORY, file))
+          fs.unlinkSync(path.resolve(NwtGlobalConfig.LOGS_DIRECTORY, file));
+          /* eslint-disable-next-line no-empty */
         } catch (e) {}
       });
     }
@@ -55,7 +56,7 @@ var NwTool = {
         NwtGlobalConfig.NetworkLogger.info(topic, networkStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
       });
-    }
+    };
 
     NwtGlobalConfig.CpuLogHandler = function (topic, uuid, callback) {
       topic = topic || 'NO_TOPIC';
@@ -63,7 +64,7 @@ var NwTool = {
         NwtGlobalConfig.CPULogger.info(topic, cpuStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
       });
-    }
+    };
 
     NwtGlobalConfig.MemLogHandler = function (topic, uuid, callback) {
       topic = topic || "NO_TOPIC";
@@ -71,7 +72,7 @@ var NwTool = {
         NwtGlobalConfig.MemLogger.info(topic, memStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
       });
-    }
+    };
 
     NwtGlobalConfig.ConnHandler = ConnectivityChecker.fireChecks;
   },
@@ -81,9 +82,11 @@ var NwTool = {
     CommandLineManager.processArgs(process.argv);
     NwtGlobalConfig.StatsHandler = StatsFactory.getHandler(process.platform);
     NwTool.initLoggers();
+    /* eslint-disable indent */
     console.log(Utils.formatAndBeautifyLine("Refer '" + NwtGlobalConfig.LOGS_DIRECTORY + "' folder for CPU/Network/Memory" +
                                             " Stats and Connectivity Checks with BrowserStack components",
                                             '', '-', 60, true));
+    /*eslint-enable indent*/
 
     console.log(Utils.formatAndBeautifyLine('Stats : Checking CPU Stats', '', '-', 60, true));
     NwtGlobalConfig.CpuLogHandler('Initial CPU', null, function () {
@@ -111,8 +114,9 @@ var NwTool = {
         console.log('Exiting the Tool...');
         process.exit(1);
       }
+      console.log(Utils.formatAndBeautifyLine('Network Utility Tool Proxy Started on Port: ' + result, '', '-', 60, true));
     });
   }
-}
+};
 
 NwTool.start();

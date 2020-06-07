@@ -37,7 +37,7 @@ describe('LinuxStats', function () {
 
   context('Mem Stats', function () {
     it('callbacks with result of mem stats', function () {
-      var stats = "MemTotal:102400 KB\nMemFree:51200 KB\nSwapTotal:102400 KB\nSwapFree:51200 KB"
+      var stats = "MemTotal:102400 KB\nMemFree:51200 KB\nSwapTotal:102400 KB\nSwapFree:51200 KB";
       sinon.stub(os, 'totalmem').returns(100 * 1024 * 1024);
       sinon.stub(os, 'freemem').returns(50 * 1024 * 1024);
       sinon.stub(Utils, 'beautifyObject');
@@ -50,7 +50,8 @@ describe('LinuxStats', function () {
         swapTotal: 100 * 1024 * 1024,
         swapUsed: 50 * 1024 * 1024,
         swapFree: 50 * 1024 * 1024
-      }
+      };
+      /* eslint-disable-next-line no-unused-vars */
       LinuxStats.mem(function (result) {
         sinon.assert.calledWith(Utils.beautifyObject, memStats, "Memory", "Bytes");
       });
@@ -74,8 +75,9 @@ describe('LinuxStats', function () {
         swapTotal: 0,
         swapUsed: 0,
         swapFree: 0
-      }
+      };
 
+      /* eslint-disable-next-line no-unused-vars */
       LinuxStats.mem(function (result) {
         sinon.assert.calledWith(Utils.beautifyObject, memStats, "Memory", "Bytes");
       });

@@ -25,7 +25,7 @@ WinStats.cpu = function (callback) {
     }
     if (Utils.isValidCallback(callback)) callback(result || constants.NO_REPORT_GENERATED + 'CPU' + os.EOL);
   });
-}
+};
 
 WinStats.mem = function (callback) {
 
@@ -35,7 +35,7 @@ WinStats.mem = function (callback) {
     swapTotal: 0,
     swapUsed: 0,
     swapFree: 0
-  }
+  };
 
   memStats.used = memStats.total - memStats.free;
 
@@ -44,12 +44,12 @@ WinStats.mem = function (callback) {
   cp.exec(WinStats.wmicPath + constants.WIN.SWAP_USAGE, function (err, result) {
     if (!err) {
       try {
-        result = result.split('\r\n').filter(function (line) { return line.trim() !== '' });
+        result = result.split('\r\n').filter(function (line) { return line.trim() !== ''; });
         result.shift();
         var swapTotal = 0;
         var swapUsed = 0;
-        for (var line of result) {
-          line = line.trim().split(/\s\s+/);
+        for (var index in result) {
+          var line = result[index].trim().split(/\s\s+/);
           swapTotal += parseInt(line[0]);
           swapUsed += parseInt(line[1]);
         }
@@ -62,7 +62,7 @@ WinStats.mem = function (callback) {
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));
   });
-}
+};
 
 WinStats.network = function (callback) {
   var startTime = new Date();
@@ -76,7 +76,7 @@ WinStats.network = function (callback) {
 
     if (Utils.isValidCallback(callback)) callback(finalOutput);
   });
-}
+};
 
 module.exports = WinStats;
 

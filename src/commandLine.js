@@ -36,8 +36,10 @@ var CommandLineManager = {
    */
   processArgs: function (argv) {
 
+    /* eslint-disable no-undef */
     var missingArgs = new Set();
     var invalidArgs = new Set();
+    /* eslint-enable no-undef */
 
     var index = argv.indexOf('--help');
     if (index !== -1) {
@@ -165,9 +167,9 @@ var CommandLineManager = {
     // exit the tool by logging the args helper
     if (exitAfterProcessArgs) {
       CommandLineManager.helpForArgs();
-      process.exit(1);
+      process.exit(0);
     }
   }
-}
+};
 
 module.exports = CommandLineManager;

@@ -9,10 +9,10 @@ var LogManager = {
     return new winston.Logger({
       transports: [
         new winston.transports.File({
-          filename
+          filename: filename
         })
       ]
-    })
+    });
   },
 
   /**
@@ -25,14 +25,14 @@ var LogManager = {
     var newLogger = LogManager.getLogger(filename);
     newLogger.transports.file.timestamp = function () {
       return (new Date().toISOString());
-    }
+    };
     newLogger.transports.file.formatter = function (options) {
       return options.timestamp()
              + (options.meta.uuid ? ' [#' + options.meta.uuid + ']': '' )
              + (options.meta.topic ? ' [' + options.meta.topic + ']' : '' )
              + ' [' + options.level.toUpperCase() + ']'
-             + ' ' + options.message
-    }
+             + ' ' + options.message;
+    };
     newLogger.transports.file.json = false;
 
     newLogger.info("************* LOGGER INITIALIZED **************\r\n");
@@ -50,8 +50,8 @@ var LogManager = {
         data = JSON.stringify(data);
         newLogger.error(message + ', ' + (data !== '{}' ? data : ""), { topic: topic || '', uuid: uuid || '' });
       }
-    }
+    };
   }
-}
+};
 
 module.exports = LogManager;

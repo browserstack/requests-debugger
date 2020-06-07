@@ -11,13 +11,14 @@ var fs = require('fs');
  * @param {String|Object} proxyObj 
  */
 var proxyAuthToBase64 = function (proxyObj) {
+  var base64Auth;
   if (typeof proxyObj === 'object') {
-    var base64Auth = Buffer.from(proxyObj.username + ":" + proxyObj.password);
+    base64Auth = Buffer.from(proxyObj.username + ":" + proxyObj.password);
   } else if (typeof proxyObj === 'string') {
-    var base64Auth = Buffer.from(proxyObj);
+    base64Auth = Buffer.from(proxyObj);
   }
   return "Basic " + base64Auth.toString('base64');
-}
+};
 
 /**
  * Fetch the property value from the string array of content, each separated by a separator
@@ -28,8 +29,8 @@ var proxyAuthToBase64 = function (proxyObj) {
 var fetchPropertyValue = function (content, propertyToFetch, separator) {
   separator = separator || ':';
   propertyToFetch = propertyToFetch.toLowerCase();
-  for (var line of content) {
-    var modifiedLine = line.toLowerCase().replace(/\t/g, '');
+  for (var index in content) {
+    var modifiedLine = content[index].toLowerCase().replace(/\t/g, '');
     if (modifiedLine.startsWith(propertyToFetch)) {
       var splitModifiedLine = modifiedLine.split(separator);
       if (splitModifiedLine.length >= 2) {
@@ -41,7 +42,7 @@ var fetchPropertyValue = function (content, propertyToFetch, separator) {
     }
   }
   return '';
-}
+};
 
 /**
  * Beautifies the lines and add prefix/suffix characters to make the line of the required length.
@@ -71,7 +72,7 @@ var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine
     }
   }
   return newLine ? line + os.EOL : line;
-}
+};
 
 /**
  * Generates header and footer for the given content.
@@ -82,7 +83,7 @@ var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine
  */
 var generateHeaderAndFooter = function (content, title, generatedAt, startTime) {
   if (typeof content === 'undefined' || !content.toString()) return 'NO_CONTENT_PROVIDED';
-  title = title || "NO_TITLE_PROVIDED"
+  title = title || "NO_TITLE_PROVIDED";
 
   startTime = new Date(startTime);
   startTime = startTime.toString === 'Invalid Date' ? new Date().toISOString() : startTime.toISOString();
@@ -99,7 +100,7 @@ var generateHeaderAndFooter = function (content, title, generatedAt, startTime) 
                    + formatAndBeautifyLine("=", "*", "*", 90, true);
 
   return content;
-}
+};
 
 /**
  * Performs multiple exec commands asynchronously and returns the
@@ -119,7 +120,7 @@ var execMultiple = function (commands, callback) {
   commands.forEach(function (cmd, index) {
     cp.exec(cmd, function (err, result) {
       if (!err) {
-        resultArray[index] = { content: result, generatedAt: new Date() }
+        resultArray[index] = { content: result, generatedAt: new Date() };
       } else {
         resultArray[index] = { content: "NO_RESULT_GENERATED" + os.EOL, generatedAt: new Date() };
       }
@@ -127,9 +128,9 @@ var execMultiple = function (commands, callback) {
       if (++totalCommandsCompleted === commands.length) {
         if (isValidCallback(callback)) callback(resultArray);
       } 
-    })
-  })
-}
+    });
+  });
+};
 
 /**
  * Fetches the WMIC path in Windows
@@ -153,7 +154,7 @@ var getWmicPath = function () {
   } else {
     throw Error('Not Windows Platform');
   }
-}
+};
 
 /**
  * Beautifies the whole object and returns in a format which can be logged and read easily.
@@ -169,17 +170,17 @@ var beautifyObject = function (obj, keysTitle, valuesTitle, maxKeyLength, maxVal
   if (Array.isArray(obj)) {
     var longestKeyOfAll = 0;
     var longestValOfAll = 0;
-    for (var indObj of obj) {
-      if (typeof indObj !== 'object' && !Array.isArray(indObj)) continue;
-      var indObjKeyLength = getLongestVal(Object.keys(indObj));
-      var indObjValLength = getLongestVal(Object.keys(indObj).map(function (key) { return indObj[key] }));
+    for (var index in obj) {
+      if (typeof obj[index] !== 'object' && !Array.isArray(obj[index])) continue;
+      var indObjKeyLength = getLongestVal(Object.keys(obj[index]));
+      var indObjValLength = getLongestVal(Object.keys(obj[index]).map(function (key) { return obj[index][key]; }));
       longestKeyOfAll = indObjKeyLength > longestKeyOfAll ? indObjKeyLength : longestKeyOfAll;
       longestValOfAll = indObjValLength > longestValOfAll ? indObjValLength : longestValOfAll;
     }
 
     var aggResult = '';
-    for (var indObj of obj) {
-      aggResult += beautifyObject(indObj, keysTitle, valuesTitle, longestKeyOfAll, longestValOfAll);
+    for (var ind in obj) {
+      aggResult += beautifyObject(obj[ind], keysTitle, valuesTitle, longestKeyOfAll, longestValOfAll);
     }
     return os.EOL + aggResult;
   }
@@ -204,7 +205,7 @@ var beautifyObject = function (obj, keysTitle, valuesTitle, maxKeyLength, maxVal
   });
 
   return os.EOL + finalResult + os.EOL;
-}
+};
 
 var getLongestVal = function (arr) {
   var longest = arr.reduce(function (prevValue, currValue) {
@@ -214,7 +215,7 @@ var getLongestVal = function (arr) {
     return prevValue;
   }, 0);
   return longest;
-}
+};
 
 var safeToString = function (val) {
   try {
@@ -223,20 +224,20 @@ var safeToString = function (val) {
     val = JSON.stringify(val) || 'undefined';
   }
   return val;
-}
+};
 
 var isValidCallback = function (checkCallback) {
   return (checkCallback && typeof checkCallback === 'function');
-}
+};
 
 module.exports = {
-  proxyAuthToBase64,
-  fetchPropertyValue,
-  formatAndBeautifyLine,
-  generateHeaderAndFooter,
-  execMultiple,
-  getWmicPath,
-  beautifyObject,
-  isValidCallback,
-  safeToString
-}
+  proxyAuthToBase64: proxyAuthToBase64,
+  fetchPropertyValue: fetchPropertyValue,
+  formatAndBeautifyLine: formatAndBeautifyLine,
+  generateHeaderAndFooter: generateHeaderAndFooter,
+  execMultiple: execMultiple,
+  getWmicPath: getWmicPath,
+  beautifyObject: beautifyObject,
+  isValidCallback: isValidCallback,
+  safeToString: safeToString
+};

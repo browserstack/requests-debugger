@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 var assert = require('chai').assert;
 
 describe('LogManager', function () {
-var mockLogger;
+  var mockLogger;
 
   beforeEach(function () {
     mockLogger = {
@@ -16,7 +16,7 @@ var mockLogger;
       },
       info: sinon.spy(),
       error: sinon.spy()
-    }
+    };
     sinon.stub(winston, 'Logger').returns(mockLogger);
   });
 
@@ -68,7 +68,7 @@ var mockLogger;
       LogManager.getLogger.restore();
     });
 
-     it("'info' returned by the initializeLogger calls the 'info' of winston logger in formatted manner without topic and uuid", function () {
+    it("'info' returned by the initializeLogger calls the 'info' of winston logger in formatted manner without topic and uuid", function () {
       sinon.stub(LogManager, 'getLogger').returns(mockLogger);
       var randomLogger = LogManager.initializeLogger('randomFileName.log');
       randomLogger.info("", "message", false, { some: "data" });
@@ -105,7 +105,7 @@ var mockLogger;
       LogManager.getLogger.restore();
     });
 
-     it("'error' returned by the initializeLogger calls the 'error' of winston logger in formatted manner without topic and uuid", function () {
+    it("'error' returned by the initializeLogger calls the 'error' of winston logger in formatted manner without topic and uuid", function () {
       sinon.stub(LogManager, 'getLogger').returns(mockLogger);
       var randomLogger = LogManager.initializeLogger('randomFileName.log');
       randomLogger.error("", "message", false, { some: "data" });

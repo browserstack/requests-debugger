@@ -13,7 +13,7 @@ describe('Utils', function () {
       var proxyObj = {
         username: "general",
         password: "fancy"
-      }
+      };
       var base64 = Buffer.from(proxyObj.username + ':' + proxyObj.password).toString('base64');
       expect(Utils.proxyAuthToBase64(proxyObj)).to.eql('Basic ' + base64);
     });
@@ -132,7 +132,7 @@ describe('Utils', function () {
       var obj = {
         "keyOne": "valueOne",
         "keyTwo": "valueTwo"
-      }
+      };
 
       var expectedOutput = "\n  KEYS   :   VALUES  \n"
                            + "----------------------------------------------------------------------------------------- -\n"
@@ -145,13 +145,11 @@ describe('Utils', function () {
 
     it('generates a beautified version of array of objects for logging', function () {
       var objs = [{
-          "keyOne": "valueOne",
-          "keyTwo": "valueTwo"
-        }, {
-          "keyFour": "valueFour",
-          "keyFour": "valueFour"
-        }
-      ];
+        "keyOne": "valueOne",
+        "keyTwo": "valueTwo"
+      }, {
+        "keyFour": "valueFour"
+      }];
 
       var expectedOutput = "\n\n  KEYS    :   VALUES   \n"
                            + "----------------------------------------------------------------------------------------- -\n"
@@ -171,13 +169,12 @@ describe('Utils', function () {
 
     it('returns message for each non obj passed in an array', function () {
       var objs = [{
-          "key": "value"
-        }, 
-        "wrongInput",
-        {
-          "keyTwo": "valueTwo"
-        }
-      ];
+        "key": "value"
+      },
+      "wrongInput",
+      {
+        "keyTwo": "valueTwo"
+      }];
 
       var expectedOutput = "\n\n  KEYS   :   VALUES  \n"
                            + "----------------------------------------------------------------------------------------- -\n"
@@ -271,7 +268,7 @@ describe('Utils', function () {
 
     it('should throw error if platform is not windows', function () {
       sinon.stub(os, 'type').returns('NON_WINDOWS');
-      expect(function () { Utils.getWmicPath() }).to.throw("Not Windows Platform");
+      expect(function () { Utils.getWmicPath(); }).to.throw("Not Windows Platform");
       os.type.restore();
     });
   });
@@ -279,7 +276,7 @@ describe('Utils', function () {
   context('execMultiple', function () {
     it('should throw error if the commands provided are not in an array', function () {
       var commands = "it's not going to work";
-      expect(function () { Utils.execMultiple(commands) }).to.throw("COMMANDS_IS_NOT_AN_ARRAY");
+      expect(function () { Utils.execMultiple(commands); }).to.throw("COMMANDS_IS_NOT_AN_ARRAY");
     });
 
     it('should execute and return results array', function () {

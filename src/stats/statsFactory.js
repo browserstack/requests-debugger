@@ -12,7 +12,7 @@ var HANDLER_MAPPING = {
   'linux': LinuxStats,
   'darwin': MacStats,
   'win': WinStats
-}
+};
 
 var StatsFactory = {
   getHandler: function (type) {
@@ -20,6 +20,6 @@ var StatsFactory = {
     var handler = HANDLER_MAPPING[type[0]] || BaseStats;
     return handler;
   }
-}
+};
 
 module.exports = StatsFactory;

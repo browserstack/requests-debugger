@@ -20,6 +20,6 @@ var BaseStats = {
     if (Utils.isValidCallback(callback)) callback("Network Stats Not Yet Implemented");
   }
 
-}
+};
 
 module.exports = BaseStats;

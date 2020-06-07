@@ -13,7 +13,7 @@ describe('Connectivity Checker for BrowserStack Components', function () {
   });
 
   after(function () {
-     testHelper.deleteLoggers();
+    testHelper.deleteLoggers();
   });
 
   var resultWithoutProxy = [{

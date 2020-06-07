@@ -5,7 +5,8 @@
   "main": "src/node.js",
   "scripts": {
     "start": "NODE_ENV=prod node src/node.js",
-    "test": "NODE_ENV=test nyc --reporter=html ./node_modules/mocha/bin/mocha 'test/**/*.test.js'"
+    "lint": "./node_modules/.bin/eslint 'src/*' 'test/*' 'config/*.js'",
+    "test": "npm run lint; NODE_ENV=test nyc --reporter=html ./node_modules/mocha/bin/mocha 'test/**/*.test.js'"
   },
   "bin": {
     "NetworkUtilityTool": "src/node.js"
@@ -14,6 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "4.2.0",
+    "eslint": "4.19.1",
     "mocha": "5.2.0",
     "nock": "9.6.1",
     "nyc": "11.9.0",

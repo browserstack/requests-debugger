@@ -55,7 +55,7 @@ function initializeDummyProxy() {
     port: "3128",
     username: "user",
     password: "pass"
-  }
+  };
 }
 
 function deleteProxy() {
@@ -66,27 +66,27 @@ function initializeDummyLoggers() {
   constants.NwtGlobalConfig.ConnLogger = {
     info: function () {},
     error: function () {}
-  },
+  };
   constants.NwtGlobalConfig.NetworkLogger = {
     info: function () {},
     error: function () {}
-  },
+  };
   constants.NwtGlobalConfig.MemLogger = {
     info: function () {},
     error: function () {}
-  },
+  };
   constants.NwtGlobalConfig.CPULogger = {
     info: function () {},
     error: function () {}
-  },
+  };
   constants.NwtGlobalConfig.ReqLogger = {
     info: function () {},
     error: function () {}
-  },
+  };
   constants.NwtGlobalConfig.ErrLogger = {
     info: function () {},
     error: function () {}
-  }
+  };
 }
 
 function deleteLoggers() {
@@ -113,13 +113,13 @@ function deleteHandlers() {
 }
 
 module.exports = {
-  nockGetRequest,
-  nockProxyUrl,
-  nockGetRequestWithError,
-  initializeDummyProxy,
-  initializeDummyLoggers,
-  initializeDummyHandlers,
-  deleteProxy,
-  deleteHandlers,
-  deleteLoggers
-}
+  nockGetRequest: nockGetRequest,
+  nockProxyUrl: nockProxyUrl,
+  nockGetRequestWithError: nockGetRequestWithError,
+  initializeDummyProxy: initializeDummyProxy,
+  initializeDummyLoggers: initializeDummyLoggers,
+  initializeDummyHandlers: initializeDummyHandlers,
+  deleteProxy: deleteProxy,
+  deleteHandlers: deleteHandlers,
+  deleteLoggers: deleteLoggers
+};

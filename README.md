@@ -9,13 +9,14 @@
 ## How to run
 - Code
   - Install all the packages required: `npm install`
-  - Start Network Utility Tool with the required arguments: `npm start -- <args>`. 
+  - Start Network Utility Tool with the required arguments: `npm run start -- <args>`. 
   - Supported `args`:
-    - `--proxy-host <hostname>`: Hostname of the external proxy via which the requests should pass.
-    - `--proxy-port <port>`: Port of the external proxy via which the requests should pass.
-    - `--proxy-user <username>`: Username of the external proxy for authentication
-    - `--proxy-pass <password>`: Password of the external proxy for authentication
-    - `--del-logs`: Deletes any existing logs from the NWT_Logs/ directory and initializes new files for logging. Refer 'NWT_Logs/' directory in the same directory  where the Network Utility Tool exists. Default : `false`.
+    - `--proxy-host <hostname>`: Hostname of the Upstream Proxy
+    - `--proxy-port <port>`: Port of the Upstream Proxy
+    - `--proxy-user <username>`: Username for auth of the Upstream Proxy
+    - `--proxy-pass <password>`: Password for auth of the Upstream Proxy
+    - `--logs-path <relative/absolute path>`: Directory where the 'NetworkUtilityLogs' folder will be created for storing logs. Default: Current Working Directory
+    - `--del-logs`: Deletes any existing logs from the NetworkUtilityLogs/ directory and initializes new files for logging
     - `--help`: Help for Network Utility Tool
 - Executable
   - Run the Platform Specific executable via terminal/cmd:
@@ -25,11 +26,11 @@
   
 ## Steps to build the executables
 - Linux
-  - `./node_modules/pkg/lib-es5/bin.js -t node4-linux src/node.js`
+  - `./node_modules/pkg/lib-es5/bin.js -t node4-linux src/node.js; mv node NwTool-Linux`
 - Mac OS X
-  - `./node_modules/pkg/lib-es5/bin.js -t node4-macos src/node.js`
+  - `./node_modules/pkg/lib-es5/bin.js -t node4-macos src/node.js; mv node NwTool-Mac`
 - Windows
-  - `./node_modules/pkg/lib-es5/bin.js -t node4-win src/node.js`
+  - `./node_modules/pkg/lib-es5/bin.js -t node4-win src/node.js; mv node.exe NwTool.exe`
 
 
 ## Note

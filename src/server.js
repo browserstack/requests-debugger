@@ -27,7 +27,7 @@ var NWTHandler = {
       host: null,
       port: null,
       path: null
-    }
+    };
 
     if (NwtGlobalConfig.proxy) {
       NWTHandler._reqObjTemplate.host = NwtGlobalConfig.proxy.host;
@@ -45,7 +45,7 @@ var NWTHandler = {
         requestOptions.method = clientRequest.method;
         requestOptions.headers = headersCopy;
         return requestOptions;
-      }
+      };
     } else {
       NWTHandler._generateRequestOptions = function (clientRequest) {
         var parsedClientUrl = url.parse(clientRequest.url);
@@ -59,7 +59,7 @@ var NWTHandler = {
           requestOptions.headers['authorization'] = Utils.proxyAuthToBase64(parsedClientUrl.auth);
         }
         return requestOptions;
-      }
+      };
     }
   },
 
@@ -86,7 +86,7 @@ var NWTHandler = {
           state: 'error'
         },
         statusCode: 500
-      }
+      };
     } else {
       return {
         data: {
@@ -94,7 +94,7 @@ var NWTHandler = {
           error: constants.REQ_FAILED_MSG
         },
         statusCode: 500
-      }
+      };
     }
   },
 
@@ -112,7 +112,7 @@ var NWTHandler = {
       source.pause();
       destination.once('drain', function () {
         source.resume();
-      })
+      });
     }
   },
 
@@ -162,11 +162,13 @@ var NWTHandler = {
       url: clientRequest.url,
       headers: clientRequest.headers,
       data: []
-    }
+    };
     
+    /* eslint-disable indent */
     NwtGlobalConfig.ReqLogger.info("Request Start", request.method + ' ' + request.url, false,
                                     { headers: request.headers }, 
                                     clientRequest.id);
+    /* eslint-enable indent */
 
     var furtherRequestOptions = NWTHandler._generateRequestOptions(clientRequest);
 
@@ -175,7 +177,7 @@ var NWTHandler = {
       statusCode: null,
       errorMessage: null,
       headers: null
-    }
+    };
 
     var furtherRequest = NWTHandler._executeRequest(furtherRequestOptions, function (incomingResponse) {
       clientResponse.writeHead(incomingResponse.statusCode, incomingResponse.headers);
@@ -189,14 +191,17 @@ var NWTHandler = {
 
       incomingResponse.on('end', function () {
         response.data = Buffer.concat(response.data).toString();
+        /* eslint-disable indent */
         NwtGlobalConfig.ReqLogger.info("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + response.statusCode,
                                         false,
                                         { data: response.data, headers: response.headers, errorMessage: response.errorMessage },
                                         clientRequest.id);
+        /* eslint-enable indent */
         clientResponse.end();
       });
     });
 
+    /* eslint-disable indent */
     NwtGlobalConfig.ReqLogger.info("Tool Request", clientRequest.method + ' ' + clientRequest.url, false,
                                       furtherRequestOptions,
                                       clientRequest.id);
@@ -211,7 +216,7 @@ var NWTHandler = {
                                         false,
                                         errorResponse.data,
                                         clientRequest.id);
-
+      /* eslint-enable indent */
       clientResponse.writeHead(errorResponse.statusCode);
       clientResponse.end(JSON.stringify(errorResponse.data));
 
@@ -225,9 +230,11 @@ var NWTHandler = {
     });
 
     clientRequest.on('error', function (err) {
+      /* eslint-disable indent */
       NwtGlobalConfig.ReqLogger.error("Request", clientRequest.method + ' ' + clientRequest.url, false,
                                        { headers: request.headers, errorMessage: err.toString() },
                                        clientRequest.id);
+      /* eslint-enable indent */
       furtherRequest.end();
 
       NwtGlobalConfig.NetworkLogHandler("Request", clientRequest.id);
@@ -235,9 +242,11 @@ var NWTHandler = {
     });
 
     clientRequest.on('end', function () {
+      /* eslint-disable indent */
       NwtGlobalConfig.ReqLogger.info("Request End", request.method + ' ' + request.url, false,
                                       { data: Buffer.concat(request.data).toString() },
                                       clientRequest.id);
+      /* eslint-enable indent */
       furtherRequest.end();
     });
 
@@ -258,12 +267,11 @@ var NWTHandler = {
       NWTHandler.server = http.createServer(NWTHandler.requestHandler);
       NWTHandler.server.listen(port);
       NWTHandler.server.on('listening', function () {
-        console.log(Utils.formatAndBeautifyLine('Network Utility Tool Proxy Started on Port: '+ port, '', '-', 60, true));
         callback(null, port);
       });
       NWTHandler.server.on('error', function (err) {
         callback(err.toString(), null);
-      })
+      });
     } catch (e) {
       callback(e.toString(), null);
     }
@@ -278,13 +286,12 @@ var NWTHandler = {
       if (NWTHandler.server) {
         NWTHandler.server.close();
         NWTHandler.server = null;
-        console.log(Utils.formatAndBeautifyLine('Network Utility Tool Stopped', '', '-', 60, true));
       }
       callback(null, true);
     } catch (e) {
       callback(e.toString(), null);
     }
   }
-}
+};
 
 module.exports = NWTHandler;

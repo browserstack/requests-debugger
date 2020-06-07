@@ -72,10 +72,10 @@ describe('CommandLineManager', function () {
     it("proxy won't be set if proxy host is not provided", function () {
       sinon.stub(console, 'log'); 
       argv = argv.concat(['--proxy-port', '9687']);
-       CommandLineManager.processArgs(argv);
-       console.log.restore();
-       expect(NwtGlobalConfig.proxy).to.eql(undefined);
-       sinon.assert.called(process.exit);
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(NwtGlobalConfig.proxy).to.eql(undefined);
+      sinon.assert.called(process.exit);
     });
 
     it("proxy auth won't be set if proxy username is not provided", function () {

@@ -16,6 +16,7 @@ describe('NWTHandler', function () {
       testHelper.initializeDummyHandlers();
       
       NWTHandler.startProxy(constants.NWT_HANDLER_PORT, function (port) {
+        console.log('Test Network Utility Proxy Started on Port: ', port);
         done();
       });
     });
@@ -38,7 +39,7 @@ describe('NWTHandler', function () {
         port: constants.NWT_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
-      }
+      };
 
       var responseData = [];
       var request = http.request(reqOptions, function (response) {
@@ -67,7 +68,7 @@ describe('NWTHandler', function () {
         port: constants.NWT_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
-      }
+      };
 
       var responseData = [];
       var request = http.request(reqOptions, function (response) {
@@ -96,7 +97,7 @@ describe('NWTHandler', function () {
         port: constants.NWT_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
-      }
+      };
 
       var responseData = [];
       var request = http.request(reqOptions, function (response) {

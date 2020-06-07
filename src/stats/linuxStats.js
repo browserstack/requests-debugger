@@ -23,7 +23,7 @@ LinuxStats.cpu = function (callback) {
     }
     if (Utils.isValidCallback(callback)) callback(result || constants.NO_REPORT_GENERATED + 'CPU' + os.EOL);
   });
-}
+};
 
 LinuxStats.mem = function (callback) {
   var memStats = {
@@ -32,7 +32,7 @@ LinuxStats.mem = function (callback) {
     swapTotal: 0,
     swapUsed: 0,
     swapFree: 0
-  }
+  };
 
   memStats.used = memStats.total - memStats.free;
 
@@ -57,7 +57,7 @@ LinuxStats.mem = function (callback) {
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));
   });
-}
+};
 
 LinuxStats.network = function (callback) {
   var startTime = new Date();
@@ -71,6 +71,6 @@ LinuxStats.network = function (callback) {
 
     if (Utils.isValidCallback(callback)) callback(finalOutput);
   });
-}
+};
 
 module.exports = LinuxStats;
