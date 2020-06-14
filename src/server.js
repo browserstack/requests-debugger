@@ -6,10 +6,10 @@
  */
 
 var http = require('http');
-var keepAliveAgent = new http.Agent({ keepAlive: true });
 var url = require('url');
 var Utils = require('./utils');
 var constants = require('../config/constants');
+var ReqLib = require('./requestLib');
 var NwtGlobalConfig = constants.NwtGlobalConfig;
 
 var NWTHandler = {
@@ -99,57 +99,6 @@ var NWTHandler = {
   },
 
   /**
-   * Reads from the source and pushes to the destination with
-   * backpressuring.
-   * Pipe can be used instead. But any sort of data access/manipulation
-   * will require the given format.
-   * @param {ReadableStream} source 
-   * @param {WritableStream} destination 
-   * @param {Buffer} chunk 
-   */
-  _dataEventHandler: function (source, destination, chunk) {
-    if (!destination.write(chunk)) {
-      source.pause();
-      destination.once('drain', function () {
-        source.resume();
-      });
-    }
-  },
-
-  /**
-   * Handler for Response Data
-   * @param {ReadableStream} source 
-   * @param {WritableStream} destination 
-   * @param {Buffer} chunk 
-   */
-  _responseDataHandler: function (source, destination, chunk) {
-    NWTHandler._dataEventHandler(source, destination, chunk);
-  },
-
-  /**
-   * Handler for Request Data
-   * @param {ReadableStream} source 
-   * @param {WritableStream} destination 
-   * @param {Buffer} chunk 
-   */
-  _requestDataHandler: function (source, destination, chunk) {
-    NWTHandler._dataEventHandler(source, destination, chunk);
-  },
-
-  /**
-   * Executes the HTTP request on behalf of the client request
-   * @param {Object} requestOptions 
-   * @param {Function} callback 
-   */
-  _executeRequest: function (requestOptions, callback) {
-    var toolToFurtherRequest = http.request(Object.assign({}, requestOptions, { agent: keepAliveAgent }), function (response) {
-      callback(response);
-    });
-
-    return toolToFurtherRequest;
-  },
-
-  /**
    * Handler for incoming requests to Network Utility Tool proxy server.
    * @param {} clientRequest 
    * @param {} clientResponse 
@@ -164,96 +113,47 @@ var NWTHandler = {
       data: []
     };
     
-    /* eslint-disable indent */
-    NwtGlobalConfig.ReqLogger.info("Request Start", request.method + ' ' + request.url, false,
-                                    { headers: request.headers }, 
-                                    clientRequest.id);
-    /* eslint-enable indent */
+    NwtGlobalConfig.ReqLogger.info("Request Start", request.method + ' ' + request.url,
+      false, { 
+        headers: request.headers 
+      }, 
+      clientRequest.id);
 
     var furtherRequestOptions = NWTHandler._generateRequestOptions(clientRequest);
 
-    var response = {
-      data: [],
-      statusCode: null,
-      errorMessage: null,
-      headers: null
+    var paramsForRequest = {
+      request: request,
+      furtherRequestOptions: furtherRequestOptions
     };
 
-    var furtherRequest = NWTHandler._executeRequest(furtherRequestOptions, function (incomingResponse) {
-      clientResponse.writeHead(incomingResponse.statusCode, incomingResponse.headers);
-      response.statusCode = incomingResponse.statusCode;
-      response.headers = incomingResponse.headers;
-
-      incomingResponse.on('data', function (chunk) {
-        response.data.push(chunk);
-        NWTHandler._responseDataHandler(incomingResponse, clientResponse, chunk);
-      });
-
-      incomingResponse.on('end', function () {
-        response.data = Buffer.concat(response.data).toString();
-        /* eslint-disable indent */
+    ReqLib.call(paramsForRequest, clientRequest)
+      .then(function (response) {
         NwtGlobalConfig.ReqLogger.info("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + response.statusCode,
-                                        false,
-                                        { data: response.data, headers: response.headers, errorMessage: response.errorMessage },
-                                        clientRequest.id);
-        /* eslint-enable indent */
-        clientResponse.end();
+          false, {
+            data: response.data,
+            headers: response.headers,
+          },
+          clientRequest.id);
+
+        clientResponse.writeHead(response.statusCode, response.headers);
+        clientResponse.end(response.data);
+      })
+      .catch(function (err) {
+        NwtGlobalConfig.ReqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
+          false, {
+            errorMessage: err.message.toString()
+          },
+          clientRequest.id);
+
+        var errorResponse = NWTHandler._frameErrorResponse(furtherRequestOptions, err.message.toString());
+        NwtGlobalConfig.ReqLogger.error("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + errorResponse.statusCode,
+          false,
+          errorResponse.data,
+          clientRequest.id);
+
+        clientResponse.writeHead(errorResponse.statusCode);
+        clientResponse.end(JSON.stringify(errorResponse.data));
       });
-    });
-
-    /* eslint-disable indent */
-    NwtGlobalConfig.ReqLogger.info("Tool Request", clientRequest.method + ' ' + clientRequest.url, false,
-                                      furtherRequestOptions,
-                                      clientRequest.id);
-
-    furtherRequest.on('error', function (err) {
-      NwtGlobalConfig.ReqLogger.error("Tool Request", clientRequest.method + ' ' + clientRequest.url, false,
-                                       Object.assign({}, furtherRequestOptions, { errorMessage: err.toString() }, { data: Buffer.concat(request.data).toString() }),
-                                       clientRequest.id);
-
-      var errorResponse = NWTHandler._frameErrorResponse(furtherRequestOptions, err.toString());
-      NwtGlobalConfig.ReqLogger.info("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + errorResponse.statusCode,
-                                        false,
-                                        errorResponse.data,
-                                        clientRequest.id);
-      /* eslint-enable indent */
-      clientResponse.writeHead(errorResponse.statusCode);
-      clientResponse.end(JSON.stringify(errorResponse.data));
-
-      NwtGlobalConfig.NetworkLogHandler("During Further Request", clientRequest.id);
-      NwtGlobalConfig.ConnHandler("During Further Request", clientRequest.id);
-    });
-
-    clientRequest.on('data', function (chunk) {
-      request.data.push(chunk);
-      NWTHandler._requestDataHandler(clientRequest, furtherRequest, chunk);
-    });
-
-    clientRequest.on('error', function (err) {
-      /* eslint-disable indent */
-      NwtGlobalConfig.ReqLogger.error("Request", clientRequest.method + ' ' + clientRequest.url, false,
-                                       { headers: request.headers, errorMessage: err.toString() },
-                                       clientRequest.id);
-      /* eslint-enable indent */
-      furtherRequest.end();
-
-      NwtGlobalConfig.NetworkLogHandler("Request", clientRequest.id);
-      NwtGlobalConfig.ConnHandler("Request", clientRequest.id);
-    });
-
-    clientRequest.on('end', function () {
-      /* eslint-disable indent */
-      NwtGlobalConfig.ReqLogger.info("Request End", request.method + ' ' + request.url, false,
-                                      { data: Buffer.concat(request.data).toString() },
-                                      clientRequest.id);
-      /* eslint-enable indent */
-      furtherRequest.end();
-    });
-
-    furtherRequest.setTimeout(constants.CLIENT_REQ_TIMEOUT, function () {
-      furtherRequest.destroy(constants.REQ_TIMED_OUT);
-    });
-
   },
 
   /**

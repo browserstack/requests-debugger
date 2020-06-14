@@ -6,7 +6,10 @@ module.exports = {
   "env": {
     "node": true,
     "commonjs": true,
-    "mocha": true
+    "mocha": true,
+  },
+  "globals": {
+    "Promise": true
   },
   "extends": "eslint:recommended",
   "rules": {

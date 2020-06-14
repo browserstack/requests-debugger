@@ -89,7 +89,9 @@ describe('NWTHandler', function () {
 
     it('Requests on behalf of the client via external proxy and returns the response even if request by tool fails', function (done) {
       this.timeout = 5000;
-      testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
+      for (var i = 0; i <= constants.MAX_RETRIES; i++) {
+        testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
+      }
       NWTHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
