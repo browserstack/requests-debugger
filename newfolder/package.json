@@ -1,0 +1,42 @@
+{
+  "name": "networkutilitytool",
+  "version": "1.0.0",
+  "description": "Tool to debug failed/dropped requests at client side",
+  "main": "src/node.js",
+  "scripts": {
+    "start": "NODE_ENV=prod node src/node.js",
+    "lint": "./node_modules/.bin/eslint 'src/*' 'test/*' 'config/*.js'",
+    "test": "npm run lint; NODE_ENV=test nyc --reporter=html ./node_modules/mocha/bin/mocha 'test/**/*.test.js'",
+    "build:mac": "./node_modules/pkg/lib-es5/bin.js -t node4-macos src/node.js; mv node NwTool-Mac",
+    "build:linux": "./node_modules/pkg/lib-es5/bin.js -t node4-linux src/node.js; mv node NwTool-Linux",
+    "build:win": "./node_modules/pkg/lib-es5/bin.js -t node4-win src/node.js; mv node.exe NwTool.exe"
+  },
+  "bin": {
+    "NetworkUtilityTool": "src/node.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "4.2.0",
+    "eslint": "4.19.1",
+    "mocha": "5.2.0",
+    "nock": "9.6.1",
+    "nyc": "11.9.0",
+    "pkg": "4.3.1",
+    "sinon": "7.5.0"
+  },
+  "dependencies": {
+    "winston": "2.4.4"
+  },
+  "nyc": {
+    "all": true,
+    "exclude": [
+      "**/*.test.js",
+      "test/testHelper.js",
+      "node_modules",
+      "coverage",
+      "NetworkUtilityLogs",
+      "config"
+    ]
+  }
+}
