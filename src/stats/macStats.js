@@ -8,7 +8,7 @@ var BaseStats = require('./baseStats');
 var cp = require('child_process');
 var Utils = require('../utils');
 var constants = require('../../config/constants');
-var NwtGlobalConfig = constants.NwtGlobalConfig;
+var RdGlobalConfig = constants.RdGlobalConfig;
 
 var MacStats = Object.create(BaseStats);
 MacStats.description = "System and Network Stats for Mac";
@@ -62,7 +62,7 @@ MacStats.mem = function (callback) {
           }
         }
       } catch (e) {
-        NwtGlobalConfig.ErrLogger.error('Mac-Mem', e.toString(), false, {});
+        RdGlobalConfig.ErrLogger.error('Mac-Mem', e.toString(), false, {});
       }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));

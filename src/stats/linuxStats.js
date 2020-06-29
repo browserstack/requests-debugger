@@ -9,7 +9,7 @@ var cp = require('child_process');
 var fs = require('fs');
 var Utils = require('../utils');
 var constants = require('../../config/constants');
-var NwtGlobalConfig = constants.NwtGlobalConfig;
+var RdGlobalConfig = constants.RdGlobalConfig;
 
 var LinuxStats = Object.create(BaseStats);
 LinuxStats.description = "System and Network Stats for Linux";
@@ -52,7 +52,7 @@ LinuxStats.mem = function (callback) {
         memStats.swapFree = memStats.swapFree ? memStats.swapFree * 1024 : 0;
         memStats.swapUsed = memStats.swapTotal - memStats.swapFree;
       } catch (e) {
-        NwtGlobalConfig.ErrLogger.error('Linux-Mem', e.toString(), false, {});
+        RdGlobalConfig.ErrLogger.error('Linux-Mem', e.toString(), false, {});
       }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));

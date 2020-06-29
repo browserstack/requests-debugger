@@ -56,51 +56,51 @@ describe('Utils', function () {
 
   context('formatAndBeautifyLine', function () {
     it('should prefix and suffix the line with the given values and make it equal to the given length', function () {
-      var lineToBeautify = "Hello, This is Network Utility Tool";
+      var lineToBeautify = "Hello, This is Requests Debugger Tool";
       var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '=', '=', 60, false);
-      expect(beautifiedLine).to.eql('============ Hello, This is Network Utility Tool =============');
+      expect(beautifiedLine).to.eql('=========== Hello, This is Requests Debugger Tool ============');
     });
 
     it('should prefix the line with the given values and make it equal to the given length', function () {
-      var lineToBeautify = "Hello, This is Network Utility Tool";
+      var lineToBeautify = "Hello, This is Requests Debugger Tool";
       var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '=', '', 60, false);
-      expect(beautifiedLine).to.eql('========================= Hello, This is Network Utility Tool');
+      expect(beautifiedLine).to.eql('======================= Hello, This is Requests Debugger Tool');
     });
 
     it('should suffix the line with the given values and make it equal to the given length', function () {
-      var lineToBeautify = "Hello, This is Network Utility Tool";
+      var lineToBeautify = "Hello, This is Requests Debugger Tool";
       var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '', '=', 60, false);
-      expect(beautifiedLine).to.eql('Hello, This is Network Utility Tool =========================');
+      expect(beautifiedLine).to.eql('Hello, This is Requests Debugger Tool =======================');
     });
 
     it('should prefix and suffix the line with the given values and make it equal to the given length with a newline', function () {
-      var lineToBeautify = "Hello, This is Network Utility Tool";
+      var lineToBeautify = "Hello, This is Requests Debugger Tool";
       var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '=', '=', 60, true);
-      expect(beautifiedLine).to.eql('============ Hello, This is Network Utility Tool =============' + os.EOL);
+      expect(beautifiedLine).to.eql('=========== Hello, This is Requests Debugger Tool ============' + os.EOL);
     });
 
     it('should prefix the line with the given values and make it equal to the given length with a newline', function () {
-      var lineToBeautify = "Hello, This is Network Utility Tool";
+      var lineToBeautify = "Hello, This is Requests Debugger Tool";
       var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '=', '', 60, true);
-      expect(beautifiedLine).to.eql('========================= Hello, This is Network Utility Tool' + os.EOL);
+      expect(beautifiedLine).to.eql('======================= Hello, This is Requests Debugger Tool' + os.EOL);
     });
 
     it('should suffix the line with the given values and make it equal to the given length with a newline', function () {
-      var lineToBeautify = "Hello, This is Network Utility Tool";
+      var lineToBeautify = "Hello, This is Requests Debugger Tool";
       var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '', '=', 60, true);
-      expect(beautifiedLine).to.eql('Hello, This is Network Utility Tool =========================' + os.EOL);
+      expect(beautifiedLine).to.eql('Hello, This is Requests Debugger Tool =======================' + os.EOL);
     });
 
     it('should return the line as it is in case the desired length is lesser than the actual line length', function () {
-      var lineToBeautify = "Hello, This is Network Utility Tool";
+      var lineToBeautify = "Hello, This is Requests Debugger Tool";
       var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '', '=', 10, false);
-      expect(beautifiedLine).to.eql('Hello, This is Network Utility Tool');
+      expect(beautifiedLine).to.eql('Hello, This is Requests Debugger Tool');
     });
 
     it('should return the line as it is in case the desired length is lesser than the actual line length with a newline', function () {
-      var lineToBeautify = "Hello, This is Network Utility Tool";
+      var lineToBeautify = "Hello, This is Requests Debugger Tool";
       var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '', '=', 10, true);
-      expect(beautifiedLine).to.eql('Hello, This is Network Utility Tool' + os.EOL);
+      expect(beautifiedLine).to.eql('Hello, This is Requests Debugger Tool' + os.EOL);
     });
   });
 
@@ -113,9 +113,9 @@ describe('Utils', function () {
                             + "Start Time: " + startTime.toISOString() + " ======================================================\n"
                             + "Generated At: " + generatedAt.toISOString() + " ====================================================\n"
                             + "******************************************** = *********************************************\n"
-                            + "Network Utility Tool\n"
+                            + "Requests Debugger Tool\n"
                             + "******************************************** = *********************************************\n";
-      var content = Utils.generateHeaderAndFooter("Network Utility Tool", "Heading", generatedAt, startTime);
+      var content = Utils.generateHeaderAndFooter("Requests Debugger Tool", "Heading", generatedAt, startTime);
       expect(content).to.eql(expectedContent);
     });
 

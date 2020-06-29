@@ -50,7 +50,7 @@ function nockGetRequestWithError(reqUrl, type) {
 
 // Additional Getters and Setters for Initializing/Restoring Dummy Loggers, Handlers & Proxy
 function initializeDummyProxy() {
-  constants.NwtGlobalConfig.proxy = {
+  constants.RdGlobalConfig.proxy = {
     host: "dummyhost12345.com",
     port: "3128",
     username: "user",
@@ -59,57 +59,57 @@ function initializeDummyProxy() {
 }
 
 function deleteProxy() {
-  delete constants.NwtGlobalConfig.proxy;
+  delete constants.RdGlobalConfig.proxy;
 }
 
 function initializeDummyLoggers() {
-  constants.NwtGlobalConfig.ConnLogger = {
+  constants.RdGlobalConfig.ConnLogger = {
     info: function () {},
     error: function () {}
   };
-  constants.NwtGlobalConfig.NetworkLogger = {
+  constants.RdGlobalConfig.NetworkLogger = {
     info: function () {},
     error: function () {}
   };
-  constants.NwtGlobalConfig.MemLogger = {
+  constants.RdGlobalConfig.MemLogger = {
     info: function () {},
     error: function () {}
   };
-  constants.NwtGlobalConfig.CPULogger = {
+  constants.RdGlobalConfig.CPULogger = {
     info: function () {},
     error: function () {}
   };
-  constants.NwtGlobalConfig.ReqLogger = {
+  constants.RdGlobalConfig.ReqLogger = {
     info: function () {},
     error: function () {}
   };
-  constants.NwtGlobalConfig.ErrLogger = {
+  constants.RdGlobalConfig.ErrLogger = {
     info: function () {},
     error: function () {}
   };
 }
 
 function deleteLoggers() {
-  delete constants.NwtGlobalConfig.ConnLogger;
-  delete constants.NwtGlobalConfig.NetworkLogger;
-  delete constants.NwtGlobalConfig.MemLogger;
-  delete constants.NwtGlobalConfig.CPULogger;
-  delete constants.NwtGlobalConfig.ReqLogger;
-  delete constants.NwtGlobalConfig.ErrLogger;
+  delete constants.RdGlobalConfig.ConnLogger;
+  delete constants.RdGlobalConfig.NetworkLogger;
+  delete constants.RdGlobalConfig.MemLogger;
+  delete constants.RdGlobalConfig.CPULogger;
+  delete constants.RdGlobalConfig.ReqLogger;
+  delete constants.RdGlobalConfig.ErrLogger;
 }
 
 function initializeDummyHandlers() {
-  constants.NwtGlobalConfig.NetworkLogHandler = function () {};
-  constants.NwtGlobalConfig.ConnHandler = function () {};
-  constants.NwtGlobalConfig.CpuLogHandler = function () {};
-  constants.NwtGlobalConfig.MemLogHandler = function () {};
+  constants.RdGlobalConfig.NetworkLogHandler = function () {};
+  constants.RdGlobalConfig.ConnHandler = function () {};
+  constants.RdGlobalConfig.CpuLogHandler = function () {};
+  constants.RdGlobalConfig.MemLogHandler = function () {};
 }
 
 function deleteHandlers() {
-  delete constants.NwtGlobalConfig.NetworkLogHandler;
-  delete constants.NwtGlobalConfig.ConnHandler;
-  delete constants.NwtGlobalConfig.CpuLogHandler;
-  delete constants.NwtGlobalConfig.MemLogHandler;
+  delete constants.RdGlobalConfig.NetworkLogHandler;
+  delete constants.RdGlobalConfig.ConnHandler;
+  delete constants.RdGlobalConfig.CpuLogHandler;
+  delete constants.RdGlobalConfig.MemLogHandler;
 }
 
 module.exports = {

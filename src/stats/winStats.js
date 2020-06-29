@@ -8,7 +8,7 @@ var BaseStats = require('./baseStats');
 var cp = require('child_process');
 var Utils = require('../utils');
 var constants = require('../../config/constants');
-var NwtGlobalConfig = constants.NwtGlobalConfig;
+var RdGlobalConfig = constants.RdGlobalConfig;
 
 var WinStats = Object.create(BaseStats);
 WinStats.description = "System and Network Stats for Windows";
@@ -57,7 +57,7 @@ WinStats.mem = function (callback) {
         memStats.swapUsed = swapUsed * 1024 * 1024;
         memStats.swapFree = memStats.swapTotal - memStats.swapUsed;
       } catch (e) {
-        NwtGlobalConfig.ErrLogger('Win-Mem', e.toString(), false, {});
+        RdGlobalConfig.ErrLogger('Win-Mem', e.toString(), false, {});
       }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));

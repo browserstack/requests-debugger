@@ -1,6 +1,6 @@
 var CommandLineManager = require('../src/commandLine');
 var constants = require('../config/constants');
-var NwtGlobalConfig = constants.NwtGlobalConfig;
+var RdGlobalConfig = constants.RdGlobalConfig;
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var testHelper = require('./testHelper');
@@ -34,8 +34,8 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(NwtGlobalConfig.proxy.host).to.eql('host');
-      expect(NwtGlobalConfig.proxy.port).to.eql('9687');
+      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.port).to.eql('9687');
     });
 
     it('parse proxy-host, proxy-port, proxy-user and proxy-pass', function () {
@@ -43,10 +43,10 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687', '--proxy-user', 'user', '--proxy-pass', 'pass']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(NwtGlobalConfig.proxy.host).to.eql('host');
-      expect(NwtGlobalConfig.proxy.port).to.eql('9687');
-      expect(NwtGlobalConfig.proxy.username).to.eql('user');
-      expect(NwtGlobalConfig.proxy.password).to.eql('pass');
+      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.port).to.eql('9687');
+      expect(RdGlobalConfig.proxy.username).to.eql('user');
+      expect(RdGlobalConfig.proxy.password).to.eql('pass');
     });
 
     it('default proxy port if only proxy host is provided', function () {
@@ -54,8 +54,8 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(NwtGlobalConfig.proxy.host).to.eql('host');
-      expect(NwtGlobalConfig.proxy.port).to.eql(constants.DEFAULT_PROXY_PORT);
+      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.port).to.eql(constants.DEFAULT_PROXY_PORT);
     });
 
     it('empty proxy password if only proxy username is provided', function () {
@@ -63,10 +63,10 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687', '--proxy-user', 'user']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(NwtGlobalConfig.proxy.host).to.eql('host');
-      expect(NwtGlobalConfig.proxy.port).to.eql('9687');
-      expect(NwtGlobalConfig.proxy.username).to.eql('user');
-      expect(NwtGlobalConfig.proxy.password).to.eql('');
+      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.port).to.eql('9687');
+      expect(RdGlobalConfig.proxy.username).to.eql('user');
+      expect(RdGlobalConfig.proxy.password).to.eql('');
     });
 
     it("proxy won't be set if proxy host is not provided", function () {
@@ -74,7 +74,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-port', '9687']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(NwtGlobalConfig.proxy).to.eql(undefined);
+      expect(RdGlobalConfig.proxy).to.eql(undefined);
       sinon.assert.called(process.exit);
     });
 
@@ -83,10 +83,10 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687', '--proxy-pass', 'pass']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(NwtGlobalConfig.proxy.host).to.eql('host');
-      expect(NwtGlobalConfig.proxy.port).to.eql('9687');
-      expect(NwtGlobalConfig.proxy.username).to.eql(undefined);
-      expect(NwtGlobalConfig.proxy.password).to.eql(undefined);
+      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.port).to.eql('9687');
+      expect(RdGlobalConfig.proxy.username).to.eql(undefined);
+      expect(RdGlobalConfig.proxy.password).to.eql(undefined);
     });
 
     it('defaults to no deletion of existing logs if argument is not provided', function () {
@@ -94,7 +94,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat([]);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(NwtGlobalConfig.deleteExistingLogs).to.be.false;
+      expect(RdGlobalConfig.deleteExistingLogs).to.be.false;
     });
 
     it('set to true if argument if provided, i.e. existing logs will be deleted', function () {
@@ -102,7 +102,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--del-logs']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(NwtGlobalConfig.deleteExistingLogs).to.be.true;
+      expect(RdGlobalConfig.deleteExistingLogs).to.be.true;
     });
 
     it("logs help regarding arguments if '--help' is passed irrespective of other arguments", function () {
@@ -159,14 +159,14 @@ describe('CommandLineManager', function () {
     it('If no args are passed, it will initiate the tool without any external proxy and append to existing logs', function () {
       CommandLineManager.processArgs([]);
       sinon.assert.notCalled(process.exit);
-      expect(NwtGlobalConfig.proxy).to.be.undefined;
-      expect(NwtGlobalConfig.deleteExistingLogs).to.be.false;
+      expect(RdGlobalConfig.proxy).to.be.undefined;
+      expect(RdGlobalConfig.deleteExistingLogs).to.be.false;
     });
 
     it('--logs-path arg with value', function () {
       argv = argv.concat(['--logs-path', 'randomPath']);
       CommandLineManager.processArgs(argv);
-      expect(NwtGlobalConfig.logsPath).to.eql('randomPath');
+      expect(RdGlobalConfig.logsPath).to.eql('randomPath');
     });
 
     it('marks --logs-path as invalid if the value is not provided with the arg and exits the process', function () {

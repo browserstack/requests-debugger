@@ -9,7 +9,7 @@
 var http = require('http');
 var url = require('url');
 var constants = require('../config/constants');
-var NwtGlobalConfig = constants.NwtGlobalConfig;
+var RdGlobalConfig = constants.RdGlobalConfig;
 var Utils = require('./utils');
 var https = require('https');
 
@@ -130,7 +130,7 @@ var ConnectivityChecker = {
         return reqOptions;
       };
 
-      if (NwtGlobalConfig.proxy) {
+      if (RdGlobalConfig.proxy) {
         ConnectivityChecker.connectionChecks.push(this.httpToHubWithProxy, this.httpToRailsWithProxy);
         /* eslint-disable-next-line no-unused-vars */
         ConnectivityChecker.reqOpsWithProxy = function (reqUrl, reqType) {
@@ -138,12 +138,12 @@ var ConnectivityChecker = {
           var reqOptions = {
             method: 'GET',
             headers: {},
-            host: NwtGlobalConfig.proxy.host,
-            port: NwtGlobalConfig.proxy.port,
+            host: RdGlobalConfig.proxy.host,
+            port: RdGlobalConfig.proxy.port,
             path: parsedUrl.href
           };
-          if (NwtGlobalConfig.proxy.username && NwtGlobalConfig.proxy.password) {
-            reqOptions.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(NwtGlobalConfig.proxy);
+          if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
+            reqOptions.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);
           }
           return reqOptions;
         };
@@ -167,7 +167,7 @@ var ConnectivityChecker = {
 
         if (++totalChecksDone === ConnectivityChecker.connectionChecks.length) {
           checksResult = Utils.beautifyObject(checksResult, "Result Key", "Result Value");
-          NwtGlobalConfig.ConnLogger.info(topic, checksResult, false, {}, uuid);
+          RdGlobalConfig.ConnLogger.info(topic, checksResult, false, {}, uuid);
           if (Utils.isValidCallback(callback)) callback();
         }
       });

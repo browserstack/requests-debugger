@@ -1,5 +1,5 @@
 {
-  "name": "networkutilitytool",
+  "name": "requestsdebugger",
   "version": "1.0.0",
   "description": "Tool to debug failed/dropped requests at client side",
   "main": "src/node.js",
@@ -7,12 +7,12 @@
     "start": "NODE_ENV=prod node src/node.js",
     "lint": "./node_modules/.bin/eslint 'src/*' 'test/*' 'config/*.js'",
     "test": "npm run lint; NODE_ENV=test nyc --reporter=html ./node_modules/mocha/bin/mocha 'test/**/*.test.js'",
-    "build:mac": "./node_modules/pkg/lib-es5/bin.js -t node4-macos src/node.js; mv node NwTool-Mac",
-    "build:linux": "./node_modules/pkg/lib-es5/bin.js -t node4-linux src/node.js; mv node NwTool-Linux",
-    "build:win": "./node_modules/pkg/lib-es5/bin.js -t node4-win src/node.js; mv node.exe NwTool.exe"
+    "build:mac": "./node_modules/pkg/lib-es5/bin.js -t node4-macos src/node.js; mv node RequestsDebugger-Mac",
+    "build:linux": "./node_modules/pkg/lib-es5/bin.js -t node4-linux src/node.js; mv node RequestsDebugger-Linux",
+    "build:win": "./node_modules/pkg/lib-es5/bin.js -t node4-win src/node.js; mv node.exe RequestsDebugger.exe"
   },
   "bin": {
-    "NetworkUtilityTool": "src/node.js"
+    "RequestsDebugger": "src/node.js"
   },
   "author": "",
   "license": "ISC",
@@ -35,7 +35,7 @@
       "test/testHelper.js",
       "node_modules",
       "coverage",
-      "NetworkUtilityLogs",
+      "RequestsDebuggerLogs",
       "config"
     ]
   }

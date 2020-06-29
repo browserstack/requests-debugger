@@ -1,6 +1,6 @@
 var ConnectivityChecker = require('../src/connectivity');
 var constants = require('../config/constants');
-var NwtGlobalConfig = constants.NwtGlobalConfig;
+var RdGlobalConfig = constants.RdGlobalConfig;
 var Utils = require('../src/utils');
 var nock = require('nock');
 var sinon = require('sinon');
@@ -102,8 +102,8 @@ describe('Connectivity Checker for BrowserStack Components', function () {
       testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
       testHelper.nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
       testHelper.nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
-      testHelper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'hub', null, 200);
-      testHelper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'automate', null, 301);
+      testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'http', 'hub', null, 200);
+      testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'http', 'automate', null, 301);
     });
 
     afterEach(function () {

@@ -10,9 +10,9 @@ var url = require('url');
 var Utils = require('./utils');
 var constants = require('../config/constants');
 var ReqLib = require('./requestLib');
-var NwtGlobalConfig = constants.NwtGlobalConfig;
+var RdGlobalConfig = constants.RdGlobalConfig;
 
-var NWTHandler = {
+var RdHandler = {
 
   _requestCounter: 0,
 
@@ -21,7 +21,7 @@ var NWTHandler = {
    * whether the user had provided any proxy input or not.
    */
   generatorForRequestOptionsObject: function () {
-    NWTHandler._reqObjTemplate = {
+    RdHandler._reqObjTemplate = {
       method: null,
       headers: {},
       host: null,
@@ -29,27 +29,27 @@ var NWTHandler = {
       path: null
     };
 
-    if (NwtGlobalConfig.proxy) {
-      NWTHandler._reqObjTemplate.host = NwtGlobalConfig.proxy.host;
-      NWTHandler._reqObjTemplate.port = NwtGlobalConfig.proxy.port;
+    if (RdGlobalConfig.proxy) {
+      RdHandler._reqObjTemplate.host = RdGlobalConfig.proxy.host;
+      RdHandler._reqObjTemplate.port = RdGlobalConfig.proxy.port;
       
-      if (NwtGlobalConfig.proxy.username && NwtGlobalConfig.proxy.password) {
-        NWTHandler._reqObjTemplate.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(NwtGlobalConfig.proxy);
+      if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
+        RdHandler._reqObjTemplate.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);
       }
 
-      NWTHandler._generateRequestOptions = function (clientRequest) {
+      RdHandler._generateRequestOptions = function (clientRequest) {
         var parsedClientUrl = url.parse(clientRequest.url);
-        var headersCopy = Object.assign({}, clientRequest.headers, NWTHandler._reqObjTemplate.headers);
-        var requestOptions = Object.assign({}, NWTHandler._reqObjTemplate);
+        var headersCopy = Object.assign({}, clientRequest.headers, RdHandler._reqObjTemplate.headers);
+        var requestOptions = Object.assign({}, RdHandler._reqObjTemplate);
         requestOptions.path = parsedClientUrl.href;
         requestOptions.method = clientRequest.method;
         requestOptions.headers = headersCopy;
         return requestOptions;
       };
     } else {
-      NWTHandler._generateRequestOptions = function (clientRequest) {
+      RdHandler._generateRequestOptions = function (clientRequest) {
         var parsedClientUrl = url.parse(clientRequest.url);
-        var requestOptions = Object.assign({}, NWTHandler._reqObjTemplate);
+        var requestOptions = Object.assign({}, RdHandler._reqObjTemplate);
         requestOptions.host = parsedClientUrl.hostname;
         requestOptions.port = parsedClientUrl.port || 80;
         requestOptions.path = parsedClientUrl.path;
@@ -99,12 +99,12 @@ var NWTHandler = {
   },
 
   /**
-   * Handler for incoming requests to Network Utility Tool proxy server.
+   * Handler for incoming requests to Requests Debugger Tool proxy server.
    * @param {} clientRequest 
    * @param {} clientResponse 
    */
   requestHandler: function (clientRequest, clientResponse) {
-    clientRequest.id = ++NWTHandler._requestCounter;
+    clientRequest.id = ++RdHandler._requestCounter;
 
     var request = {
       method: clientRequest.method,
@@ -113,13 +113,13 @@ var NWTHandler = {
       data: []
     };
     
-    NwtGlobalConfig.ReqLogger.info("Request Start", request.method + ' ' + request.url,
+    RdGlobalConfig.ReqLogger.info("Request Start", request.method + ' ' + request.url,
       false, { 
         headers: request.headers 
       }, 
       clientRequest.id);
 
-    var furtherRequestOptions = NWTHandler._generateRequestOptions(clientRequest);
+    var furtherRequestOptions = RdHandler._generateRequestOptions(clientRequest);
 
     var paramsForRequest = {
       request: request,
@@ -128,7 +128,7 @@ var NWTHandler = {
 
     ReqLib.call(paramsForRequest, clientRequest)
       .then(function (response) {
-        NwtGlobalConfig.ReqLogger.info("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + response.statusCode,
+        RdGlobalConfig.ReqLogger.info("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + response.statusCode,
           false, {
             data: response.data,
             headers: response.headers,
@@ -139,14 +139,14 @@ var NWTHandler = {
         clientResponse.end(response.data);
       })
       .catch(function (err) {
-        NwtGlobalConfig.ReqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
+        RdGlobalConfig.ReqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
           false, {
             errorMessage: err.message.toString()
           },
           clientRequest.id);
 
-        var errorResponse = NWTHandler._frameErrorResponse(furtherRequestOptions, err.message.toString());
-        NwtGlobalConfig.ReqLogger.error("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + errorResponse.statusCode,
+        var errorResponse = RdHandler._frameErrorResponse(furtherRequestOptions, err.message.toString());
+        RdGlobalConfig.ReqLogger.error("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + errorResponse.statusCode,
           false,
           errorResponse.data,
           clientRequest.id);
@@ -163,13 +163,13 @@ var NWTHandler = {
    */
   startProxy: function (port, callback) {
     try {
-      NWTHandler.generatorForRequestOptionsObject();
-      NWTHandler.server = http.createServer(NWTHandler.requestHandler);
-      NWTHandler.server.listen(port);
-      NWTHandler.server.on('listening', function () {
+      RdHandler.generatorForRequestOptionsObject();
+      RdHandler.server = http.createServer(RdHandler.requestHandler);
+      RdHandler.server.listen(port);
+      RdHandler.server.on('listening', function () {
         callback(null, port);
       });
-      NWTHandler.server.on('error', function (err) {
+      RdHandler.server.on('error', function (err) {
         callback(err.toString(), null);
       });
     } catch (e) {
@@ -183,9 +183,9 @@ var NWTHandler = {
    */
   stopProxy: function (callback) {
     try {
-      if (NWTHandler.server) {
-        NWTHandler.server.close();
-        NWTHandler.server = null;
+      if (RdHandler.server) {
+        RdHandler.server.close();
+        RdHandler.server = null;
       }
       callback(null, true);
     } catch (e) {
@@ -194,4 +194,4 @@ var NWTHandler = {
   }
 };
 
-module.exports = NWTHandler;
+module.exports = RdHandler;

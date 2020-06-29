@@ -3,7 +3,7 @@ var constants = require('../config/constants');
 var keepAliveAgent = new http.Agent({
   keepAlive: true
 });
-var NwtGlobalConfig = constants.NwtGlobalConfig;
+var RdGlobalConfig = constants.RdGlobalConfig;
 
 var RequestLib = {
   _makeRequest: function (params, clientRequest, retries) {
@@ -28,7 +28,7 @@ var RequestLib = {
       });
 
       
-      NwtGlobalConfig.ReqLogger.info('Tool Request - Retries Left: ' + retries, clientRequest.method + ' ' + clientRequest.url,
+      RdGlobalConfig.ReqLogger.info('Tool Request - Retries Left: ' + retries, clientRequest.method + ' ' + clientRequest.url,
         false,
         params.furtherRequestOptions,
         clientRequest.id);
@@ -64,7 +64,7 @@ var RequestLib = {
         });
   
         clientRequest.on('end', function () {
-          NwtGlobalConfig.ReqLogger.info("Request End", params.request.method + ' ' + params.request.url, false, {
+          RdGlobalConfig.ReqLogger.info("Request End", params.request.method + ' ' + params.request.url, false, {
             data: Buffer.concat(params.request.data).toString()
           },
           clientRequest.id);
@@ -82,7 +82,7 @@ var RequestLib = {
     return RequestLib._makeRequest(params, clientRequest, retries)
       .catch(function (err) {
         if (retries > 0) {
-          NwtGlobalConfig.ReqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
+          RdGlobalConfig.ReqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
             false, {
               errorMessage: err.message.toString()
             },

@@ -1,12 +1,12 @@
 var constants = require('../config/constants');
-var NwtGlobalConfig = constants.NwtGlobalConfig;
+var RdGlobalConfig = constants.RdGlobalConfig;
 var nock = require('nock');
-var NWTHandler = require('../src/server');
+var RdHandler = require('../src/server');
 var http = require('http');
 var assert = require('chai').assert;
 var testHelper = require('./testHelper');
 
-describe('NWTHandler', function () {
+describe('RdHandler', function () {
   context('Proxy Server', function () {
 
     before(function (done) {
@@ -15,7 +15,7 @@ describe('NWTHandler', function () {
       testHelper.initializeDummyLoggers();
       testHelper.initializeDummyHandlers();
       
-      NWTHandler.startProxy(constants.NWT_HANDLER_PORT, function (port) {
+      RdHandler.startProxy(constants.RD_HANDLER_PORT, function (port) {
         console.log('Test Network Utility Proxy Started on Port: ', port);
         done();
       });
@@ -23,7 +23,7 @@ describe('NWTHandler', function () {
 
     after(function (done) {
       this.timeout = 5000;
-      NWTHandler.stopProxy(function () {
+      RdHandler.stopProxy(function () {
         done();
       });
       testHelper.deleteLoggers();
@@ -36,7 +36,7 @@ describe('NWTHandler', function () {
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: constants.NWT_HANDLER_PORT,
+        port: constants.RD_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
       };
@@ -60,12 +60,12 @@ describe('NWTHandler', function () {
     it('Requests on behalf of the client via external proxy and returns the response', function (done) {
       this.timeout = 5000;
       testHelper.initializeDummyProxy();
-      testHelper.nockProxyUrl(NwtGlobalConfig.proxy, 'http', 'hub', null, 200);
-      NWTHandler.generatorForRequestOptionsObject();
+      testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'http', 'hub', null, 200);
+      RdHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: constants.NWT_HANDLER_PORT,
+        port: constants.RD_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
       };
@@ -92,11 +92,11 @@ describe('NWTHandler', function () {
       for (var i = 0; i <= constants.MAX_RETRIES; i++) {
         testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
       }
-      NWTHandler.generatorForRequestOptionsObject();
+      RdHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: constants.NWT_HANDLER_PORT,
+        port: constants.RD_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
       };

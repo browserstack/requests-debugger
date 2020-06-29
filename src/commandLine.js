@@ -1,27 +1,27 @@
 /**
  * Command Line Manager to parse the command line arguments
- * and set the necessary fields in NwtGlobalConfig.
+ * and set the necessary fields in RdGlobalConfig.
  */
 
 var constants = require('../config/constants');
-var NwtGlobalConfig = constants.NwtGlobalConfig;
+var RdGlobalConfig = constants.RdGlobalConfig;
 
 var CommandLineManager = {
   helpForArgs: function () {
-    var helpOutput = "\nNetwork Utility Tool - A Proxy Tool for debugging request failures leading to\n"
+    var helpOutput = "\nRequests Debugger - A Proxy Tool for debugging request failures leading to\n"
                      + "dropping of requests or not being able to reach BrowserStack.\n"
                      + "\n"
-                     + "Usage: NetworkUtilityTool [ARGUMENTS]\n\n"
+                     + "Usage: RequestsDebugger [ARGUMENTS]\n\n"
                      + "ARGUMENTS:\n"
                      + "  --proxy-host  <hostname>                : Hostname of the Upstream Proxy\n"
                      + "  --proxy-port  <port>                    : Port of the Upstream Proxy\n"
                      + "  --proxy-user  <username>                : Username for auth of the Upstream Proxy\n"
                      + "  --proxy-pass  <password>                : Password for auth of the Upstream Proxy\n"
-                     + "  --logs-path   <relative/absolute path>  : Directory where the 'NetworkUtilityLogs' folder will be created\n"
+                     + "  --logs-path   <relative/absolute path>  : Directory where the 'RequestDebuggerLogs' folder will be created\n"
                      + "                                            for storing logs. Default: Current Working Directory\n"
-                     + "  --del-logs                              : Deletes any existing logs from the NetworkUtilityLogs/ directory and initializes\n"
+                     + "  --del-logs                              : Deletes any existing logs from the RequestDebuggerLogs/ directory and initializes\n"
                      + "                                            new files for logging\n"
-                     + "  --help                                  : Help for Network Utility Tool\n";
+                     + "  --help                                  : Help for Requests Debugger\n";
 
     console.log(helpOutput);
   },
@@ -51,8 +51,8 @@ var CommandLineManager = {
     index = argv.indexOf('--proxy-host');
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
-        NwtGlobalConfig.proxy = NwtGlobalConfig.proxy || {};
-        NwtGlobalConfig.proxy.host = argv[index + 1];
+        RdGlobalConfig.proxy = RdGlobalConfig.proxy || {};
+        RdGlobalConfig.proxy.host = argv[index + 1];
         argv.splice(index, 2);
       } else {
         invalidArgs.add('--proxy-host');
@@ -64,8 +64,8 @@ var CommandLineManager = {
     index = argv.indexOf('--proxy-port');
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
-        if (NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.host) {
-          NwtGlobalConfig.proxy.port = argv[index + 1];
+        if (RdGlobalConfig.proxy && RdGlobalConfig.proxy.host) {
+          RdGlobalConfig.proxy.port = argv[index + 1];
         } else {
           if (!invalidArgs.has('--proxy-host')) missingArgs.add('--proxy-host');
         }
@@ -77,9 +77,9 @@ var CommandLineManager = {
     }
     
     // if proxy port value in invalid or doesn't exist and host exists, set the default value
-    if (NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.host && (invalidArgs.has('--proxy-port') || !NwtGlobalConfig.proxy.port)) {
+    if (RdGlobalConfig.proxy && RdGlobalConfig.proxy.host && (invalidArgs.has('--proxy-port') || !RdGlobalConfig.proxy.port)) {
       console.log('Setting Default Proxy Port:', constants.DEFAULT_PROXY_PORT, '\n');
-      NwtGlobalConfig.proxy.port = constants.DEFAULT_PROXY_PORT;
+      RdGlobalConfig.proxy.port = constants.DEFAULT_PROXY_PORT;
       invalidArgs.delete('--proxy-port');
     }
 
@@ -87,9 +87,9 @@ var CommandLineManager = {
     index = argv.indexOf('--proxy-user');
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
-        NwtGlobalConfig.proxy = NwtGlobalConfig.proxy || {};
-        NwtGlobalConfig.proxy.username = argv[index + 1];
-        if (!(NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.host)) {
+        RdGlobalConfig.proxy = RdGlobalConfig.proxy || {};
+        RdGlobalConfig.proxy.username = argv[index + 1];
+        if (!(RdGlobalConfig.proxy && RdGlobalConfig.proxy.host)) {
           if (!invalidArgs.has('--proxy-host')) missingArgs.add('--proxy-host');
         }
         argv.splice(index, 2);
@@ -103,8 +103,8 @@ var CommandLineManager = {
     index = argv.indexOf('--proxy-pass');
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
-        if (NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.username) {
-          NwtGlobalConfig.proxy.password = argv[index + 1];
+        if (RdGlobalConfig.proxy && RdGlobalConfig.proxy.username) {
+          RdGlobalConfig.proxy.password = argv[index + 1];
         } else {
           if (!invalidArgs.has('--proxy-user')) missingArgs.add('--proxy-user');
         }
@@ -116,25 +116,25 @@ var CommandLineManager = {
     }
     
     // if proxy pass is invalid or doesn't exist and username exists, set the password as empty
-    if (NwtGlobalConfig.proxy && NwtGlobalConfig.proxy.username && (invalidArgs.has('--proxy-pass') || !NwtGlobalConfig.proxy.password)) {
+    if (RdGlobalConfig.proxy && RdGlobalConfig.proxy.username && (invalidArgs.has('--proxy-pass') || !RdGlobalConfig.proxy.password)) {
       console.log('Setting Proxy Password as Empty\n');
-      NwtGlobalConfig.proxy.password = '';
+      RdGlobalConfig.proxy.password = '';
       invalidArgs.delete('--proxy-pass');
     }
 
     // process arguments which decides whether existing logs should be deleted or appended
     index = argv.indexOf('--del-logs');
     if (index !== -1) {
-      NwtGlobalConfig.deleteExistingLogs = true;
+      RdGlobalConfig.deleteExistingLogs = true;
       argv.splice(index, 1);
     } else {
-      NwtGlobalConfig.deleteExistingLogs = false;
+      RdGlobalConfig.deleteExistingLogs = false;
     }
 
     index = argv.indexOf('--logs-path');
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
-        NwtGlobalConfig.logsPath = argv[index + 1];
+        RdGlobalConfig.logsPath = argv[index + 1];
         argv.splice(index, 2);
       } else {
         invalidArgs.add('--logs-path');
