@@ -24,6 +24,18 @@
     - Mac: `./RequestsDebugger-Mac <args>`
     - Linux: `./RequestsDebugger-Linux <args>`
     - Windows: `RequestsDebugger.exe <args>`
+
+## How to use
+- Since the tool acts like a proxy, you will have to set the proxy to be used by your client binding to `localhost:9687`. i.e.
+  - For Java:
+    - ```
+      System.getProperties().put("http.proxyHost", "localhost");
+      System.getProperties().put("http.proxyPort", "9687");
+      ```
+  - For Ruby:
+    - Set your system's env variable `http_proxy=localhost:9687` and Ruby's Selenium Client Binding will pick the value. Or,
+    - Run you test by givig the environment variable to your command itself, i.e. `http_proxy=localhost:9687 ruby <your_script.rb>`
+  - Similarly, you can also set proxy for other client bindings.
   
 ## Steps to build the executables
 - Linux
