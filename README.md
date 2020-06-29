@@ -4,7 +4,7 @@
 ## Features
 - Proxy Server to intercept requests fired by client bindings to keep track of their flow.
 - Connectivity Checker : To check for the reachability of BrowserStack components, i.e. Rails & Hub.
-- Multi-Platform Stats Compatibility : Ability to collect stats of CPU, Network & Memory as and when required.
+- Multi-Platform Stats Compatibility : Ability to collect stats of CPU, Network & Memory Stats.
 - Retry Mechanism in case a request fails at the client side
 
 ## How to run
@@ -34,7 +34,7 @@
       ```
   - For Ruby:
     - Set your system's env variable `http_proxy=localhost:9687` and Ruby's Selenium Client Binding will pick the value. Or,
-    - Run you test by givig the environment variable to your command itself, i.e. `http_proxy=localhost:9687 ruby <your_script.rb>`
+    - Run you test by giving the environment variable to your command itself, i.e. `http_proxy=localhost:9687 ruby <your_script.rb>`
   - Similarly, you can also set proxy for other client bindings.
   
 ## Steps to build the executables
