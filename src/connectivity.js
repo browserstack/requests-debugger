@@ -13,7 +13,14 @@ var RdGlobalConfig = constants.RdGlobalConfig;
 var Utils = require('./utils');
 var https = require('https');
 
-
+/**
+ * Fires the requests to perform connectivity checks
+ * @param {Object} requestOptions 
+ * @param {'http'|'https'} requestType 
+ * @param {String} description 
+ * @param {Array<Number>} successCodes 
+ * @param {Function} callback 
+ */
 var fireRequest = function (requestOptions, requestType, description, successCodes, callback) {
   var httpOrHttps = requestType === 'http' ? http : https;
   var responseData = {

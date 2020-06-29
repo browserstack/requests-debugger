@@ -18,6 +18,10 @@ var path = require('path');
 var Utils = require('./utils');
 
 var RdTool = {
+
+  /**
+   * Initializes the Logging directory, Loggers & Stats Handlers.
+   */
   initLoggers: function () {
     var basePath = RdGlobalConfig.logsPath ? path.resolve(RdGlobalConfig.logsPath) : process.cwd();
     RdGlobalConfig.LOGS_DIRECTORY = path.resolve(basePath, 'RequestsDebuggerLogs');
@@ -77,6 +81,10 @@ var RdTool = {
     RdGlobalConfig.ConnHandler = ConnectivityChecker.fireChecks;
   },
 
+  /**
+   * Entry point of the Tool. Scans CLI args, sets up loggers, fires stats
+   * collection and connectivity checks. Finally, sets up the tool proxy
+   */
   start: function () {
     console.log(Utils.formatAndBeautifyLine('Starting Requests Debugger Tool', '-', '-', 60, true));
     CommandLineManager.processArgs(process.argv);

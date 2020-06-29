@@ -6,11 +6,22 @@ var keepAliveAgent = new http.Agent({
 var RdGlobalConfig = constants.RdGlobalConfig;
 
 var RequestLib = {
+  /**
+   * Method to perform the request on behalf of the client
+   * @param {{request: Object, furtherRequestOptions: Object}} params 
+   * @param {http.IncomingMessage} clientRequest 
+   * @param {Number} retries 
+   */
   _makeRequest: function (params, clientRequest, retries) {
     return new Promise(function (resolve, reject) {
-      var request = http.request(Object.assign({}, params.furtherRequestOptions, {
+      var requestOptions = Object.assign({}, params.furtherRequestOptions, {
         agent: keepAliveAgent
-      }), function (response) {
+      });
+
+      // Adding a custom header for usage and debugging purpose at BrowserStack
+      requestOptions.headers['X-Requests-Debugger'] = clientRequest.id;
+
+      var request = http.request(requestOptions, function (response) {
         var responseToSend = {
           statusCode: response.statusCode,
           headers: response.headers,
@@ -77,6 +88,12 @@ var RequestLib = {
     });
   },
 
+  /**
+   * Handler for performing request. Includes the retry mechanism when request fails.
+   * @param {{request: Object, furtherRequestOptions: Object}} params 
+   * @param {http.IncomingMessage} clientRequest 
+   * @param {Number} retries 
+   */
   call: function (params, clientRequest, retries) {
     retries = (typeof retries === 'number') ? Math.min(constants.MAX_RETRIES, Math.max(retries, 0)) : constants.MAX_RETRIES;
     return RequestLib._makeRequest(params, clientRequest, retries)

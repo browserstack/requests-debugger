@@ -26,6 +26,7 @@
     "sinon": "7.5.0"
   },
   "dependencies": {
+    "uuid": "8.2.0",
     "winston": "2.4.4"
   },
   "nyc": {

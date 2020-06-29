@@ -8,7 +8,8 @@ var fs = require('fs');
  * Input can be in the form of:
  * 1. 'user:pass'
  * 2. { username: 'user', password: 'pass' }
- * @param {String|Object} proxyObj 
+ * @param {String|{username: String, password: String, host: String, port: String|Number}} proxyObj 
+ * @returns {String}
  */
 var proxyAuthToBase64 = function (proxyObj) {
   var base64Auth;
@@ -25,6 +26,7 @@ var proxyAuthToBase64 = function (proxyObj) {
  * @param {Array<String>} content 
  * @param {String} propertyToFetch 
  * @param {String} separator 
+ * @returns {String}
  */
 var fetchPropertyValue = function (content, propertyToFetch, separator) {
   separator = separator || ':';
@@ -51,6 +53,7 @@ var fetchPropertyValue = function (content, propertyToFetch, separator) {
  * @param {String} suffix 
  * @param {Number} idealLength 
  * @param {Boolean} newLine 
+ * @returns {String}
  */
 var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine) {
   line = safeToString(line);
@@ -80,6 +83,7 @@ var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine
  * @param {String} title 
  * @param {Date} generatedAt 
  * @param {Date} startTime 
+ * @returns {String}
  */
 var generateHeaderAndFooter = function (content, title, generatedAt, startTime) {
   if (typeof content === 'undefined' || !content.toString()) return 'NO_CONTENT_PROVIDED';
@@ -134,6 +138,7 @@ var execMultiple = function (commands, callback) {
 
 /**
  * Fetches the WMIC path in Windows
+ * @returns {String}
  */
 var getWmicPath = function () {
   if (os.type() === 'Windows_NT') {
@@ -164,6 +169,7 @@ var getWmicPath = function () {
  * @param {String} valuesTitle 
  * @param {Number} maxKeyLength Optional
  * @param {Number} maxValLength Optional
+ * @returns {String}
  */
 var beautifyObject = function (obj, keysTitle, valuesTitle, maxKeyLength, maxValLength) {
   if (typeof obj !== 'object') return 'Not an Object' + os.EOL;
@@ -207,6 +213,11 @@ var beautifyObject = function (obj, keysTitle, valuesTitle, maxKeyLength, maxVal
   return os.EOL + finalResult + os.EOL;
 };
 
+/**
+ * Returns the length of the longest entry in the Array
+ * @param {Array} arr 
+ * @returns {Number}
+ */
 var getLongestVal = function (arr) {
   var longest = arr.reduce(function (prevValue, currValue) {
     if (safeToString(currValue).length > prevValue) {
@@ -217,6 +228,10 @@ var getLongestVal = function (arr) {
   return longest;
 };
 
+/**
+ * Returns string value by trying .toString() & JSON.stringify()
+ * @param {any} val 
+ */
 var safeToString = function (val) {
   try {
     val = val.toString() || 'empty/no data';

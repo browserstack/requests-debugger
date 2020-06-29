@@ -7,6 +7,7 @@
 
 var http = require('http');
 var url = require('url');
+var uuidv4 = require('uuid/v4');
 var Utils = require('./utils');
 var constants = require('../config/constants');
 var ReqLib = require('./requestLib');
@@ -37,6 +38,12 @@ var RdHandler = {
         RdHandler._reqObjTemplate.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);
       }
 
+      /**
+       * Sets the internal method to generate request options if external/upstream
+       * proxy exists
+       * @param {http.IncomingMessage} clientRequest 
+       * @returns {Object}
+       */
       RdHandler._generateRequestOptions = function (clientRequest) {
         var parsedClientUrl = url.parse(clientRequest.url);
         var headersCopy = Object.assign({}, clientRequest.headers, RdHandler._reqObjTemplate.headers);
@@ -47,6 +54,13 @@ var RdHandler = {
         return requestOptions;
       };
     } else {
+
+      /**
+       * Sets the internal method to generate request options if external/upstream
+       * doesn't exists
+       * @param {http.IncomingMessage} clientRequest 
+       * @returns {Object}
+       */
       RdHandler._generateRequestOptions = function (clientRequest) {
         var parsedClientUrl = url.parse(clientRequest.url);
         var requestOptions = Object.assign({}, RdHandler._reqObjTemplate);
@@ -100,11 +114,11 @@ var RdHandler = {
 
   /**
    * Handler for incoming requests to Requests Debugger Tool proxy server.
-   * @param {} clientRequest 
-   * @param {} clientResponse 
+   * @param {http.IncomingMessage} clientRequest 
+   * @param {http.ServerResponse} clientResponse 
    */
   requestHandler: function (clientRequest, clientResponse) {
-    clientRequest.id = ++RdHandler._requestCounter;
+    clientRequest.id = ++RdHandler._requestCounter + '::' + uuidv4();
 
     var request = {
       method: clientRequest.method,
