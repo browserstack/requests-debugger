@@ -7,7 +7,7 @@ module.exports.CLIENT_REQ_TIMEOUT = 50000;
 module.exports.DEFAULT_PROXY_PORT = '3128';
 module.exports.MAX_RETRIES = 1;
 module.exports.REQ_TIMED_OUT = 'Request Timed Out. Did not get any response for ' + this.CLIENT_REQ_TIMEOUT + ' ms.';
-module.exports.REQ_FAILED_MSG = 'Request Failed At Network Tool';
+module.exports.REQ_FAILED_MSG = 'Request Failed At Requests Debugger';
 module.exports.LOGS = Object.freeze({
   NETWORK: 'NetworkStats.log',
   CPU: 'CPUStats.log',

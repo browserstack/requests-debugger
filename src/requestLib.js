@@ -21,6 +21,7 @@ var RequestLib = {
       // Adding a custom header for usage and debugging purpose at BrowserStack
       requestOptions.headers['X-Requests-Debugger'] = clientRequest.id;
 
+      // Initialize the request to be fired on behalf of the client
       var request = http.request(requestOptions, function (response) {
         var responseToSend = {
           statusCode: response.statusCode,
@@ -38,12 +39,17 @@ var RequestLib = {
         });
       });
 
-      
-      RdGlobalConfig.ReqLogger.info('Tool Request - Retries Left: ' + retries, clientRequest.method + ' ' + clientRequest.url,
-        false,
-        params.furtherRequestOptions,
-        clientRequest.id);
+      // Log the request that will be initiated on behalf of the client
+      request.on('finish', function () {
+        RdGlobalConfig.ReqLogger.info('Tool Request - Retries Left: ' + retries, clientRequest.method + ' ' + clientRequest.url,
+          false,
+          Object.assign({}, params.furtherRequestOptions, {
+            data: Buffer.concat(params.request.data).toString()
+          }),
+          clientRequest.id);
+      });
 
+      // Capture any error scenarios while making the request on behalf of the client
       request.on('error', function (err) {
         reject({
           message: err,
@@ -51,10 +57,17 @@ var RequestLib = {
         });
       });
 
+      // Set a hard timeout for the request being initiated.
       request.setTimeout(constants.CLIENT_REQ_TIMEOUT, function () {
         request.destroy(constants.REQ_TIMED_OUT);
       });
 
+      /**
+       * If its the first try of the request, set up all the event listeners to capture/collect
+       * the data being sent by the client.
+       * If its not the first try, then we already have the data to recreate the request
+       * if the previous try fails.
+       */
       if (retries === constants.MAX_RETRIES) {
         clientRequest.on('data', function (chunk) {
           params.request.data.push(chunk);

@@ -109,7 +109,7 @@ describe('RdHandler', function () {
         });
 
         response.on('end', function () {
-          assert(Buffer.concat(responseData).toString() === '{"message":"Error: something terrible. Request Failed At Network Tool","error":"Request Failed At Network Tool"}');
+          assert(Buffer.concat(responseData).toString() === '{"message":"Error: something terrible. Request Failed At Requests Debugger","error":"Request Failed At Requests Debugger"}');
           done();
         });
       });
