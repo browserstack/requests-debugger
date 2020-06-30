@@ -65,7 +65,7 @@
   - It also includes the report of ping checks with Hub & Rails.
   - New stats are appended whenever a request fails.
 - `Requests.log`
-  - It includes all of logs of requests being passed via the Requests Debugger Tool.
+  - It includes the logs of requests being passed via the Requests Debugger Tool.
   - Example Logs:
     - ```
       TIMESTAMP_IN_UTC [#2::UNIQUE_IDENTIFIER] [Request Start] [INFO] POST http://<URL>/wd/hub/status, {"headers":{"......."}}
@@ -82,7 +82,6 @@
     - **Request End** : This is logged when the client request is finished, i.e. in case of `POST` request, when the client request has pushed all the data.
     - **Tool Request - Retries Left: X** : This logs the request which was fired from the tool for the respective client request. It also mentions the retries left in case the request fails at user's machine.
     - **Response End** : This specifies the response which was finally sent to the client.
-
 - `RDT_Error.log`
   - This is to log any unexpected errors which might occur while using the tool.
 
