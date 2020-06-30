@@ -75,12 +75,12 @@
       TIMESTAMP_IN_UTC [#2::UNIQUE_IDENTIFIER] [Tool Request - Retries Left: 0] [ERROR] POST http://<URL>/wd/hub/status, {"errorMessage":"Error: getaddrinfo ENOTFOUND <EXTERNAL_PROXY_URL> <EXTERNAL_PROXY_URL>:3130"}
       TIMESTAMP_IN_UTC [#2::UNIQUE_IDENTIFIER] [Response End] [ERROR] POST http://<URL>/wd/hub/status, Status Code: 500, {"message":"Error: getaddrinfo ENOTFOUND <EXTERNAL_PROXY_URL> <EXTERNAL_PROXY_URL>:3130. Request Failed At Requests Debugger","error":"Request Failed At Requests Debugger"}
   - Tags & their meaning:
-    - **TIMESTAMP_IN_UTC** : Timestamp of each event in UTC to ease out debugging.
-    - **#2** : This represents the `nth` request which the tool is currently serving from it time it was started.
-    - **UNIQUE_IDENTIFIER** : `uuid` for the request. This is used in `X-Requests-Debugger` custom header so that its easier to debug at BrowserStack side.
+    - **TIMESTAMP_IN_UTC** : Timestamp of each event in UTC.
+    - **#2** : This represents the `nth` request which the tool served from the time it was started.
+    - **UNIQUE_IDENTIFIER** : `uuid` for the request. This is used in `X-Requests-Debugger` custom header for usage & debugging at BrowserStack's end.
     - **Request Start** : Client request entering the Requests Debugger Tool.
     - **Request End** : This is logged when the client request is finished, i.e. in case of `POST` request, when the client request has pushed all the data.
-    - **Tool Request - Retries Left: X** : This logs the request which was fired from the tool for the respective client request. It also mentions the retries left in case the request fails at user's machine.
+    - **Tool Request - Retries Left: X** : Request which was fired from the tool for the respective client request. It also mentions the retries left for the request. Max retries = 1. A request is retried in case it fails at the tool itself, i.e `ENOTFOUND` etc.
     - **Response End** : This specifies the response which was finally sent to the client.
 - `RDT_Error.log`
   - This is to log any unexpected errors which might occur while using the tool.
