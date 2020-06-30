@@ -13,7 +13,7 @@
   - Start Requests Debugger with the required arguments: `npm run start -- <args>`. 
   - Supported `args`:
     - `--proxy-host <hostname>`: Hostname of the Upstream Proxy
-    - `--proxy-port <port>`: Port of the Upstream Proxy
+    - `--proxy-port <port>`: Port of the Upstream Proxy. Default: 3128 (if hostname is provided)
     - `--proxy-user <username>`: Username for auth of the Upstream Proxy
     - `--proxy-pass <password>`: Password for auth of the Upstream Proxy
     - `--logs-path <relative/absolute path>`: Directory where the 'RequestsDebuggerLogs' folder will be created for storing logs. Default: Current Working Directory
@@ -44,6 +44,47 @@
   - `npm run build:mac`
 - Windows
   - `npm run build:win`
+
+## What each log file consists of?
+- `Connectivitiy.log`
+  - It consists the logs of all the connectivity checks which were performed in terms of reachability with BrowserStack componenets, i.e. Hub and Rails.
+  - The report includes HTTP & HTTPS requests by passing the requests via any upstream proxy (if provided).
+  - New checks are performed whenever a request fails.
+- `CPUStats.log`
+  - It consists of the load and usage stats of user's CPU while booting up the Requests Debugger Tool. It lists down the top 10 processes which were using the highest CPU at that moment.
+- `MemStats.log`
+  - It consists of the memory stats of the user's machine while booting up the tool. It includes:
+    - Total Memory
+    - Free Memory
+    - Used Memory
+    - Swap Total
+    - Swap Free
+    - Swap Used
+- `NetworkStats.log`
+  - It consists the list of connections/sockets being established/listening via the user's machine.
+  - It also includes the report of ping checks with Hub & Rails.
+  - New stats are appended whenever a request fails.
+- `Requests.log`
+  - It includes all of logs of requests being passed via the Requests Debugger Tool.
+  - Example Logs:
+    - ```
+      TIMESTAMP_IN_UTC [#2::UNIQUE_IDENTIFIER] [Request Start] [INFO] POST http://<URL>/wd/hub/status, {"headers":{"......."}}
+      TIMESTAMP_IN_UTC [#2::UNIQUE_IDENTIFIER] [Request End] [INFO] POST http://<URL>/wd/hub/status, {"data":"{\"key\": \"value\"}"}
+      TIMESTAMP_IN_UTC [#2::UNIQUE_IDENTIFIER] [Tool Request - Retries Left: 1] [INFO] POST http://<URL>/wd/hub/status, {"method":"POST","headers":{".......","Proxy-Authorization":"Basic AaBbCcDdEeFfGg==","X-Requests-Debugger":"2::UNIQUE_IDENTIFIER"},"host":"<EXTERNAL_PROXY_URL>","port":"3130","path":"http://<URL>/wd/hub/status","data":"{\"key\": \"value\"}"}
+      TIMESTAMP_IN_UTC [#2::UNIQUE_IDENTIFIER] [Tool Request - Retries Left: 1] [ERROR] POST http://<URL>/wd/hub/status, {"errorMessage":"Error: getaddrinfo ENOTFOUND <EXTERNAL_PROXY_URL> <EXTERNAL_PROXY_URL>:3130"}
+      TIMESTAMP_IN_UTC [#2::UNIQUE_IDENTIFIER] [Tool Request - Retries Left: 0] [ERROR] POST http://<URL>/wd/hub/status, {"errorMessage":"Error: getaddrinfo ENOTFOUND <EXTERNAL_PROXY_URL> <EXTERNAL_PROXY_URL>:3130"}
+      TIMESTAMP_IN_UTC [#2::UNIQUE_IDENTIFIER] [Response End] [ERROR] POST http://<URL>/wd/hub/status, Status Code: 500, {"message":"Error: getaddrinfo ENOTFOUND <EXTERNAL_PROXY_URL> <EXTERNAL_PROXY_URL>:3130. Request Failed At Requests Debugger","error":"Request Failed At Requests Debugger"}
+  - Tags & their meaning:
+    - **TIMESTAMP_IN_UTC** : Timestamp of each event in UTC to ease out debugging.
+    - **#2** : This represents the `nth` request which the tool is currently serving from it time it was started.
+    - **UNIQUE_IDENTIFIER** : `uuid` for the request. This is used in `X-Requests-Debugger` custom header so that its easier to debug at BrowserStack side.
+    - **Request Start** : Client request entering the Requests Debugger Tool.
+    - **Request End** : This is logged when the client request is finished, i.e. in case of `POST` request, when the client request has pushed all the data.
+    - **Tool Request - Retries Left: X** : This logs the request which was fired from the tool for the respective client request. It also mentions the retries left in case the request fails at user's machine.
+    - **Response End** : This specifies the response which was finally sent to the client.
+
+- `RDT_Error.log`
+  - This is to log any unexpected errors which might occur while using the tool.
 
 
 ## Note

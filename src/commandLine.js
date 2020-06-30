@@ -14,7 +14,7 @@ var CommandLineManager = {
                      + "Usage: RequestsDebugger [ARGUMENTS]\n\n"
                      + "ARGUMENTS:\n"
                      + "  --proxy-host  <hostname>                : Hostname of the Upstream Proxy\n"
-                     + "  --proxy-port  <port>                    : Port of the Upstream Proxy\n"
+                     + "  --proxy-port  <port>                    : Port of the Upstream Proxy. Default: 3128 (if hostname is provided)\n"
                      + "  --proxy-user  <username>                : Username for auth of the Upstream Proxy\n"
                      + "  --proxy-pass  <password>                : Password for auth of the Upstream Proxy\n"
                      + "  --logs-path   <relative/absolute path>  : Directory where the 'RequestDebuggerLogs' folder will be created\n"
