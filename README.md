@@ -51,7 +51,7 @@
   - The report includes HTTP & HTTPS requests by passing the requests via any upstream proxy (if provided).
   - New checks are performed whenever a request fails.
 - `CPUStats.log`
-  - It consists of the load and usage stats of user's CPU while booting up the Requests Debugger Tool. It lists down the top 10 processes which were using the highest CPU at that moment.
+  - It consists of the load and usage stats of user's CPU while booting up the Requests Debugger Tool. It lists down the top 10 processes which were using the highest CPU at that moment. Note: For Windows, it only includes the `loadPercentage` at that moment.
 - `MemStats.log`
   - It consists of the memory stats of the user's machine while booting up the tool. It includes:
     - Total Memory
