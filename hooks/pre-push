@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# run the npm tests
+npm test
+
+# return the 'npm test' exit code
+exit $?
