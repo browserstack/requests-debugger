@@ -19,6 +19,7 @@ var CommandLineManager = {
                      + "  --proxy-port  <port>                    : Port of the Upstream Proxy. Default: 3128 (if hostname is provided)\n"
                      + "  --proxy-user  <username>                : Username for auth of the Upstream Proxy\n"
                      + "  --proxy-pass  <password>                : Password for auth of the Upstream Proxy\n"
+                     + "  --retry-delay <milliseconds>            : Delay for the retry of a failed request. Default: 1000ms\n"
                      + "  --logs-path   <relative/absolute path>  : Directory where the 'RequestDebuggerLogs' folder will be created\n"
                      + "                                            for storing logs. Default: Current Working Directory\n"
                      + "  --del-logs                              : Deletes any existing logs from the RequestDebuggerLogs/ directory and initializes\n"
@@ -64,7 +65,7 @@ var CommandLineManager = {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         var probablePort = parseInt(argv[index + 1]);
         if (!isNaN(probablePort) && (probablePort <= constants.PORTS.MAX) && (probablePort >= constants.PORTS.MIN)) {
-          constants.RD_HANDLER_PORT = probablePort;
+          RdGlobalConfig.RD_HANDLER_PORT = probablePort;
         } else {
           console.log("Port can only range from:", constants.PORTS.MIN, "to:", constants.PORTS.MAX);
           invalidArgs.add('--port');
@@ -72,6 +73,24 @@ var CommandLineManager = {
         argv.splice(index, 2);
       } else {
         invalidArgs.add('--port');
+        argv.splice(index, 1);
+      }
+    }
+
+    // delay for retries in case of request failures
+    index = argv.indexOf('--retry-delay');
+    if (index !== -1) {
+      if (CommandLineManager.validArgValue(argv[index + 1])) {
+        var probableDelay = parseFloat(argv[index + 1]);
+        if (!isNaN(probableDelay) && probableDelay >= 0) {
+          RdGlobalConfig.RETRY_DELAY = probableDelay;
+        } else {
+          console.log("Delay for retries should be a valid number");
+          invalidArgs.add('--retry-delay');
+        }
+        argv.splice(index, 2);
+      } else {
+        invalidArgs.add('--retry-delay');
         argv.splice(index, 1);
       }
     }
@@ -184,12 +203,12 @@ var CommandLineManager = {
     invalidArgs = Array.from(invalidArgs);
 
     if (invalidArgs.length) {
-      console.log('Invalid Argument(s): ', invalidArgs.join(', '), '\n');
+      console.log('\nInvalid Argument(s): ', invalidArgs.join(', '), '\n');
       exitAfterProcessArgs = true;
     }
 
     if (missingArgs.length) {
-      console.log('Missing Argument(s): ', missingArgs.join(', '), '\n');
+      console.log('\nMissing Argument(s): ', missingArgs.join(', '), '\n');
       exitAfterProcessArgs = true;
     }
 

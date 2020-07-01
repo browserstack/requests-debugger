@@ -5,6 +5,7 @@ var Utils = require('../src/utils');
 var os = require('os');
 var fs = require('fs');
 var cp = require('child_process');
+var RdGlobalConfig = require('../config/constants').RdGlobalConfig;
 var expect = chai.expect;
 
 describe('Utils', function () {
@@ -299,6 +300,61 @@ describe('Utils', function () {
         });
       });
       cp.exec.restore();
+    });
+  });
+
+  context("Delay for async calls", function () {
+    it("should resolve the promise after the stated delay in milliseconds", function (done) {
+      this.timeout = 3000;
+      var fakeTimer = sinon.useFakeTimers();
+      var startTime = Date.now();
+      var delayInMS = 2000;
+      Utils.delay(delayInMS)
+        .then(function () {
+          expect((Date.now() - startTime) === delayInMS).to.be.true;
+          fakeTimer.restore();
+          done();
+        });
+      fakeTimer.tick(delayInMS);
+    });
+
+    it("should resolve the promise with default delay if no explicit delay is provided", function (done) {
+      this.timeout = 3000;
+      var fakeTimer = sinon.useFakeTimers();
+      var startTime = Date.now();
+      Utils.delay()
+        .then(function () {
+          expect((Date.now() - startTime) === RdGlobalConfig.RETRY_DELAY).to.be.true;
+          fakeTimer.restore();
+          done();
+        });
+      fakeTimer.tick(RdGlobalConfig.RETRY_DELAY);
+    });
+
+    it("should resolve the promise with default delay if invalid explicit delay is provided", function (done) {
+      this.timeout = 3000;
+      var fakeTimer = sinon.useFakeTimers();
+      var startTime = Date.now();
+      Utils.delay("Invalid Value")
+        .then(function () {
+          expect((Date.now() - startTime) === RdGlobalConfig.RETRY_DELAY).to.be.true;
+          fakeTimer.restore();
+          done();
+        });
+      fakeTimer.tick(RdGlobalConfig.RETRY_DELAY);
+    });
+
+    it("should resolve the promise with default delay if negative explicit delay is provided", function (done) {
+      this.timeout = 3000;
+      var fakeTimer = sinon.useFakeTimers();
+      var startTime = Date.now();
+      Utils.delay(-1000)
+        .then(function () {
+          expect((Date.now() - startTime) === RdGlobalConfig.RETRY_DELAY).to.be.true;
+          fakeTimer.restore();
+          done();
+        });
+      fakeTimer.tick(RdGlobalConfig.RETRY_DELAY);
     });
   });
 });

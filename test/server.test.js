@@ -15,7 +15,7 @@ describe('RdHandler', function () {
       testHelper.initializeDummyLoggers();
       testHelper.initializeDummyHandlers();
       
-      RdHandler.startProxy(constants.RD_HANDLER_PORT, function (port) {
+      RdHandler.startProxy(RdGlobalConfig.RD_HANDLER_PORT, function (port) {
         console.log('Test Network Utility Proxy Started on Port: ', port);
         done();
       });
@@ -36,7 +36,7 @@ describe('RdHandler', function () {
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: constants.RD_HANDLER_PORT,
+        port: RdGlobalConfig.RD_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
       };
@@ -65,7 +65,7 @@ describe('RdHandler', function () {
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: constants.RD_HANDLER_PORT,
+        port: RdGlobalConfig.RD_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
       };
@@ -96,7 +96,7 @@ describe('RdHandler', function () {
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: constants.RD_HANDLER_PORT,
+        port: RdGlobalConfig.RD_HANDLER_PORT,
         headers: {},
         path: constants.HUB_STATUS_URL
       };

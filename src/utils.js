@@ -245,6 +245,23 @@ var isValidCallback = function (checkCallback) {
   return (checkCallback && typeof checkCallback === 'function');
 };
 
+/**
+ * Add Delay to async calls
+ * @param {Number} ms Milliseconds to delay the resolving of Promise
+ * @returns {Promise}
+ */
+var delay = function (ms) {
+  ms = parseFloat(ms);
+  if (isNaN(ms) || ms < 0) {
+    ms = 0;
+  }
+  return new Promise(function (resolve) {
+    setTimeout(function () {
+      resolve();
+    }, ms);
+  });
+};
+
 module.exports = {
   proxyAuthToBase64: proxyAuthToBase64,
   fetchPropertyValue: fetchPropertyValue,
@@ -254,5 +271,6 @@ module.exports = {
   getWmicPath: getWmicPath,
   beautifyObject: beautifyObject,
   isValidCallback: isValidCallback,
-  safeToString: safeToString
+  safeToString: safeToString,
+  delay: delay
 };

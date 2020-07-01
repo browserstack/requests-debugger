@@ -116,7 +116,7 @@ var RdTool = {
       console.log(Utils.formatAndBeautifyLine('Checks : Connectivity Checks Performed with BrowserStack', '', '-', 60, true));
     });
 
-    RdHandler.startProxy(constants.RD_HANDLER_PORT, function (err, result) {
+    RdHandler.startProxy(RdGlobalConfig.RD_HANDLER_PORT, function (err, result) {
       if (err) {
         console.log('Error in starting Requests Debugger Tool Proxy: ', err);
         console.log('Exiting the Tool...');

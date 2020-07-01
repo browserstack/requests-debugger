@@ -142,7 +142,7 @@ describe('CommandLineManager', function () {
       sinon.stub(console, 'log');
       argv = argv.concat(['--proxy-user', 'user']);
       CommandLineManager.processArgs(argv);
-      sinon.assert.calledWith(console.log, 'Missing Argument(s): ', '--proxy-host', '\n');
+      sinon.assert.calledWith(console.log, '\nMissing Argument(s): ', '--proxy-host', '\n');
       console.log.restore();
       sinon.assert.called(process.exit);
     });
@@ -151,7 +151,7 @@ describe('CommandLineManager', function () {
       sinon.stub(console, 'log');
       argv = argv.concat(['--proxy-user']);
       CommandLineManager.processArgs(argv);
-      sinon.assert.calledWith(console.log, 'Invalid Argument(s): ', '--proxy-user', '\n');
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--proxy-user', '\n');
       console.log.restore();
       sinon.assert.called(process.exit);
     });
@@ -160,7 +160,7 @@ describe('CommandLineManager', function () {
       sinon.stub(console, 'log');
       argv = argv.concat(['--proxy-pass']);
       CommandLineManager.processArgs(argv);
-      sinon.assert.calledWith(console.log, 'Invalid Argument(s): ', '--proxy-pass', '\n');
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--proxy-pass', '\n');
       console.log.restore();
       sinon.assert.called(process.exit);
     });
@@ -191,22 +191,22 @@ describe('CommandLineManager', function () {
       sinon.stub(console, 'log');
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(constants.RD_HANDLER_PORT).to.eql(9098);
+      expect(RdGlobalConfig.RD_HANDLER_PORT).to.eql(9098);
     });
 
     it('Uses the default port of Requests Debugger Tool Proxy if not provided via arguments', function () {
       sinon.stub(console, 'log');
-      var portBeforeParsing = constants.RD_HANDLER_PORT;
+      var portBeforeParsing = RdGlobalConfig.RD_HANDLER_PORT;
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(constants.RD_HANDLER_PORT).to.eql(portBeforeParsing);
+      expect(RdGlobalConfig.RD_HANDLER_PORT).to.eql(portBeforeParsing);
     });
 
     it("exits with invalid args if port provided doesn't lie in the Max Min Range", function () {
       argv = argv.concat(['--port', '99999']);
       sinon.stub(console, 'log');
       CommandLineManager.processArgs(argv);
-      sinon.assert.calledWith(console.log, 'Invalid Argument(s): ', '--port', '\n');
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--port', '\n');
       console.log.restore();
       sinon.assert.called(process.exit);
     });
@@ -215,7 +215,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--port', 'random string']);
       sinon.stub(console, 'log');
       CommandLineManager.processArgs(argv);
-      sinon.assert.calledWith(console.log, 'Invalid Argument(s): ', '--port', '\n');
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--port', '\n');
       console.log.restore();
       sinon.assert.called(process.exit);
     });
@@ -224,7 +224,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--port']);
       sinon.stub(console, 'log');
       CommandLineManager.processArgs(argv);
-      sinon.assert.calledWith(console.log, 'Invalid Argument(s): ', '--port', '\n');
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--port', '\n');
       console.log.restore();
       sinon.assert.called(process.exit);
     });

@@ -1,5 +1,6 @@
 var http = require('http');
 var constants = require('../config/constants');
+var Utils = require('./utils');
 var keepAliveAgent = new http.Agent({
   keepAlive: true
 });
@@ -117,7 +118,11 @@ var RequestLib = {
               errorMessage: err.message.toString()
             },
             clientRequest.id);
-          return RequestLib.call(params, clientRequest, retries - 1, false);
+
+          return Utils.delay(RdGlobalConfig.RETRY_DELAY)
+            .then(function () {
+              return RequestLib.call(params, clientRequest, retries - 1, false);
+            });
         } else {
           throw err;
         }

@@ -17,6 +17,7 @@
     - `--proxy-port <port>`: Port of the Upstream Proxy. Default: 3128 (if hostname is provided)
     - `--proxy-user <username>`: Username for auth of the Upstream Proxy
     - `--proxy-pass <password>`: Password for auth of the Upstream Proxy
+    - `--retry-delay <milliseconds>`: Delay for the retry of a failed request. Default: 1000ms
     - `--logs-path <relative/absolute path>`: Directory where the 'RequestsDebuggerLogs' folder will be created for storing logs. Default: Current Working Directory
     - `--del-logs`: Deletes any existing logs from the RequestsDebuggerLogs/ directory and initializes new files for logging
     - `--help`: Help for Requests Debugger Tool
