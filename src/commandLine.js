@@ -8,24 +8,26 @@ var RdGlobalConfig = constants.RdGlobalConfig;
 
 var CommandLineManager = {
   helpForArgs: function () {
-    var helpOutput = "\nRequests Debugger - A Proxy Tool for debugging request failures leading to\n"
-                     + "dropping of requests or not being able to reach BrowserStack.\n"
+    var helpOutput = "\nRequests Debugger - A Proxy Tool for debugging request failures leading to dropping of requests\n"
+                     + "or not being able to reach BrowserStack.\n"
                      + "\n"
                      + "Usage: RequestsDebugger [ARGUMENTS]\n\n"
                      + "ARGUMENTS:\n"
-                     + "  --port        <port>                    : Port on which the Requests Debugger Tool's Proxy will run\n"
-                     + "                                            Default: 9687\n"
-                     + "  --proxy-host  <hostname>                : Hostname of the Upstream Proxy\n"
-                     + "  --proxy-port  <port>                    : Port of the Upstream Proxy. Default: 3128 (if hostname is provided)\n"
-                     + "  --proxy-user  <username>                : Username for auth of the Upstream Proxy\n"
-                     + "  --proxy-pass  <password>                : Password for auth of the Upstream Proxy\n"
-                     + "  --retry-delay <milliseconds>            : Delay for the retry of a failed request. Default: 1000ms\n"
-                     + "  --logs-path   <relative/absolute path>  : Directory where the 'RequestDebuggerLogs' folder will be created\n"
-                     + "                                            for storing logs. Default: Current Working Directory\n"
-                     + "  --del-logs                              : Deletes any existing logs from the RequestDebuggerLogs/ directory and initializes\n"
-                     + "                                            new files for logging\n"
-                     + "  --help                                  : Help for Requests Debugger Tool\n"
-                     + "  --version                               : Version of the Requests Debugger Tool\n";
+                     + "  --port            <port>                    : Port on which the Requests Debugger Tool's Proxy will run\n"
+                     + "                                                Default: " + RdGlobalConfig.RD_HANDLER_PORT + "\n"
+                     + "  --proxy-host      <hostname>                : Hostname of the Upstream Proxy\n"
+                     + "  --proxy-port      <port>                    : Port of the Upstream Proxy. Default: " + constants.DEFAULT_PROXY_PORT + " (if hostname is provided)\n"
+                     + "  --proxy-user      <username>                : Username for auth of the Upstream Proxy\n"
+                     + "  --proxy-pass      <password>                : Password for auth of the Upstream Proxy\n"
+                     + "  --retry-delay     <milliseconds>            : Delay for the retry of a failed request. Default: " + RdGlobalConfig.RETRY_DELAY + "ms\n"
+                     + "  --request-timeout <milliseconds>            : Hard timeout for the requests being fired by the tool before receiving any response\n"
+                     + "                                                Default: " + RdGlobalConfig.CLIENT_REQ_TIMEOUT + "ms\n"
+                     + "  --logs-path       <relative/absolute path>  : Directory where the 'RequestDebuggerLogs' folder will be created\n"
+                     + "                                                for storing logs. Default: Current Working Directory\n"
+                     + "  --del-logs                                  : Deletes any existing logs from the RequestDebuggerLogs/ directory and initializes\n"
+                     + "                                                new files for logging\n"
+                     + "  --help                                      : Help for Requests Debugger Tool\n"
+                     + "  --version                                   : Version of the Requests Debugger Tool\n";
 
     console.log(helpOutput);
   },
@@ -67,7 +69,7 @@ var CommandLineManager = {
         if (!isNaN(probablePort) && (probablePort <= constants.PORTS.MAX) && (probablePort >= constants.PORTS.MIN)) {
           RdGlobalConfig.RD_HANDLER_PORT = probablePort;
         } else {
-          console.log("Port can only range from:", constants.PORTS.MIN, "to:", constants.PORTS.MAX);
+          console.log("\nPort can only range from:", constants.PORTS.MIN, "to:", constants.PORTS.MAX);
           invalidArgs.add('--port');
         }
         argv.splice(index, 2);
@@ -85,12 +87,30 @@ var CommandLineManager = {
         if (!isNaN(probableDelay) && probableDelay >= 0) {
           RdGlobalConfig.RETRY_DELAY = probableDelay;
         } else {
-          console.log("Delay for retries should be a valid number");
+          console.log("\nDelay for retries should be a valid number");
           invalidArgs.add('--retry-delay');
         }
         argv.splice(index, 2);
       } else {
         invalidArgs.add('--retry-delay');
+        argv.splice(index, 1);
+      }
+    }
+
+    // timeout for requests being fired from the tool
+    index = argv.indexOf('--request-timeout');
+    if (index !== -1) {
+      if (CommandLineManager.validArgValue(argv[index + 1])) {
+        var clientRequestDelay = parseFloat(argv[index + 1]);
+        if (!isNaN(clientRequestDelay) && clientRequestDelay >= 0) {
+          RdGlobalConfig.CLIENT_REQ_TIMEOUT = clientRequestDelay;
+        } else {
+          console.log("\nTimeout for requests should be a valid number");
+          invalidArgs.add('--request-timeout');
+        }
+        argv.splice(index, 2);
+      } else {
+        invalidArgs.add('--request-timeout');
         argv.splice(index, 1);
       }
     }

@@ -3,10 +3,9 @@ module.exports.NO_REPORT_GENERATED = 'COULD NOT GENERATE REPORT FOR : ';
 module.exports.HUB_STATUS_URL = 'http://hub-cloud.browserstack.com/wd/hub/status';
 module.exports.RAILS_AUTOMATE = 'http://automate.browserstack.com';
 module.exports.CONNECTIVITY_REQ_TIMEOUT = 20000;
-module.exports.CLIENT_REQ_TIMEOUT = 50000;
 module.exports.DEFAULT_PROXY_PORT = '3128';
 module.exports.MAX_RETRIES = 1;
-module.exports.REQ_TIMED_OUT = 'Request Timed Out. Did not get any response for ' + this.CLIENT_REQ_TIMEOUT + ' ms.';
+module.exports.REQ_TIMED_OUT = 'Request Timed Out. Did not get any response for ';
 module.exports.REQ_FAILED_MSG = 'Request Failed At Requests Debugger';
 module.exports.PORTS = {
   MAX: 65535,
@@ -24,7 +23,8 @@ module.exports.LOGS = Object.freeze({
 
 module.exports.RdGlobalConfig = {
   RETRY_DELAY: 1000, // in ms
-  RD_HANDLER_PORT: process.env.NODE_ENV === 'test' ? 8787 : 9687
+  RD_HANDLER_PORT: process.env.NODE_ENV === 'test' ? 8787 : 9687,
+  CLIENT_REQ_TIMEOUT: 260000, // in ms
 };
 
 module.exports.COMMON = Object.freeze({

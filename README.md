@@ -18,6 +18,7 @@
     - `--proxy-user <username>`: Username for auth of the Upstream Proxy
     - `--proxy-pass <password>`: Password for auth of the Upstream Proxy
     - `--retry-delay <milliseconds>`: Delay for the retry of a failed request. Default: 1000ms
+    - `--request-timeout <milliseconds>`: Hard timeout for killing the requests being fired from the tool before receiving any response. Default: 260000ms.
     - `--logs-path <relative/absolute path>`: Directory where the 'RequestsDebuggerLogs' folder will be created for storing logs. Default: Current Working Directory
     - `--del-logs`: Deletes any existing logs from the RequestsDebuggerLogs/ directory and initializes new files for logging
     - `--help`: Help for Requests Debugger Tool
@@ -91,3 +92,4 @@
 
 ## Note
 - The tool is written in a manner to make it compatible with Node 4.
+- `npm test` sets up a server which runs on port 8787.

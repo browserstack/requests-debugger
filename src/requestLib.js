@@ -59,8 +59,8 @@ var RequestLib = {
       });
 
       // Set a hard timeout for the request being initiated.
-      request.setTimeout(constants.CLIENT_REQ_TIMEOUT, function () {
-        request.destroy(constants.REQ_TIMED_OUT);
+      request.setTimeout(RdGlobalConfig.CLIENT_REQ_TIMEOUT, function () {
+        request.destroy(constants.REQ_TIMED_OUT + RdGlobalConfig.CLIENT_REQ_TIMEOUT + ' ms');
       });
 
       /**

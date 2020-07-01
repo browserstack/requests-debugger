@@ -186,6 +186,7 @@ describe('CommandLineManager', function () {
       sinon.assert.called(process.exit);
     });
 
+    // --port
     it("sets the port of Requests Debugger Tool Proxy using the '--port' argument", function () {
       argv = argv.concat(['--port', '9098']);
       sinon.stub(console, 'log');
@@ -225,6 +226,94 @@ describe('CommandLineManager', function () {
       sinon.stub(console, 'log');
       CommandLineManager.processArgs(argv);
       sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--port', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    // --request-timeout
+    it("sets the timeout for the request being fired from the tool using the arg --request-timeout", function () {
+      argv = argv.concat(['--request-timeout', '200000']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.CLIENT_REQ_TIMEOUT).to.eql(200000);
+    });
+
+    it('Uses the default timeout for requests fired from the tool if not provided via arguments', function () {
+      sinon.stub(console, 'log');
+      var timeoutBeforeParsing = RdGlobalConfig.CLIENT_REQ_TIMEOUT;
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.CLIENT_REQ_TIMEOUT).to.eql(timeoutBeforeParsing);
+    });
+
+    it("exits with invalid args if request timeout provided is negative", function () {
+      argv = argv.concat(['--request-timeout', '-1']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--request-timeout, -1', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the request timeout provided is not a number', function () {
+      argv = argv.concat(['--request-timeout', 'random string']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--request-timeout', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the --request-timeout arg is provided without any value', function () {
+      argv = argv.concat(['--request-timeout']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--request-timeout', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    // --retry-delay
+    it("sets the delay after which a failed request should be retried using the arg --retry-delay", function () {
+      argv = argv.concat(['--retry-delay', '200']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.RETRY_DELAY).to.eql(200);
+    });
+
+    it('Uses the default delay before firing the same request again if the arg --retry-delay is not provided', function () {
+      sinon.stub(console, 'log');
+      var delayBeforeParsing = RdGlobalConfig.RETRY_DELAY;
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.RETRY_DELAY).to.eql(delayBeforeParsing);
+    });
+
+    it("exits with invalid args if the delay value provided is negative", function () {
+      argv = argv.concat(['--retry-delay', '-1']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--retry-delay, -1', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the delay value provided is not a number', function () {
+      argv = argv.concat(['--retry-delay', 'random string']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--retry-delay', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the --retry-delay arg is provided without any value', function () {
+      argv = argv.concat(['--retry-delay']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--retry-delay', '\n');
       console.log.restore();
       sinon.assert.called(process.exit);
     });
