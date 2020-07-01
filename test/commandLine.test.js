@@ -113,6 +113,15 @@ describe('CommandLineManager', function () {
       sinon.assert.called(process.exit);
     });
 
+    it("logs version of the tool if '--version' is passed and exits", function () {
+      sinon.stub(console, 'log');
+      argv = argv.concat(['--version']);
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, 'Version:', constants.VERSION);
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
     it("invalid args will be logged and the tool will exit", function () {
       sinon.stub(console, 'log');
       argv = argv.concat(['--wrongArg']);

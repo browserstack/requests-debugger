@@ -86,8 +86,8 @@ var RdTool = {
    * collection and connectivity checks. Finally, sets up the tool proxy
    */
   start: function () {
-    console.log(Utils.formatAndBeautifyLine('Starting Requests Debugger Tool', '-', '-', 60, true));
     CommandLineManager.processArgs(process.argv);
+    console.log(Utils.formatAndBeautifyLine('Starting Requests Debugger Tool', '-', '-', 60, true));
     RdGlobalConfig.StatsHandler = StatsFactory.getHandler(process.platform);
     RdTool.initLoggers();
     /* eslint-disable indent */

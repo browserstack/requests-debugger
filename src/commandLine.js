@@ -21,7 +21,8 @@ var CommandLineManager = {
                      + "                                            for storing logs. Default: Current Working Directory\n"
                      + "  --del-logs                              : Deletes any existing logs from the RequestDebuggerLogs/ directory and initializes\n"
                      + "                                            new files for logging\n"
-                     + "  --help                                  : Help for Requests Debugger\n";
+                     + "  --help                                  : Help for Requests Debugger Tool\n"
+                     + "  --version                               : Version of the Requests Debugger Tool\n";
 
     console.log(helpOutput);
   },
@@ -41,9 +42,17 @@ var CommandLineManager = {
     var invalidArgs = new Set();
     /* eslint-enable no-undef */
 
+    // help argument. Logs the CLI usage and exits
     var index = argv.indexOf('--help');
     if (index !== -1) {
       CommandLineManager.helpForArgs();
+      process.exit(0);
+    }
+
+    // version argument. Logs the version and exits
+    index = argv.indexOf('--version');
+    if (index !== -1) {
+      console.log("Version:", constants.VERSION);
       process.exit(0);
     }
 

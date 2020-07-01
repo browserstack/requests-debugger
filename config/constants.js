@@ -1,3 +1,4 @@
+module.exports.VERSION = '1.0.0';
 module.exports.NO_REPORT_GENERATED = 'COULD NOT GENERATE REPORT FOR : ';
 module.exports.HUB_STATUS_URL = 'http://hub-cloud.browserstack.com/wd/hub/status';
 module.exports.RAILS_AUTOMATE = 'http://automate.browserstack.com';

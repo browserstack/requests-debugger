@@ -18,7 +18,8 @@
     - `--proxy-pass <password>`: Password for auth of the Upstream Proxy
     - `--logs-path <relative/absolute path>`: Directory where the 'RequestsDebuggerLogs' folder will be created for storing logs. Default: Current Working Directory
     - `--del-logs`: Deletes any existing logs from the RequestsDebuggerLogs/ directory and initializes new files for logging
-    - `--help`: Help for Requests Debugger
+    - `--help`: Help for Requests Debugger Tool
+    - `--version`: Version of the Requests Debugger Tool
 - Executable
   - Run the Platform Specific executable via terminal/cmd:
     - Mac: `./RequestsDebugger-Mac <args>`
