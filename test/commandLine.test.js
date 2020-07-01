@@ -35,7 +35,16 @@ describe('CommandLineManager', function () {
       CommandLineManager.processArgs(argv);
       console.log.restore();
       expect(RdGlobalConfig.proxy.host).to.eql('host');
-      expect(RdGlobalConfig.proxy.port).to.eql('9687');
+      expect(RdGlobalConfig.proxy.port).to.eql(9687);
+    });
+
+    it('proxy-port is set to the default value when its not in the expected range', function () {
+      sinon.stub(console, 'log');
+      argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '99999']);
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.port).to.eql(constants.DEFAULT_PROXY_PORT);
     });
 
     it('parse proxy-host, proxy-port, proxy-user and proxy-pass', function () {
@@ -44,7 +53,7 @@ describe('CommandLineManager', function () {
       CommandLineManager.processArgs(argv);
       console.log.restore();
       expect(RdGlobalConfig.proxy.host).to.eql('host');
-      expect(RdGlobalConfig.proxy.port).to.eql('9687');
+      expect(RdGlobalConfig.proxy.port).to.eql(9687);
       expect(RdGlobalConfig.proxy.username).to.eql('user');
       expect(RdGlobalConfig.proxy.password).to.eql('pass');
     });
@@ -64,7 +73,7 @@ describe('CommandLineManager', function () {
       CommandLineManager.processArgs(argv);
       console.log.restore();
       expect(RdGlobalConfig.proxy.host).to.eql('host');
-      expect(RdGlobalConfig.proxy.port).to.eql('9687');
+      expect(RdGlobalConfig.proxy.port).to.eql(9687);
       expect(RdGlobalConfig.proxy.username).to.eql('user');
       expect(RdGlobalConfig.proxy.password).to.eql('');
     });
@@ -84,7 +93,7 @@ describe('CommandLineManager', function () {
       CommandLineManager.processArgs(argv);
       console.log.restore();
       expect(RdGlobalConfig.proxy.host).to.eql('host');
-      expect(RdGlobalConfig.proxy.port).to.eql('9687');
+      expect(RdGlobalConfig.proxy.port).to.eql(9687);
       expect(RdGlobalConfig.proxy.username).to.eql(undefined);
       expect(RdGlobalConfig.proxy.password).to.eql(undefined);
     });
@@ -251,7 +260,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--request-timeout', '-1']);
       sinon.stub(console, 'log');
       CommandLineManager.processArgs(argv);
-      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--request-timeout, -1', '\n');
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--request-timeout', '\n');
       console.log.restore();
       sinon.assert.called(process.exit);
     });
@@ -295,7 +304,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--retry-delay', '-1']);
       sinon.stub(console, 'log');
       CommandLineManager.processArgs(argv);
-      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--retry-delay, -1', '\n');
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--retry-delay', '\n');
       console.log.restore();
       sinon.assert.called(process.exit);
     });

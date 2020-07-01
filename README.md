@@ -16,7 +16,7 @@
     - `--proxy-host <hostname>`: Hostname of the Upstream Proxy
     - `--proxy-port <port>`: Port of the Upstream Proxy. Default: 3128 (if hostname is provided)
     - `--proxy-user <username>`: Username for auth of the Upstream Proxy
-    - `--proxy-pass <password>`: Password for auth of the Upstream Proxy
+    - `--proxy-pass <password>`: Password for auth of the Upstream Proxy. Default: empty (if username is provided)
     - `--retry-delay <milliseconds>`: Delay for the retry of a failed request. Default: 1000ms
     - `--request-timeout <milliseconds>`: Hard timeout for killing the requests being fired from the tool before receiving any response. Default: 260000ms.
     - `--logs-path <relative/absolute path>`: Directory where the 'RequestsDebuggerLogs' folder will be created for storing logs. Default: Current Working Directory

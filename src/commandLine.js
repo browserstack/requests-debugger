@@ -33,7 +33,7 @@ var CommandLineManager = {
   },
 
   validArgValue: function (value) {
-    return value && value.length > 0 && !value.startsWith('-');
+    return value && value.length > 0 && !value.startsWith('--');
   },
 
   /**
@@ -133,7 +133,13 @@ var CommandLineManager = {
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         if (RdGlobalConfig.proxy && RdGlobalConfig.proxy.host) {
-          RdGlobalConfig.proxy.port = argv[index + 1];
+          var probableProxyPort = parseInt(argv[index + 1]);
+          if (!isNaN(probableProxyPort) && (probableProxyPort <= constants.PORTS.MAX) && (probableProxyPort >= constants.PORTS.MIN)) {
+            RdGlobalConfig.proxy.port = probableProxyPort;
+          } else {
+            console.log("\nProxy Port can only range from:", constants.PORTS.MIN, "to:", constants.PORTS.MAX);
+            invalidArgs.add('--proxy-port');
+          }
         } else {
           if (!invalidArgs.has('--proxy-host')) missingArgs.add('--proxy-host');
         }
@@ -146,7 +152,7 @@ var CommandLineManager = {
     
     // if proxy port value in invalid or doesn't exist and host exists, set the default value
     if (RdGlobalConfig.proxy && RdGlobalConfig.proxy.host && (invalidArgs.has('--proxy-port') || !RdGlobalConfig.proxy.port)) {
-      console.log('Setting Default Proxy Port:', constants.DEFAULT_PROXY_PORT, '\n');
+      console.log('\nSetting Default Proxy Port:', constants.DEFAULT_PROXY_PORT, '\n');
       RdGlobalConfig.proxy.port = constants.DEFAULT_PROXY_PORT;
       invalidArgs.delete('--proxy-port');
     }
