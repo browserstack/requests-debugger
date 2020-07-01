@@ -12,6 +12,7 @@
   - Install all the packages required: `npm install`
   - Start Requests Debugger with the required arguments: `npm run start -- <args>`. 
   - Supported `args`:
+    - `--port <port>`: Port on which the Requests Debugger Tool's Proxy will run. Default: 9687
     - `--proxy-host <hostname>`: Hostname of the Upstream Proxy
     - `--proxy-port <port>`: Port of the Upstream Proxy. Default: 3128 (if hostname is provided)
     - `--proxy-user <username>`: Username for auth of the Upstream Proxy

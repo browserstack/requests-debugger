@@ -13,6 +13,8 @@ var CommandLineManager = {
                      + "\n"
                      + "Usage: RequestsDebugger [ARGUMENTS]\n\n"
                      + "ARGUMENTS:\n"
+                     + "  --port        <port>                    : Port on which the Requests Debugger Tool's Proxy will run\n"
+                     + "                                            Default: 9687\n"
                      + "  --proxy-host  <hostname>                : Hostname of the Upstream Proxy\n"
                      + "  --proxy-port  <port>                    : Port of the Upstream Proxy. Default: 3128 (if hostname is provided)\n"
                      + "  --proxy-user  <username>                : Username for auth of the Upstream Proxy\n"
@@ -54,6 +56,24 @@ var CommandLineManager = {
     if (index !== -1) {
       console.log("Version:", constants.VERSION);
       process.exit(0);
+    }
+
+    // port for Requests Debugger Proxy
+    index = argv.indexOf('--port');
+    if (index !== -1) {
+      if (CommandLineManager.validArgValue(argv[index + 1])) {
+        var probablePort = parseInt(argv[index + 1]);
+        if (!isNaN(probablePort) && (probablePort <= constants.PORTS.MAX) && (probablePort >= constants.PORTS.MIN)) {
+          constants.RD_HANDLER_PORT = probablePort;
+        } else {
+          console.log("Port can only range from:", constants.PORTS.MIN, "to:", constants.PORTS.MAX);
+          invalidArgs.add('--port');
+        }
+        argv.splice(index, 2);
+      } else {
+        invalidArgs.add('--port');
+        argv.splice(index, 1);
+      }
     }
 
     // process proxy host

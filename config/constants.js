@@ -9,6 +9,10 @@ module.exports.DEFAULT_PROXY_PORT = '3128';
 module.exports.MAX_RETRIES = 1;
 module.exports.REQ_TIMED_OUT = 'Request Timed Out. Did not get any response for ' + this.CLIENT_REQ_TIMEOUT + ' ms.';
 module.exports.REQ_FAILED_MSG = 'Request Failed At Requests Debugger';
+module.exports.PORTS = {
+  MAX: 65535,
+  MIN: 1
+};
 module.exports.LOGS = Object.freeze({
   NETWORK: 'NetworkStats.log',
   CPU: 'CPUStats.log',
