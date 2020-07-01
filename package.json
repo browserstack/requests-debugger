@@ -10,7 +10,8 @@
     "build:mac": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-macos src/node.js; mv node RequestsDebugger-Mac",
     "build:linux": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-linux src/node.js; mv node RequestsDebugger-Linux",
     "build:win": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-win src/node.js; mv node.exe RequestsDebugger.exe",
-    "postinstall": "cp hooks/* .git/hooks/; chmod +x .git/hooks/*"
+    "copyhooks": "cp hooks/* .git/hooks/; chmod +x .git/hooks/*",
+    "postinstall": "npm run copyhooks"
   },
   "bin": {
     "RequestsDebugger": "src/node.js"
