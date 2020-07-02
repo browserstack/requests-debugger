@@ -103,6 +103,18 @@ describe('Utils', function () {
       var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '', '=', 10, true);
       expect(beautifiedLine).to.eql('Hello, This is Requests Debugger Tool' + os.EOL);
     });
+
+    it('default ideal length for the string will be taken as 70', function () {
+      var lineToBeautify = "Hello, This is Requests Debugger Tool";
+      var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '=', '=');
+      expect(beautifiedLine).to.eql('================ Hello, This is Requests Debugger Tool =================');
+    });
+
+    it("default ideal length for the string will be taken as 70, but won't have any effect if the actual line exceeds that length", function () {
+      var lineToBeautify = "Hello, This is Requests Debugger Tool. And the length exceeds 70 characters.";
+      var beautifiedLine = Utils.formatAndBeautifyLine(lineToBeautify, '=', '=');
+      expect(beautifiedLine).to.eql('Hello, This is Requests Debugger Tool. And the length exceeds 70 characters.');
+    });
   });
 
   context('generateHeaderAndFooter', function () {
