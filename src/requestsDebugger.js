@@ -51,7 +51,7 @@ var RdTool = {
   },
 
   /**
-   * Initializes the Logging directory, Loggers & Stats Handlers.
+   * Initializes the Loggers.
    */
   _initLoggers: function () {
     RdGlobalConfig.networkLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.NETWORK));
