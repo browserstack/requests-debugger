@@ -2,19 +2,19 @@
   "name": "requestsdebugger",
   "version": "1.0.0",
   "description": "Tool to debug failed/dropped requests at client side",
-  "main": "src/node.js",
+  "main": "src/requestsDebugger.js",
   "scripts": {
-    "start": "NODE_ENV=prod node src/node.js",
+    "start": "NODE_ENV=prod node src/requestsDebugger.js",
     "lint": "./node_modules/.bin/eslint 'src/*' 'test/*' 'config/*.js'",
     "test": "npm run lint; NODE_ENV=test nyc --reporter=html ./node_modules/mocha/bin/mocha 'test/**/*.test.js'",
-    "build:mac": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-macos src/node.js; mv node RequestsDebugger-Mac",
-    "build:linux": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-linux src/node.js; mv node RequestsDebugger-Linux",
-    "build:win": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-win src/node.js; mv node.exe RequestsDebugger.exe",
+    "build:mac": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-macos src/requestsDebugger.js; mv requestsDebugger RequestsDebugger-Mac",
+    "build:linux": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-linux src/requestsDebugger.js; mv requestsDebugger RequestsDebugger-Linux",
+    "build:win": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-win src/requestsDebugger.js; mv requestsDebugger.exe RequestsDebugger.exe",
     "copyhooks": "cp hooks/* .git/hooks/; chmod +x .git/hooks/*",
     "postinstall": "npm run copyhooks"
   },
   "bin": {
-    "RequestsDebugger": "src/node.js"
+    "RequestsDebugger": "src/requestsDebugger.js"
   },
   "author": "",
   "license": "ISC",

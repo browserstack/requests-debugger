@@ -19,7 +19,7 @@ module.exports = {
     "eol-last": ["error", "always"]
   },
   "overrides": [{
-    "files": ["src/node.js", "src/commandLine.js", "test/**/*.test.js"],
+    "files": ["src/requestsDebugger.js", "src/commandLine.js", "test/**/*.test.js"],
     "rules": {
       "no-console": "off"
     }
