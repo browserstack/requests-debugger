@@ -56,7 +56,7 @@ var RdHandler = {
     } else {
 
       /**
-       * Sets the internal method to generate request options if external/upstream
+       * Sets the internal method to generate request options if external/upstream proxy
        * doesn't exists
        * @param {http.IncomingMessage} clientRequest 
        * @returns {Object}
@@ -153,7 +153,7 @@ var RdHandler = {
         clientResponse.end(response.data);
       })
       .catch(function (err) {
-        RdGlobalConfig.reqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
+        RdGlobalConfig.reqLogger.error(err.customTopic || constants.TOPICS.UNEXPECTED_ERROR, clientRequest.method + ' ' + clientRequest.url,
           false, {
             errorMessage: err.message.toString()
           },

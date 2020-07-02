@@ -67,6 +67,8 @@ var RdTool = {
    * task and log using the loggers.
    */
   _initLoggingHandlers: function () {
+    RdGlobalConfig.statsHandler = StatsFactory.getHandler(process.platform);
+
     RdGlobalConfig.networkLogHandler = function (topic, uuid, callback) {
       topic = topic || constants.TOPICS.NO_TOPIC;
       RdGlobalConfig.statsHandler.network(function (networkStats) {
@@ -92,7 +94,6 @@ var RdTool = {
     };
 
     RdGlobalConfig.connHandler = ConnectivityChecker.fireChecks;
-    RdGlobalConfig.statsHandler = StatsFactory.getHandler(process.platform);
   },
 
   /**
