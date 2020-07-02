@@ -52,7 +52,7 @@ LinuxStats.mem = function (callback) {
         memStats.swapFree = memStats.swapFree ? memStats.swapFree * 1024 : 0;
         memStats.swapUsed = memStats.swapTotal - memStats.swapFree;
       } catch (e) {
-        RdGlobalConfig.ErrLogger.error(constants.TOPICS.LINUX_MEM, e.toString(), false, {});
+        RdGlobalConfig.errLogger.error(constants.TOPICS.LINUX_MEM, e.toString(), false, {});
       }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));

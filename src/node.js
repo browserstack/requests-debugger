@@ -27,7 +27,7 @@ var RdTool = {
     var basePath = RdGlobalConfig.logsPath ? path.resolve(RdGlobalConfig.logsPath) : process.cwd();
     RdGlobalConfig.LOGS_DIRECTORY = path.resolve(basePath, constants.LOGS_FOLDER);
 
-    if (RdGlobalConfig.deleteExistingLogs) {
+    if (RdGlobalConfig.DELETE_EXISTING_LOGS) {
       var filesToDelete = Object.keys(LogFiles).map(function (key) { return LogFiles[key]; });
       filesToDelete.forEach(function (file) {
         try {
@@ -48,33 +48,33 @@ var RdTool = {
       }
     }
 
-    RdGlobalConfig.NetworkLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.NETWORK));
-    RdGlobalConfig.MemLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.MEM));
-    RdGlobalConfig.CPULogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.CPU));
-    RdGlobalConfig.ReqLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.REQUESTS));
-    RdGlobalConfig.ConnLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.CONNECTIVITY));
-    RdGlobalConfig.ErrLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.ERROR));
+    RdGlobalConfig.networkLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.NETWORK));
+    RdGlobalConfig.memLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.MEM));
+    RdGlobalConfig.cpuLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.CPU));
+    RdGlobalConfig.reqLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.REQUESTS));
+    RdGlobalConfig.connLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.CONNECTIVITY));
+    RdGlobalConfig.errLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.ERROR));
 
-    RdGlobalConfig.NetworkLogHandler = function (topic, uuid, callback) {
+    RdGlobalConfig.networkLogHandler = function (topic, uuid, callback) {
       topic = topic || constants.TOPICS.NO_TOPIC;
       RdGlobalConfig.StatsHandler.network(function (networkStats) {
-        RdGlobalConfig.NetworkLogger.info(topic, networkStats, false, {}, uuid);
+        RdGlobalConfig.networkLogger.info(topic, networkStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
       });
     };
 
-    RdGlobalConfig.CpuLogHandler = function (topic, uuid, callback) {
+    RdGlobalConfig.cpuLogHandler = function (topic, uuid, callback) {
       topic = topic || constants.TOPICS.NO_TOPIC;
       RdGlobalConfig.StatsHandler.cpu(function (cpuStats) {
-        RdGlobalConfig.CPULogger.info(topic, cpuStats, false, {}, uuid);
+        RdGlobalConfig.cpuLogger.info(topic, cpuStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
       });
     };
 
-    RdGlobalConfig.MemLogHandler = function (topic, uuid, callback) {
+    RdGlobalConfig.memLogHandler = function (topic, uuid, callback) {
       topic = topic || constants.TOPICS.NO_TOPIC;
       RdGlobalConfig.StatsHandler.mem(function (memStats) {
-        RdGlobalConfig.MemLogger.info(topic, memStats, false, {}, uuid);
+        RdGlobalConfig.memLogger.info(topic, memStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
       });
     };
@@ -98,17 +98,17 @@ var RdTool = {
     /*eslint-enable indent*/
 
     console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CPU_STATS, '', '-', 60, true));
-    RdGlobalConfig.CpuLogHandler('Initial CPU', null, function () {
+    RdGlobalConfig.cpuLogHandler('Initial CPU', null, function () {
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CPU_STATS_COLLECTED, '', '-', 60, true));
     });
 
     console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_MEMORY_STATS, '', '-', 60, true));
-    RdGlobalConfig.NetworkLogHandler('Initial Network', null, function () {
+    RdGlobalConfig.networkLogHandler('Initial Network', null, function () {
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.NETWORK_STATS_COLLECTED, '', '-', 60, true));
     });
 
     console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_MEMORY_STATS, '', '-', 60, true));
-    RdGlobalConfig.MemLogHandler('Initial Memory', null, function () {
+    RdGlobalConfig.memLogHandler('Initial Memory', null, function () {
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.MEMORY_STATS_COLLECTED, '', '-', 60, true));
     });
 

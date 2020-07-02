@@ -49,7 +49,7 @@ var RequestLib = {
 
       // Log the request that will be initiated on behalf of the client
       request.on('finish', function () {
-        RdGlobalConfig.ReqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, clientRequest.method + ' ' + clientRequest.url,
+        RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, clientRequest.method + ' ' + clientRequest.url,
           false,
           Object.assign({}, params.furtherRequestOptions, {
             data: Buffer.concat(params.request.data).toString()
@@ -96,7 +96,7 @@ var RequestLib = {
         });
   
         clientRequest.on('end', function () {
-          RdGlobalConfig.ReqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + params.request.url, false, {
+          RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + params.request.url, false, {
             data: Buffer.concat(params.request.data).toString()
           },
           clientRequest.id);
@@ -120,11 +120,11 @@ var RequestLib = {
     return RequestLib._makeRequest(params, clientRequest, retries)
       .catch(function (err) {
         // Collect Network & Connectivity Logs whenever a request fails
-        RdGlobalConfig.NetworkLogHandler("Request", clientRequest.id);
+        RdGlobalConfig.networkLogHandler("Request", clientRequest.id);
         RdGlobalConfig.ConnHandler("Request", clientRequest.id);
 
         if (retries > 0) {
-          RdGlobalConfig.ReqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
+          RdGlobalConfig.reqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
             false, {
               errorMessage: err.message.toString()
             },

@@ -62,7 +62,7 @@ MacStats.mem = function (callback) {
           }
         }
       } catch (e) {
-        RdGlobalConfig.ErrLogger.error(constants.TOPICS.MAC_MEM, e.toString(), false, {});
+        RdGlobalConfig.errLogger.error(constants.TOPICS.MAC_MEM, e.toString(), false, {});
       }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));

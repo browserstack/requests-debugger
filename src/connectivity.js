@@ -174,7 +174,7 @@ var ConnectivityChecker = {
 
         if (++totalChecksDone === ConnectivityChecker.connectionChecks.length) {
           checksResult = Utils.beautifyObject(checksResult, "Result Key", "Result Value");
-          RdGlobalConfig.ConnLogger.info(topic, checksResult, false, {}, uuid);
+          RdGlobalConfig.connLogger.info(topic, checksResult, false, {}, uuid);
           if (Utils.isValidCallback(callback)) callback();
         }
       });

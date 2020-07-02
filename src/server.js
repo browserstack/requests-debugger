@@ -127,7 +127,7 @@ var RdHandler = {
       data: []
     };
     
-    RdGlobalConfig.ReqLogger.info(constants.TOPICS.CLIENT_REQUEST_START, request.method + ' ' + request.url,
+    RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_START, request.method + ' ' + request.url,
       false, { 
         headers: request.headers 
       }, 
@@ -142,7 +142,7 @@ var RdHandler = {
 
     ReqLib.call(paramsForRequest, clientRequest)
       .then(function (response) {
-        RdGlobalConfig.ReqLogger.info(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + response.statusCode,
+        RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + response.statusCode,
           false, {
             data: response.data,
             headers: response.headers,
@@ -153,14 +153,14 @@ var RdHandler = {
         clientResponse.end(response.data);
       })
       .catch(function (err) {
-        RdGlobalConfig.ReqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
+        RdGlobalConfig.reqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
           false, {
             errorMessage: err.message.toString()
           },
           clientRequest.id);
 
         var errorResponse = RdHandler._frameErrorResponse(furtherRequestOptions, err.message.toString());
-        RdGlobalConfig.ReqLogger.error(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + errorResponse.statusCode,
+        RdGlobalConfig.reqLogger.error(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + errorResponse.statusCode,
           false,
           errorResponse.data,
           clientRequest.id);

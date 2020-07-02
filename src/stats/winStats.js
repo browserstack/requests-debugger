@@ -57,7 +57,7 @@ WinStats.mem = function (callback) {
         memStats.swapUsed = swapUsed * 1024 * 1024;
         memStats.swapFree = memStats.swapTotal - memStats.swapUsed;
       } catch (e) {
-        RdGlobalConfig.ErrLogger(constants.TOPICS.WIN_MEM, e.toString(), false, {});
+        RdGlobalConfig.errLogger(constants.TOPICS.WIN_MEM, e.toString(), false, {});
       }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));

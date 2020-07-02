@@ -103,7 +103,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat([]);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.deleteExistingLogs).to.be.false;
+      expect(RdGlobalConfig.DELETE_EXISTING_LOGS).to.be.false;
     });
 
     it('set to true if argument if provided, i.e. existing logs will be deleted', function () {
@@ -111,7 +111,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--del-logs']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.deleteExistingLogs).to.be.true;
+      expect(RdGlobalConfig.DELETE_EXISTING_LOGS).to.be.true;
     });
 
     it("logs help regarding arguments if '--help' is passed irrespective of other arguments", function () {
@@ -178,7 +178,7 @@ describe('CommandLineManager', function () {
       CommandLineManager.processArgs([]);
       sinon.assert.notCalled(process.exit);
       expect(RdGlobalConfig.proxy).to.be.undefined;
-      expect(RdGlobalConfig.deleteExistingLogs).to.be.false;
+      expect(RdGlobalConfig.DELETE_EXISTING_LOGS).to.be.false;
     });
 
     it('--logs-path arg with value', function () {

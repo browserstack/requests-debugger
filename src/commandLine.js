@@ -199,10 +199,10 @@ var CommandLineManager = {
     // process arguments which decides whether existing logs should be deleted or appended
     index = argv.indexOf('--del-logs');
     if (index !== -1) {
-      RdGlobalConfig.deleteExistingLogs = true;
+      RdGlobalConfig.DELETE_EXISTING_LOGS = true;
       argv.splice(index, 1);
     } else {
-      RdGlobalConfig.deleteExistingLogs = false;
+      RdGlobalConfig.DELETE_EXISTING_LOGS = false;
     }
 
     index = argv.indexOf('--logs-path');

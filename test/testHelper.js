@@ -63,53 +63,53 @@ function deleteProxy() {
 }
 
 function initializeDummyLoggers() {
-  constants.RdGlobalConfig.ConnLogger = {
+  constants.RdGlobalConfig.connLogger = {
     info: function () {},
     error: function () {}
   };
-  constants.RdGlobalConfig.NetworkLogger = {
+  constants.RdGlobalConfig.networkLogger = {
     info: function () {},
     error: function () {}
   };
-  constants.RdGlobalConfig.MemLogger = {
+  constants.RdGlobalConfig.memLogger = {
     info: function () {},
     error: function () {}
   };
-  constants.RdGlobalConfig.CPULogger = {
+  constants.RdGlobalConfig.cpuLogger = {
     info: function () {},
     error: function () {}
   };
-  constants.RdGlobalConfig.ReqLogger = {
+  constants.RdGlobalConfig.reqLogger = {
     info: function () {},
     error: function () {}
   };
-  constants.RdGlobalConfig.ErrLogger = {
+  constants.RdGlobalConfig.errLogger = {
     info: function () {},
     error: function () {}
   };
 }
 
 function deleteLoggers() {
-  delete constants.RdGlobalConfig.ConnLogger;
-  delete constants.RdGlobalConfig.NetworkLogger;
-  delete constants.RdGlobalConfig.MemLogger;
-  delete constants.RdGlobalConfig.CPULogger;
-  delete constants.RdGlobalConfig.ReqLogger;
-  delete constants.RdGlobalConfig.ErrLogger;
+  delete constants.RdGlobalConfig.connLogger;
+  delete constants.RdGlobalConfig.networkLogger;
+  delete constants.RdGlobalConfig.memLogger;
+  delete constants.RdGlobalConfig.cpuLogger;
+  delete constants.RdGlobalConfig.reqLogger;
+  delete constants.RdGlobalConfig.errLogger;
 }
 
 function initializeDummyHandlers() {
-  constants.RdGlobalConfig.NetworkLogHandler = function () {};
+  constants.RdGlobalConfig.networkLogHandler = function () {};
   constants.RdGlobalConfig.ConnHandler = function () {};
-  constants.RdGlobalConfig.CpuLogHandler = function () {};
-  constants.RdGlobalConfig.MemLogHandler = function () {};
+  constants.RdGlobalConfig.cpuLogHandler = function () {};
+  constants.RdGlobalConfig.memLogHandler = function () {};
 }
 
 function deleteHandlers() {
-  delete constants.RdGlobalConfig.NetworkLogHandler;
+  delete constants.RdGlobalConfig.networkLogHandler;
   delete constants.RdGlobalConfig.ConnHandler;
-  delete constants.RdGlobalConfig.CpuLogHandler;
-  delete constants.RdGlobalConfig.MemLogHandler;
+  delete constants.RdGlobalConfig.cpuLogHandler;
+  delete constants.RdGlobalConfig.memLogHandler;
 }
 
 module.exports = {
