@@ -21,9 +21,10 @@ var Utils = require('./utils');
 var RdTool = {
 
   /**
-   * Initializes the Logging directory, Loggers & Stats Handlers.
+   * Initialize the logging directory by resolving the path.
+   * Exits if there was an error in creating the logs folder at that path.
    */
-  initLoggers: function () {
+  _initLoggingDirectory: function () {
     var basePath = RdGlobalConfig.logsPath ? path.resolve(RdGlobalConfig.logsPath) : process.cwd();
     RdGlobalConfig.LOGS_DIRECTORY = path.resolve(basePath, constants.LOGS_FOLDER);
 
@@ -47,17 +48,28 @@ var RdTool = {
         process.exit(1);
       }
     }
+  },
 
+  /**
+   * Initializes the Logging directory, Loggers & Stats Handlers.
+   */
+  _initLoggers: function () {
     RdGlobalConfig.networkLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.NETWORK));
     RdGlobalConfig.memLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.MEM));
     RdGlobalConfig.cpuLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.CPU));
     RdGlobalConfig.reqLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.REQUESTS));
     RdGlobalConfig.connLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.CONNECTIVITY));
     RdGlobalConfig.errLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.ERROR));
+  },
 
+  /**
+   * Initialize the handlers for specific loggers. Wrappers over statsHandler to perform the
+   * task and log using the loggers.
+   */
+  _initLoggingHandlers: function () {
     RdGlobalConfig.networkLogHandler = function (topic, uuid, callback) {
       topic = topic || constants.TOPICS.NO_TOPIC;
-      RdGlobalConfig.StatsHandler.network(function (networkStats) {
+      RdGlobalConfig.statsHandler.network(function (networkStats) {
         RdGlobalConfig.networkLogger.info(topic, networkStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
       });
@@ -65,7 +77,7 @@ var RdTool = {
 
     RdGlobalConfig.cpuLogHandler = function (topic, uuid, callback) {
       topic = topic || constants.TOPICS.NO_TOPIC;
-      RdGlobalConfig.StatsHandler.cpu(function (cpuStats) {
+      RdGlobalConfig.statsHandler.cpu(function (cpuStats) {
         RdGlobalConfig.cpuLogger.info(topic, cpuStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
       });
@@ -73,13 +85,23 @@ var RdTool = {
 
     RdGlobalConfig.memLogHandler = function (topic, uuid, callback) {
       topic = topic || constants.TOPICS.NO_TOPIC;
-      RdGlobalConfig.StatsHandler.mem(function (memStats) {
+      RdGlobalConfig.statsHandler.mem(function (memStats) {
         RdGlobalConfig.memLogger.info(topic, memStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
       });
     };
 
-    RdGlobalConfig.ConnHandler = ConnectivityChecker.fireChecks;
+    RdGlobalConfig.connHandler = ConnectivityChecker.fireChecks;
+    RdGlobalConfig.statsHandler = StatsFactory.getHandler(process.platform);
+  },
+
+  /**
+   * Calls internal methods to set up logs directory, loggers and handlers
+   */
+  initLoggersAndHandlers: function () {
+    RdTool._initLoggingDirectory();
+    RdTool._initLoggers();
+    RdTool._initLoggingHandlers();
   },
 
   /**
@@ -89,8 +111,7 @@ var RdTool = {
   start: function () {
     CommandLineManager.processArgs(process.argv);
     console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.STARTING_TOOL, '-', '-', 60, true));
-    RdGlobalConfig.StatsHandler = StatsFactory.getHandler(process.platform);
-    RdTool.initLoggers();
+    RdTool.initLoggersAndHandlers();
     /* eslint-disable indent */
     console.log(Utils.formatAndBeautifyLine("Refer '" + RdGlobalConfig.LOGS_DIRECTORY + "' folder for CPU/Network/Memory" +
                                             " Stats and Connectivity Checks with BrowserStack components",
@@ -102,7 +123,7 @@ var RdTool = {
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CPU_STATS_COLLECTED, '', '-', 60, true));
     });
 
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_MEMORY_STATS, '', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_NETWORK_STATS, '', '-', 60, true));
     RdGlobalConfig.networkLogHandler('Initial Network', null, function () {
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.NETWORK_STATS_COLLECTED, '', '-', 60, true));
     });
@@ -113,7 +134,7 @@ var RdTool = {
     });
 
     console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CONNECTIVITY, '', '-', 60, true));
-    RdGlobalConfig.ConnHandler('Initial Connectivity', null, function () {
+    RdGlobalConfig.connHandler('Initial Connectivity', null, function () {
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CONNECTIVITY_CHECKS_DONE, '', '-', 60, true));
     });
 

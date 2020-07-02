@@ -119,12 +119,13 @@ var RequestLib = {
     retries = (typeof retries === 'number') ? Math.min(constants.MAX_RETRIES, Math.max(retries, 0)) : constants.MAX_RETRIES;
     return RequestLib._makeRequest(params, clientRequest, retries)
       .catch(function (err) {
+        var errTopic = err.customTopic || constants.TOPICS.UNEXPECTED_ERROR;
         // Collect Network & Connectivity Logs whenever a request fails
-        RdGlobalConfig.networkLogHandler("Request", clientRequest.id);
-        RdGlobalConfig.ConnHandler("Request", clientRequest.id);
+        RdGlobalConfig.networkLogHandler(errTopic, clientRequest.id);
+        RdGlobalConfig.connHandler(errTopic, clientRequest.id);
 
         if (retries > 0) {
-          RdGlobalConfig.reqLogger.error(err.customTopic, clientRequest.method + ' ' + clientRequest.url,
+          RdGlobalConfig.reqLogger.error(errTopic, clientRequest.method + ' ' + clientRequest.url,
             false, {
               errorMessage: err.message.toString()
             },

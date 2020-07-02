@@ -91,5 +91,6 @@
 
 
 ## Note
-- The tool is written in a manner to make it compatible with Node 4.
+- The tool is written in a manner to make it compatible with Node 4.4.0.
 - `npm test` sets up a server which runs on port 8787.
+- Building the executables require Node >=4.9.1. 

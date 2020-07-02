@@ -15,13 +15,13 @@ describe('Utils', function () {
         username: "general",
         password: "fancy"
       };
-      var base64 = Buffer.from(proxyObj.username + ':' + proxyObj.password).toString('base64');
+      var base64 = new Buffer(proxyObj.username + ':' + proxyObj.password).toString('base64');
       expect(Utils.proxyAuthToBase64(proxyObj)).to.eql('Basic ' + base64);
     });
 
     it('should return the auth header value when auth params are passed in user:pass format', function () {
       var auth = 'general:fancy';
-      var base64 = Buffer.from(auth).toString('base64');
+      var base64 = new Buffer(auth).toString('base64');
       expect(Utils.proxyAuthToBase64(auth)).to.eql('Basic ' + base64);
     });
   });
@@ -148,7 +148,7 @@ describe('Utils', function () {
       };
 
       var expectedOutput = "\n  KEYS   :   VALUES  \n"
-                           + "----------------------------------------------------------------------------------------- -\n"
+                           + "------------- -\n"
                            + " keyOne  :  valueOne \n"
                            + " keyTwo  :  valueTwo \n\n";
 
@@ -165,11 +165,11 @@ describe('Utils', function () {
       }];
 
       var expectedOutput = "\n\n  KEYS    :   VALUES   \n"
-                           + "----------------------------------------------------------------------------------------- -\n"
+                           + "--------------- -\n"
                            + " keyOne   :  valueOne  \n"
                            + " keyTwo   :  valueTwo  \n"
                            + "\n\n  KEYS    :   VALUES   \n"
-                           + "----------------------------------------------------------------------------------------- -\n"
+                           + "--------------- -\n"
                            + " keyFour  :  valueFour \n\n";
       var beautifiedObject = Utils.beautifyObject(objs, "KEYS", "VALUES");
       expect(beautifiedObject).to.eql(expectedOutput);
@@ -190,11 +190,11 @@ describe('Utils', function () {
       }];
 
       var expectedOutput = "\n\n  KEYS   :   VALUES  \n"
-                           + "----------------------------------------------------------------------------------------- -\n"
+                           + "------------- -\n"
                            + "  key    :   value   \n\n"
                            + "Not an Object\n\n"
                            + "  KEYS   :   VALUES  \n"
-                           + "----------------------------------------------------------------------------------------- -\n"
+                           + "------------- -\n"
                            + " keyTwo  :  valueTwo \n\n";
       var result = Utils.beautifyObject(objs, "KEYS", "VALUES");
       expect(result).to.eql(expectedOutput);

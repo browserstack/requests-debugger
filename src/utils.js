@@ -14,9 +14,9 @@ var fs = require('fs');
 var proxyAuthToBase64 = function (proxyObj) {
   var base64Auth;
   if (typeof proxyObj === 'object') {
-    base64Auth = Buffer.from(proxyObj.username + ":" + proxyObj.password);
+    base64Auth = new Buffer(proxyObj.username + ":" + proxyObj.password);
   } else if (typeof proxyObj === 'string') {
-    base64Auth = Buffer.from(proxyObj);
+    base64Auth = new Buffer(proxyObj);
   }
   return "Basic " + base64Auth.toString('base64');
 };
@@ -202,7 +202,7 @@ var beautifyObject = function (obj, keysTitle, valuesTitle, maxKeyLength, maxVal
   var finalResult = formatAndBeautifyLine(keysTitle, " ", " ", longestKey, false)
                     + ' : '
                     + formatAndBeautifyLine(valuesTitle, " ", " ", longestVal, true)
-                    + formatAndBeautifyLine("-", "-", "", 90, true);
+                    + formatAndBeautifyLine("-", "-", "", longestKey + longestVal, true);
 
   Object.keys(obj).forEach(function (key) {
     finalResult += formatAndBeautifyLine(key, " ", " ", longestKey, false)

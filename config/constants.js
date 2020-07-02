@@ -66,7 +66,8 @@ module.exports.TOPICS = Object.freeze({
   CLIENT_REQUEST_END: 'Request End',
   CLIENT_REQUEST_START: 'Request Start',
   CLIENT_RESPONSE_END: 'Response End',
-  NO_TOPIC: 'NO_TOPIC'
+  NO_TOPIC: 'NO_TOPIC',
+  UNEXPECTED_ERROR: 'UNEXPECTED_ERROR'
 });
 
 module.exports.STATIC_MESSAGES = Object.freeze({

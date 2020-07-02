@@ -100,14 +100,14 @@ function deleteLoggers() {
 
 function initializeDummyHandlers() {
   constants.RdGlobalConfig.networkLogHandler = function () {};
-  constants.RdGlobalConfig.ConnHandler = function () {};
+  constants.RdGlobalConfig.connHandler = function () {};
   constants.RdGlobalConfig.cpuLogHandler = function () {};
   constants.RdGlobalConfig.memLogHandler = function () {};
 }
 
 function deleteHandlers() {
   delete constants.RdGlobalConfig.networkLogHandler;
-  delete constants.RdGlobalConfig.ConnHandler;
+  delete constants.RdGlobalConfig.connHandler;
   delete constants.RdGlobalConfig.cpuLogHandler;
   delete constants.RdGlobalConfig.memLogHandler;
 }
