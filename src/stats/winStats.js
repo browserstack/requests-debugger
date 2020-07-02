@@ -11,7 +11,7 @@ var constants = require('../../config/constants');
 var RdGlobalConfig = constants.RdGlobalConfig;
 
 var WinStats = Object.create(BaseStats);
-WinStats.description = "System and Network Stats for Windows";
+WinStats.description = constants.STATIC_MESSAGES.WIN_STATS_DESC;
 WinStats.wmicPath = null;
 
 // Need to add better CPU stats here. Preferably loadavg like linux/unix.
@@ -23,7 +23,7 @@ WinStats.cpu = function (callback) {
     if (!err) {
       result = Utils.generateHeaderAndFooter(result, "Load Percentage", new Date(), startTime);
     }
-    if (Utils.isValidCallback(callback)) callback(result || constants.NO_REPORT_GENERATED + 'CPU' + os.EOL);
+    if (Utils.isValidCallback(callback)) callback(result || constants.STATIC_MESSAGES.NO_REPORT_GENERATED + 'CPU' + os.EOL);
   });
 };
 
@@ -57,7 +57,7 @@ WinStats.mem = function (callback) {
         memStats.swapUsed = swapUsed * 1024 * 1024;
         memStats.swapFree = memStats.swapTotal - memStats.swapUsed;
       } catch (e) {
-        RdGlobalConfig.ErrLogger('Win-Mem', e.toString(), false, {});
+        RdGlobalConfig.ErrLogger(constants.TOPICS.WIN_MEM, e.toString(), false, {});
       }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));

@@ -12,7 +12,7 @@ var constants = require('../../config/constants');
 var RdGlobalConfig = constants.RdGlobalConfig;
 
 var LinuxStats = Object.create(BaseStats);
-LinuxStats.description = "System and Network Stats for Linux";
+LinuxStats.description = constants.STATIC_MESSAGES.LINUX_STATS_DESC;
 
 LinuxStats.cpu = function (callback) {
   var startTime = new Date();
@@ -21,7 +21,7 @@ LinuxStats.cpu = function (callback) {
       result = result.toString().replace(/top -/g, '\n****************** ITERATION ******************\ntop -');
       result = Utils.generateHeaderAndFooter(result, 'CPU Information with 3 samples', new Date(), startTime);
     }
-    if (Utils.isValidCallback(callback)) callback(result || constants.NO_REPORT_GENERATED + 'CPU' + os.EOL);
+    if (Utils.isValidCallback(callback)) callback(result || constants.STATIC_MESSAGES.NO_REPORT_GENERATED + 'CPU' + os.EOL);
   });
 };
 
@@ -52,7 +52,7 @@ LinuxStats.mem = function (callback) {
         memStats.swapFree = memStats.swapFree ? memStats.swapFree * 1024 : 0;
         memStats.swapUsed = memStats.swapTotal - memStats.swapFree;
       } catch (e) {
-        RdGlobalConfig.ErrLogger.error('Linux-Mem', e.toString(), false, {});
+        RdGlobalConfig.ErrLogger.error(constants.TOPICS.LINUX_MEM, e.toString(), false, {});
       }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));

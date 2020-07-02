@@ -38,11 +38,18 @@ var RequestLib = {
           responseToSend.data = Buffer.concat(responseToSend.data).toString();
           resolve(responseToSend);
         });
+
+        response.on('error', function (err) {
+          reject({
+            message: err,
+            customTopic: constants.TOPICS.TOOL_RESPONSE_ERROR
+          });
+        });
       });
 
       // Log the request that will be initiated on behalf of the client
       request.on('finish', function () {
-        RdGlobalConfig.ReqLogger.info('Tool Request - Retries Left: ' + retries, clientRequest.method + ' ' + clientRequest.url,
+        RdGlobalConfig.ReqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, clientRequest.method + ' ' + clientRequest.url,
           false,
           Object.assign({}, params.furtherRequestOptions, {
             data: Buffer.concat(params.request.data).toString()
@@ -54,13 +61,13 @@ var RequestLib = {
       request.on('error', function (err) {
         reject({
           message: err,
-          customTopic: 'Tool Request - Retries Left: ' + retries
+          customTopic: constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries
         });
       });
 
       // Set a hard timeout for the request being initiated.
       request.setTimeout(RdGlobalConfig.CLIENT_REQ_TIMEOUT, function () {
-        request.destroy(constants.REQ_TIMED_OUT + RdGlobalConfig.CLIENT_REQ_TIMEOUT + ' ms');
+        request.destroy(constants.STATIC_MESSAGES.REQ_TIMED_OUT + RdGlobalConfig.CLIENT_REQ_TIMEOUT + ' ms');
       });
 
       /**
@@ -84,12 +91,12 @@ var RequestLib = {
           request.end();
           reject({
             message: err,
-            customTopic: 'Request - Retries Left: ' + retries
+            customTopic: constants.TOPICS.CLIENT_REQUEST_WITH_RETRIES + retries
           });
         });
   
         clientRequest.on('end', function () {
-          RdGlobalConfig.ReqLogger.info("Request End", params.request.method + ' ' + params.request.url, false, {
+          RdGlobalConfig.ReqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + params.request.url, false, {
             data: Buffer.concat(params.request.data).toString()
           },
           clientRequest.id);

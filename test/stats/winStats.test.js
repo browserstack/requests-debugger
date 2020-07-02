@@ -36,7 +36,7 @@ describe('WinStats', function () {
       sinon.stub(cp, 'exec').callsArgWith(1, "err", null);
 
       WinStats.cpu(function (result) {
-        expect(result).to.eql(constants.NO_REPORT_GENERATED + 'CPU' + os.EOL);
+        expect(result).to.eql(constants.STATIC_MESSAGES.NO_REPORT_GENERATED + 'CPU' + os.EOL);
       });
 
       cp.exec.restore();

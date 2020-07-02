@@ -22,9 +22,9 @@ var CommandLineManager = {
                      + "  --retry-delay     <milliseconds>            : Delay for the retry of a failed request. Default: " + RdGlobalConfig.RETRY_DELAY + "ms\n"
                      + "  --request-timeout <milliseconds>            : Hard timeout for the requests being fired by the tool before receiving any response\n"
                      + "                                                Default: " + RdGlobalConfig.CLIENT_REQ_TIMEOUT + "ms\n"
-                     + "  --logs-path       <relative/absolute path>  : Directory where the 'RequestDebuggerLogs' folder will be created\n"
+                     + "  --logs-path       <relative/absolute path>  : Directory where the '" + constants.LOGS_FOLDER + "' folder will be created\n"
                      + "                                                for storing logs. Default: Current Working Directory\n"
-                     + "  --del-logs                                  : Deletes any existing logs from the RequestDebuggerLogs/ directory and initializes\n"
+                     + "  --del-logs                                  : Deletes any existing logs from the " + constants.LOGS_FOLDER + "/ directory and initializes\n"
                      + "                                                new files for logging\n"
                      + "  --help                                      : Help for Requests Debugger Tool\n"
                      + "  --version                                   : Version of the Requests Debugger Tool\n";

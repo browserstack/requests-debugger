@@ -85,7 +85,7 @@ var RdHandler = {
    * @param {String} errorMessage 
    */
   _frameErrorResponse: function (parsedRequest, errorMessage) {
-    errorMessage += '. ' + constants.REQ_FAILED_MSG;
+    errorMessage += '. ' + constants.STATIC_MESSAGES.REQ_FAILED_MSG;
     var parseSessionId = parsedRequest.path.match(/\/wd\/hub\/session\/([a-z0-9]+)\/*/);
     if (parseSessionId) {
       var sessionId = parseSessionId[1];
@@ -95,7 +95,7 @@ var RdHandler = {
           status: 13,
           value: {
             message: errorMessage,
-            error: constants.REQ_FAILED_MSG
+            error: constants.STATIC_MESSAGES.REQ_FAILED_MSG
           },
           state: 'error'
         },
@@ -105,7 +105,7 @@ var RdHandler = {
       return {
         data: {
           message: errorMessage,
-          error: constants.REQ_FAILED_MSG
+          error: constants.STATIC_MESSAGES.REQ_FAILED_MSG
         },
         statusCode: 500
       };
@@ -127,7 +127,7 @@ var RdHandler = {
       data: []
     };
     
-    RdGlobalConfig.ReqLogger.info("Request Start", request.method + ' ' + request.url,
+    RdGlobalConfig.ReqLogger.info(constants.TOPICS.CLIENT_REQUEST_START, request.method + ' ' + request.url,
       false, { 
         headers: request.headers 
       }, 
@@ -142,7 +142,7 @@ var RdHandler = {
 
     ReqLib.call(paramsForRequest, clientRequest)
       .then(function (response) {
-        RdGlobalConfig.ReqLogger.info("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + response.statusCode,
+        RdGlobalConfig.ReqLogger.info(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + response.statusCode,
           false, {
             data: response.data,
             headers: response.headers,
@@ -160,7 +160,7 @@ var RdHandler = {
           clientRequest.id);
 
         var errorResponse = RdHandler._frameErrorResponse(furtherRequestOptions, err.message.toString());
-        RdGlobalConfig.ReqLogger.error("Response End", clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + errorResponse.statusCode,
+        RdGlobalConfig.ReqLogger.error(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + clientRequest.url + ', Status Code: ' + errorResponse.statusCode,
           false,
           errorResponse.data,
           clientRequest.id);

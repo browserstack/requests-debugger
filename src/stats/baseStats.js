@@ -4,20 +4,21 @@
  */
 
 var Utils = require('../utils');
+var STATIC_MESSAGES = require('../../config/constants').STATIC_MESSAGES;
 
 var BaseStats = {
-  description: "Base Object for System & Network Stats",
+  description: STATIC_MESSAGES.BASE_STATS_DESC,
 
   cpu: function (callback) {
-    if (Utils.isValidCallback(callback)) callback("CPU Stats Not Yet Implemented");
+    if (Utils.isValidCallback(callback)) callback(STATIC_MESSAGES.CPU_STATS_NOT_IMPLEMENTED);
   },
 
   mem: function (callback) {
-    if (Utils.isValidCallback(callback)) callback("Mem Stats Not Yet Implemented");
+    if (Utils.isValidCallback(callback)) callback(STATIC_MESSAGES.MEM_STATS_NOT_IMPLEMENTED);
   },
 
   network: function (callback) {
-    if (Utils.isValidCallback(callback)) callback("Network Stats Not Yet Implemented");
+    if (Utils.isValidCallback(callback)) callback(STATIC_MESSAGES.NETWORK_STATS_NOT_IMPLEMENTED);
   }
 
 };

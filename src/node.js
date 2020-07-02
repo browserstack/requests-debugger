@@ -8,6 +8,7 @@
 var constants = require('../config/constants');
 var LogFiles = constants.LOGS;
 var RdGlobalConfig = constants.RdGlobalConfig;
+var STATIC_MESSAGES = constants.STATIC_MESSAGES;
 var CommandLineManager = require('./commandLine');
 var ConnectivityChecker = require('./connectivity');
 var RdHandler = require('./server');
@@ -24,7 +25,7 @@ var RdTool = {
    */
   initLoggers: function () {
     var basePath = RdGlobalConfig.logsPath ? path.resolve(RdGlobalConfig.logsPath) : process.cwd();
-    RdGlobalConfig.LOGS_DIRECTORY = path.resolve(basePath, 'RequestsDebuggerLogs');
+    RdGlobalConfig.LOGS_DIRECTORY = path.resolve(basePath, constants.LOGS_FOLDER);
 
     if (RdGlobalConfig.deleteExistingLogs) {
       var filesToDelete = Object.keys(LogFiles).map(function (key) { return LogFiles[key]; });
@@ -39,8 +40,8 @@ var RdTool = {
     try {
       fs.mkdirSync(RdGlobalConfig.LOGS_DIRECTORY);
     } catch (e) {
-      if (e.code !== 'EEXIST') {
-        var errorMessage = "Error in creating 'RequestsDebuggerLogs' folder at path: " + basePath + "\n"
+      if (e.code !== constants.ERROR_CODES.EEXIST) {
+        var errorMessage = "Error in creating " + constants.LOGS_FOLDER + " folder at path: " + basePath + "\n"
                            + "Message: " + e.toString() + "\n";
         console.log(errorMessage);
         process.exit(1);
@@ -55,7 +56,7 @@ var RdTool = {
     RdGlobalConfig.ErrLogger = LogManager.initializeLogger(path.resolve(RdGlobalConfig.LOGS_DIRECTORY, LogFiles.ERROR));
 
     RdGlobalConfig.NetworkLogHandler = function (topic, uuid, callback) {
-      topic = topic || 'NO_TOPIC';
+      topic = topic || constants.TOPICS.NO_TOPIC;
       RdGlobalConfig.StatsHandler.network(function (networkStats) {
         RdGlobalConfig.NetworkLogger.info(topic, networkStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
@@ -63,7 +64,7 @@ var RdTool = {
     };
 
     RdGlobalConfig.CpuLogHandler = function (topic, uuid, callback) {
-      topic = topic || 'NO_TOPIC';
+      topic = topic || constants.TOPICS.NO_TOPIC;
       RdGlobalConfig.StatsHandler.cpu(function (cpuStats) {
         RdGlobalConfig.CPULogger.info(topic, cpuStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
@@ -71,7 +72,7 @@ var RdTool = {
     };
 
     RdGlobalConfig.MemLogHandler = function (topic, uuid, callback) {
-      topic = topic || "NO_TOPIC";
+      topic = topic || constants.TOPICS.NO_TOPIC;
       RdGlobalConfig.StatsHandler.mem(function (memStats) {
         RdGlobalConfig.MemLogger.info(topic, memStats, false, {}, uuid);
         if (Utils.isValidCallback(callback)) callback();
@@ -87,7 +88,7 @@ var RdTool = {
    */
   start: function () {
     CommandLineManager.processArgs(process.argv);
-    console.log(Utils.formatAndBeautifyLine('Starting Requests Debugger Tool', '-', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.STARTING_TOOL, '-', '-', 60, true));
     RdGlobalConfig.StatsHandler = StatsFactory.getHandler(process.platform);
     RdTool.initLoggers();
     /* eslint-disable indent */
@@ -96,33 +97,33 @@ var RdTool = {
                                             '', '-', 60, true));
     /*eslint-enable indent*/
 
-    console.log(Utils.formatAndBeautifyLine('Stats : Checking CPU Stats', '', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CPU_STATS, '', '-', 60, true));
     RdGlobalConfig.CpuLogHandler('Initial CPU', null, function () {
-      console.log(Utils.formatAndBeautifyLine('Stats : Initial CPU Stats Collected', '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CPU_STATS_COLLECTED, '', '-', 60, true));
     });
 
-    console.log(Utils.formatAndBeautifyLine('Stats : Checking Network Stats', '', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_MEMORY_STATS, '', '-', 60, true));
     RdGlobalConfig.NetworkLogHandler('Initial Network', null, function () {
-      console.log(Utils.formatAndBeautifyLine('Stats : Initial Network Stats Collected', '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.NETWORK_STATS_COLLECTED, '', '-', 60, true));
     });
 
-    console.log(Utils.formatAndBeautifyLine('Stats : Checking Memory Stats', '', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_MEMORY_STATS, '', '-', 60, true));
     RdGlobalConfig.MemLogHandler('Initial Memory', null, function () {
-      console.log(Utils.formatAndBeautifyLine('Stats : Initial Memory Stats Collected', '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.MEMORY_STATS_COLLECTED, '', '-', 60, true));
     });
 
-    console.log(Utils.formatAndBeautifyLine('Checks : Checking Connectivity With BrowserStack', '', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CONNECTIVITY, '', '-', 60, true));
     RdGlobalConfig.ConnHandler('Initial Connectivity', null, function () {
-      console.log(Utils.formatAndBeautifyLine('Checks : Connectivity Checks Performed with BrowserStack', '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CONNECTIVITY_CHECKS_DONE, '', '-', 60, true));
     });
 
     RdHandler.startProxy(RdGlobalConfig.RD_HANDLER_PORT, function (err, result) {
       if (err) {
-        console.log('Error in starting Requests Debugger Tool Proxy: ', err);
+        console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
         console.log('Exiting the Tool...');
         process.exit(1);
       }
-      console.log(Utils.formatAndBeautifyLine('Requests Debugger Tool Proxy Started on Port: ' + result, '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_STARTED_ON_PORT + result, '', '-', 60, true));
     });
   }
 };

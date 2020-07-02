@@ -11,7 +11,7 @@ var constants = require('../../config/constants');
 var RdGlobalConfig = constants.RdGlobalConfig;
 
 var MacStats = Object.create(BaseStats);
-MacStats.description = "System and Network Stats for Mac";
+MacStats.description = constants.STATIC_MESSAGES.MAC_STATS_DESC;
 
 MacStats.cpu = function (callback) {
   var startTime = new Date();
@@ -20,7 +20,7 @@ MacStats.cpu = function (callback) {
       result = result.toString().replace(/Processes:/g, '\n****************** ITERATION ******************\nProcesses:');
       result = Utils.generateHeaderAndFooter(result, 'CPU Information with 3 samples', new Date(), startTime);
     }
-    if (Utils.isValidCallback(callback)) callback(result || constants.NO_REPORT_GENERATED + 'CPU' + os.EOL);
+    if (Utils.isValidCallback(callback)) callback(result || constants.STATIC_MESSAGES.NO_REPORT_GENERATED + 'CPU' + os.EOL);
   });
 };
 
@@ -62,7 +62,7 @@ MacStats.mem = function (callback) {
           }
         }
       } catch (e) {
-        RdGlobalConfig.ErrLogger.error('Mac-Mem', e.toString(), false, {});
+        RdGlobalConfig.ErrLogger.error(constants.TOPICS.MAC_MEM, e.toString(), false, {});
       }
     }
     if (Utils.isValidCallback(callback)) callback(Utils.beautifyObject(memStats, "Memory", "Bytes"));
