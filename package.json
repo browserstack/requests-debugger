@@ -1,0 +1,45 @@
+{
+  "name": "requestsdebugger",
+  "version": "1.0.0",
+  "description": "Tool to debug failed/dropped requests at client side",
+  "main": "src/requestsDebugger.js",
+  "scripts": {
+    "start": "NODE_ENV=prod node src/requestsDebugger.js",
+    "lint": "./node_modules/.bin/eslint 'src/*' 'test/*' 'config/*.js'",
+    "test": "npm run lint; NODE_ENV=test nyc --reporter=html ./node_modules/mocha/bin/mocha 'test/**/*.test.js'",
+    "build:mac": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-macos src/requestsDebugger.js; mv requestsDebugger RequestsDebugger-Mac",
+    "build:linux": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-linux src/requestsDebugger.js; mv requestsDebugger RequestsDebugger-Linux",
+    "build:win": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-win src/requestsDebugger.js; mv requestsDebugger.exe RequestsDebugger.exe",
+    "copyhooks": "cp hooks/* .git/hooks/; chmod +x .git/hooks/*",
+    "postinstall": "npm run copyhooks"
+  },
+  "bin": {
+    "RequestsDebugger": "src/requestsDebugger.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "4.2.0",
+    "eslint": "4.19.1",
+    "mocha": "5.2.0",
+    "nock": "9.6.1",
+    "nyc": "11.9.0",
+    "pkg": "4.3.1",
+    "sinon": "7.5.0"
+  },
+  "dependencies": {
+    "uuid": "8.2.0",
+    "winston": "2.4.4"
+  },
+  "nyc": {
+    "all": true,
+    "exclude": [
+      "**/*.test.js",
+      "test/testHelper.js",
+      "node_modules",
+      "coverage",
+      "RequestsDebuggerLogs",
+      "config"
+    ]
+  }
+}

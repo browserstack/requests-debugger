@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# copy the hook again
+npm run copyhooks
+
+# run the npm tests
+npm test
+
+# return the 'npm test' exit code
+exit $?
