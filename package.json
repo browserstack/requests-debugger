@@ -16,6 +16,10 @@
   "bin": {
     "RequestsDebugger": "src/requestsDebugger.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/browserstack/requests-debugger.git"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {

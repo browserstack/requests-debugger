@@ -99,7 +99,7 @@ var RdHandler = {
           },
           state: 'error'
         },
-        statusCode: 500
+        statusCode: constants.CUSTOM_ERROR_RESPONSE_CODE
       };
     } else {
       return {
@@ -107,7 +107,7 @@ var RdHandler = {
           message: errorMessage,
           error: constants.STATIC_MESSAGES.REQ_FAILED_MSG
         },
-        statusCode: 500
+        statusCode: constants.CUSTOM_ERROR_RESPONSE_CODE
       };
     }
   },
