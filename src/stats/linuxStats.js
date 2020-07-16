@@ -61,7 +61,7 @@ LinuxStats.mem = function (callback) {
 
 LinuxStats.network = function (callback) {
   var startTime = new Date();
-  var commands = [constants.LINUX.TCP_LISTEN_ESTABLISHED, constants.COMMON.PING_HUB, constants.COMMON.PING_AUTOMATE];
+  var commands = [constants.COMMON.PING_HUB, constants.COMMON.PING_AUTOMATE, constants.LINUX.TCP_LISTEN_ESTABLISHED];
   var finalOutput = "";
 
   Utils.execMultiple(commands, function (results) {

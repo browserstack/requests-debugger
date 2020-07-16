@@ -20,25 +20,25 @@ describe('Connectivity Checker for BrowserStack Components', function () {
     data: '{"data":"value"}',
     statusCode: 200,
     errorMessage: null,
-    description: 'HTTP Request To Hub Without Proxy',
+    description: 'HTTP Request To ' + constants.HUB_STATUS_URL + ' Without Proxy',
     result: 'Passed'
   }, {
     data: '{"data":"value"}',
     statusCode: 301,
     errorMessage: null,
-    description: 'HTTP Request To Rails Without Proxy',
+    description: 'HTTP Request To ' + constants.RAILS_AUTOMATE + ' Without Proxy',
     result: 'Passed'
   }, {
     data: '{"data":"value"}',
     statusCode: 200,
     errorMessage: null,
-    description: 'HTTPS Request To Hub Without Proxy',
+    description: 'HTTPS Request To ' + constants.HUB_STATUS_URL + ' Without Proxy',
     result: 'Passed'
   }, {
     data: '{"data":"value"}',
     statusCode: 302,
     errorMessage: null,
-    description: 'HTTPS Request to Rails Without Proxy',
+    description: 'HTTPS Request to ' + constants.RAILS_AUTOMATE + ' Without Proxy',
     result: 'Passed'
   }];
 
@@ -46,25 +46,25 @@ describe('Connectivity Checker for BrowserStack Components', function () {
     data: [],
     statusCode: null,
     errorMessage: 'Error: something terrible',
-    description: 'HTTP Request To Hub Without Proxy',
+    description: 'HTTP Request To ' + constants.HUB_STATUS_URL + ' Without Proxy',
     result: 'Failed'
   }, {
     data: [],
     statusCode: null,
     errorMessage: 'Error: something terrible',
-    description: 'HTTP Request To Rails Without Proxy',
+    description: 'HTTP Request To ' + constants.RAILS_AUTOMATE + ' Without Proxy',
     result: 'Failed'
   }, {
     data: [],
     statusCode: null,
     errorMessage: 'Error: something terrible',
-    description: 'HTTPS Request To Hub Without Proxy',
+    description: 'HTTPS Request To ' + constants.HUB_STATUS_URL + ' Without Proxy',
     result: 'Failed'
   }, {
     data: [],
     statusCode: null,
     errorMessage: 'Error: something terrible',
-    description: 'HTTPS Request to Rails Without Proxy',
+    description: 'HTTPS Request to ' + constants.RAILS_AUTOMATE + ' Without Proxy',
     result: 'Failed'
   }];
 
@@ -116,13 +116,13 @@ describe('Connectivity Checker for BrowserStack Components', function () {
       sinon.stub(Utils, 'beautifyObject');
       var resultWithProxy = resultWithoutProxy.concat([{
         data: '{"data":"value"}',
-        description: "HTTP Request To Hub With Proxy",
+        description: "HTTP Request To " + constants.HUB_STATUS_URL + " With Proxy",
         errorMessage: null,
         result: "Passed",
         statusCode: 200
       }, {
         data: '{"data":"value"}',
-        description: "HTTP Request To Rails With Proxy",
+        description: "HTTP Request To " + constants.RAILS_AUTOMATE + " With Proxy",
         errorMessage: null,
         result: "Passed",
         statusCode: 301

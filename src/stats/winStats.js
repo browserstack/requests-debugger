@@ -66,7 +66,7 @@ WinStats.mem = function (callback) {
 
 WinStats.network = function (callback) {
   var startTime = new Date();
-  var commands = [constants.WIN.NETSTAT_TCP, constants.WIN.NETSTAT_ROUTING_TABLE, constants.WIN.IPCONFIG_ALL, constants.WIN.PING_HUB, constants.WIN.PING_AUTOMATE];
+  var commands = [constants.WIN.PING_HUB, constants.WIN.PING_AUTOMATE, constants.WIN.NETSTAT_TCP, constants.WIN.NETSTAT_ROUTING_TABLE, constants.WIN.IPCONFIG_ALL];
   var finalOutput = "";
 
   Utils.execMultiple(commands, function (results) {

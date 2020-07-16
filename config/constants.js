@@ -3,6 +3,7 @@ module.exports.HUB_STATUS_URL = 'http://hub-cloud.browserstack.com/wd/hub/status
 module.exports.RAILS_AUTOMATE = 'http://automate.browserstack.com';
 module.exports.CONNECTIVITY_REQ_TIMEOUT = 30000;
 module.exports.DEFAULT_PROXY_PORT = 3128;
+module.exports.CUSTOM_ERROR_RESPONSE_CODE = 502;
 module.exports.MAX_RETRIES = 1;
 module.exports.LOGS_FOLDER = 'RequestsDebuggerLogs';
 module.exports.PORTS = {
