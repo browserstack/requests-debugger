@@ -7,9 +7,11 @@
     "start": "NODE_ENV=prod node src/requestsDebugger.js",
     "lint": "./node_modules/.bin/eslint 'src/*' 'test/*' 'config/*.js'",
     "test": "npm run lint; NODE_ENV=test nyc --reporter=html ./node_modules/mocha/bin/mocha 'test/**/*.test.js'",
-    "build:mac": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-macos src/requestsDebugger.js; mv requestsDebugger RequestsDebugger-Mac",
-    "build:linux": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-linux src/requestsDebugger.js; mv requestsDebugger RequestsDebugger-Linux",
-    "build:win": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-win src/requestsDebugger.js; mv requestsDebugger.exe RequestsDebugger.exe",
+    "build:mac": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-macos-x64 src/requestsDebugger.js; mv requestsDebugger RequestsDebugger-Mac",
+    "build:linux-x86": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-linux-x86 src/requestsDebugger.js; mv requestsDebugger RequestsDebugger-Linux-x86",
+    "build:linux-x64": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-linux-x64 src/requestsDebugger.js; mv requestsDebugger RequestsDebugger-Linux-x64",
+    "build:linux": "npm run build:linux-x86; npm run build:linux-x64",
+    "build:win": "npm install; ./node_modules/pkg/lib-es5/bin.js -t node4-win-x86 src/requestsDebugger.js; mv requestsDebugger.exe RequestsDebugger.exe",
     "copyhooks": "cp hooks/* .git/hooks/; chmod +x .git/hooks/*",
     "postinstall": "npm run copyhooks"
   },
@@ -32,7 +34,7 @@
     "sinon": "7.5.0"
   },
   "dependencies": {
-    "uuid": "8.2.0",
+    "uuid": "3.4.0",
     "winston": "2.4.4"
   },
   "nyc": {
