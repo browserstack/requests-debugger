@@ -26,7 +26,7 @@
 - Executable
   - Run the Platform Specific executable via terminal/cmd:
     - Mac: `./RequestsDebugger-Mac <args>`
-    - Linux: `./RequestsDebugger-Linux <args>`
+    - Linux: `./RequestsDebugger-Linux-x86/x64 <args>`
     - Windows: `RequestsDebugger.exe <args>`
 
 ## How to use

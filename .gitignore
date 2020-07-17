@@ -107,4 +107,4 @@ dist
 # Executables
 RequestsDebugger-Mac
 RequestsDebugger.exe
-RequestsDebugger-Linux
+RequestsDebugger-Linux*
