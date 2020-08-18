@@ -31,7 +31,7 @@ describe('CommandLineManager', function () {
 
     it('parse proxy-host and proxy-port params', function () {
       sinon.stub(console, 'log');
-      argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687']);
+      argv = argv.concat(['--proxy-host', 'http://host', '--proxy-port', '9687']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
       expect(RdGlobalConfig.proxy.host).to.eql('host');
