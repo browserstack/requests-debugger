@@ -119,11 +119,11 @@ var CommandLineManager = {
     index = argv.indexOf('--proxy-host');
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
-        var hostRegex = /(^\w+:|^)\/\//;
         var host = argv[index + 1];
-        if (host.match(hostRegex)) {
-          host = host.replace(/(^\w+:|^)\/\//, '');
+        if (host.match(constants.PROTOCOL_REGEX)) {
+          host = host.replace(constants.PROTOCOL_REGEX, '');
         }
+        console.log(host);
         RdGlobalConfig.proxy = RdGlobalConfig.proxy || {};
         RdGlobalConfig.proxy.host = host;
         argv.splice(index, 2);

@@ -31,11 +31,23 @@ describe('CommandLineManager', function () {
 
     it('parse proxy-host and proxy-port params', function () {
       sinon.stub(console, 'log');
-      argv = argv.concat(['--proxy-host', 'http://host', '--proxy-port', '9687']);
+      argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
       expect(RdGlobalConfig.proxy.host).to.eql('host');
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
+    });
+
+    it('remove any protocal part from proxy-host', function () {
+      sinon.stub(console, 'log');
+      argv = argv.concat(['--proxy-host', 'http://host']);
+      CommandLineManager.processArgs(argv);
+      expect(RdGlobalConfig.proxy.host).to.eql('host');
+
+      argv = argv.concat(['--proxy-host', '//host']);
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.proxy.host).to.eql('host');
     });
 
     it('proxy-port is set to the default value when its not in the expected range', function () {

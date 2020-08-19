@@ -10,6 +10,7 @@ module.exports.PORTS = {
   MAX: 65535,
   MIN: 1
 };
+module.exports.PROTOCOL_REGEX = /(^\w+:|^)\/\//;
 
 module.exports.LOGS = Object.freeze({
   NETWORK: 'NetworkStats.log',
