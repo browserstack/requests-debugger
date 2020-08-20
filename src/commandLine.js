@@ -123,7 +123,6 @@ var CommandLineManager = {
         if (host.match(constants.PROTOCOL_REGEX)) {
           host = host.replace(constants.PROTOCOL_REGEX, '');
         }
-        console.log(host);
         RdGlobalConfig.proxy = RdGlobalConfig.proxy || {};
         RdGlobalConfig.proxy.host = host;
         argv.splice(index, 2);

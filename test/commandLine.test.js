@@ -38,12 +38,14 @@ describe('CommandLineManager', function () {
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
     });
 
-    it('remove any protocal part from proxy-host', function () {
+    it('remove any protocol part from proxy-host', function () {
       sinon.stub(console, 'log');
       argv = argv.concat(['--proxy-host', 'http://host']);
       CommandLineManager.processArgs(argv);
       expect(RdGlobalConfig.proxy.host).to.eql('host');
+    });
 
+    it('remove any prefix slashes from proxy-host', function () {
       argv = argv.concat(['--proxy-host', '//host']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
