@@ -120,9 +120,7 @@ var CommandLineManager = {
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         var host = argv[index + 1];
-        if (host.match(constants.PROTOCOL_REGEX)) {
-          host = host.replace(constants.PROTOCOL_REGEX, '');
-        }
+        host = host.replace(constants.PROTOCOL_REGEX, '');
         RdGlobalConfig.proxy = RdGlobalConfig.proxy || {};
         RdGlobalConfig.proxy.host = host;
         argv.splice(index, 2);
