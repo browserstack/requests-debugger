@@ -1,7 +1,7 @@
 var constants = require('../config/constants');
 var RdGlobalConfig = constants.RdGlobalConfig;
 var nock = require('nock');
-var RdHandler = require('../src/server');
+var server = require('../src/server');
 var http = require('http');
 var assert = require('chai').assert;
 var testHelper = require('./testHelper');
@@ -15,7 +15,7 @@ describe('RdHandler', function () {
       testHelper.initializeDummyLoggers();
       testHelper.initializeDummyHandlers();
       
-      RdHandler.startProxy(RdGlobalConfig.RD_HANDLER_PORT, function (port) {
+      server.RdHandler.startProxy(RdGlobalConfig.RD_HANDLER_PORT, function (port) {
         console.log('Test Network Utility Proxy Started on Port: ', port);
         done();
       });
@@ -23,7 +23,7 @@ describe('RdHandler', function () {
 
     after(function (done) {
       this.timeout = 5000;
-      RdHandler.stopProxy(function () {
+      server.RdHandler.stopProxy(function () {
         done();
       });
       testHelper.deleteLoggers();
@@ -61,7 +61,7 @@ describe('RdHandler', function () {
       this.timeout = 5000;
       testHelper.initializeDummyProxy();
       testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'http', 'hub', null, 200);
-      RdHandler.generatorForRequestOptionsObject();
+      server.RdHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
@@ -92,7 +92,7 @@ describe('RdHandler', function () {
       for (var i = 0; i <= constants.MAX_RETRIES; i++) {
         testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
       }
-      RdHandler.generatorForRequestOptionsObject();
+      server.RdHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
