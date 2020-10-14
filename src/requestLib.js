@@ -5,14 +5,6 @@ var Utils = require('./utils');
 
 var RdGlobalConfig = constants.RdGlobalConfig;
 
-var keepAliveAgent = null;
-if (RdGlobalConfig.SCHEME == "http"){
-  keepAliveAgent = new http.Agent({keepAlive: true});  
-}
-else{
-  keepAliveAgent = new https.Agent({keepAlive: true});  
-}
-
 var RequestLib = {
   /**
    * Method to perform the request on behalf of the client

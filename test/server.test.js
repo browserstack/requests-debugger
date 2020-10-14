@@ -6,7 +6,6 @@ var http = require('http');
 var assert = require('chai').assert;
 var testHelper = require('./testHelper');
 
-STATUS_URL = `http://${constants.HUB_HOST}/wd/hub/status`
 
 describe('RdHandler', function () {
   context('Proxy Server', function () {
@@ -34,7 +33,7 @@ describe('RdHandler', function () {
 
     it('Requests on behalf of the client and returns the response', function (done) {
       this.timeout = 5000;
-      testHelper.nockGetRequest(STATUS_URL, 'https', null, 200);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
@@ -61,7 +60,7 @@ describe('RdHandler', function () {
 
     it('Requests on behalf of the client via external proxy and returns the response', function (done) {
       this.timeout = 5000;
-      testHelper.nockGetRequest(STATUS_URL, 'https', null, 200);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
       testHelper.initializeDummyProxy();
       testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'http', 'hub', null, 200);
       RdHandler.generatorForRequestOptionsObject();

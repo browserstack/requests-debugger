@@ -15,7 +15,7 @@ var CommandLineManager = {
                      + "ARGUMENTS:\n"
                      + "  --port            <port>                    : Port on which the Requests Debugger Tool's Proxy will run\n"
                      + "                                                Default: " + RdGlobalConfig.RD_HANDLER_PORT + "\n"
-                     + "  --scheme          <https/http>              : Scheme for requests to browserstack. Scheme is applicable to only\n"
+                     + "  --scheme          <https/http>              : Scheme for requests to browserstack.\n"
                      + "                                                Default: " + constants.DEFAULT_SCHEME + "\n"
                      + "  --proxy-host      <hostname>                : Hostname of the Upstream Proxy\n"
                      + "  --proxy-port      <port>                    : Port of the Upstream Proxy. Default: " + constants.DEFAULT_PROXY_PORT + " (if hostname is provided)\n"
