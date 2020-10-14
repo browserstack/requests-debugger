@@ -23,7 +23,7 @@ var RequestLib = {
       
       // Initialize the request to be fired on behalf of the client
       var request = null;
-
+      var keepAliveAgent = null;
       if(RdGlobalConfig.SCHEME == "http") {
         keepAliveAgent = new http.Agent({keepAlive: true});  
         requestOptions = Object.assign(requestOptions, params.furtherRequestOptions, {
