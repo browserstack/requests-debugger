@@ -1,5 +1,5 @@
 /**
- * Reverse Proxy Server to Intercept the client's requests and handle them on their behalf.
+ * Server to Intercept the client's requests and handle them on their behalf.
  * Initiates stats and connectivity checks when a requests fails.
  * It also responds in selenium understandable error when a request fails
  * at tool.
@@ -18,8 +18,7 @@ var RdHandler = {
   _requestCounter: 0,
 
   /**
-   * Generates the request options template for firing requests based on
-   * whether the user had provided any proxy input or not.
+   * Generates the request options template for firing requests
    */
   generatorForRequestOptionsObject: function () {
     RdHandler._reqObjTemplate = {
@@ -29,6 +28,7 @@ var RdHandler = {
       port: null,
       path: null
     };
+    RdHandler._reqObjTemplate.headers['host'] = constants.BS_DOMAIN;
 
     if (RdGlobalConfig.proxy) {
       RdHandler._reqObjTemplate.host = RdGlobalConfig.proxy.host;
@@ -37,46 +37,27 @@ var RdHandler = {
       if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
         RdHandler._reqObjTemplate.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);
       }
+    }   
+    var requestOptions = Object.assign({}, RdHandler._reqObjTemplate);
+    requestOptions.host = constants.HUB_HOST;
+    requestOptions.port = RdGlobalConfig.SCHEME == 'http' ? 80 : 443; 
 
-      /**
-       * Sets the internal method to generate request options if external/upstream
-       * proxy exists
-       * @param {http.IncomingMessage} clientRequest 
-       * @returns {Object}
-       */
-      RdHandler._generateRequestOptions = function (clientRequest) {
-        var parsedClientUrl = url.parse(clientRequest.url);
-        var headersCopy = Object.assign({}, clientRequest.headers, RdHandler._reqObjTemplate.headers);
-        var requestOptions = Object.assign({}, RdHandler._reqObjTemplate);
-        requestOptions.host = constants.HUB_HOST;
-        requestOptions.port = 80;            
-        requestOptions.path = parsedClientUrl.href;
-        requestOptions.method = clientRequest.method;
-        requestOptions.headers = headersCopy;
-        return requestOptions;
-      };
-    } else {
-
-      /**
-       * Sets the internal method to generate request options if external/upstream proxy
-       * doesn't exists
-       * @param {http.IncomingMessage} clientRequest 
-       * @returns {Object}
-       */
-      RdHandler._generateRequestOptions = function (clientRequest) {
-        var parsedClientUrl = url.parse(clientRequest.url);
-        var requestOptions = Object.assign({}, RdHandler._reqObjTemplate);
-        requestOptions.host = constants.HUB_HOST;
-        requestOptions.port = 80;            
-        requestOptions.path = parsedClientUrl.path;
-        requestOptions.method = clientRequest.method;
-        requestOptions.headers = clientRequest.headers;
-        if (parsedClientUrl.auth) {
-          requestOptions.headers['authorization'] = Utils.proxyAuthToBase64(parsedClientUrl.auth);
-        }
-        return requestOptions;
-      };
-    }
+    /**
+     * Sets the internal method to generate request options
+     * doesn't exists
+     * @param {http.IncomingMessage} clientRequest 
+     * @returns {Object}
+     */
+    RdHandler._generateRequestOptions = function (clientRequest) {
+      var parsedClientUrl = url.parse(clientRequest.url);
+      requestOptions.path = RdGlobalConfig.SCHEME + "://" + constants.HUB_HOST + parsedClientUrl.path;
+      requestOptions.method = clientRequest.method;
+      requestOptions.headers = Object.assign({}, clientRequest.headers, RdHandler._reqObjTemplate.headers);
+      if (parsedClientUrl.auth) {
+        requestOptions.headers['authorization'] = Utils.proxyAuthToBase64(parsedClientUrl.auth);
+      }
+      return requestOptions;
+    };
   },
 
   /**
@@ -115,7 +96,7 @@ var RdHandler = {
   },
 
   /**
-   * Handler for incoming requests to Requests Debugger Tool reverse proxy server.
+   * Handler for incoming requests to Requests Debugger Tool server.
    * @param {http.IncomingMessage} clientRequest 
    * @param {http.ServerResponse} clientResponse 
    */
@@ -173,7 +154,7 @@ var RdHandler = {
   },
 
   /**
-   * Starts the reverse proxy server on the given port
+   * Starts the server on the given port
    * @param {String|Number} port 
    * @param {Function} callback 
    */
@@ -194,7 +175,7 @@ var RdHandler = {
   },
 
   /**
-   * Stops the currently running reverse proxy server
+   * Stops the currently running server
    * @param {Function} callback 
    */
   stopServer: function (callback) {
@@ -210,4 +191,4 @@ var RdHandler = {
   }
 };
 
-module.exports.RdHandler = RdHandler;
+module.exports = RdHandler;

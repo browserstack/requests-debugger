@@ -11,8 +11,7 @@ var RdGlobalConfig = constants.RdGlobalConfig;
 var STATIC_MESSAGES = constants.STATIC_MESSAGES;
 var CommandLineManager = require('./commandLine');
 var ConnectivityChecker = require('./connectivity');
-var proxy = require('./proxy');
-var reverseProxy = require('./reverseProxy');
+var RdHandler = require('./server');
 var StatsFactory = require('./stats/statsFactory');
 var LogManager = require('./logger');
 var fs = require('fs');
@@ -140,7 +139,7 @@ var RdTool = {
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CONNECTIVITY_CHECKS_DONE, '', '-', 60, true));
     });
 
-    reverseProxy.RdHandler.startServer(RdGlobalConfig.RD_HANDLER_PORT, function (err, result) {
+    RdHandler.startServer(RdGlobalConfig.RD_HANDLER_PORT, function (err, result) {
       if (err) {
         console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
         console.log('Exiting the Proxy...');
@@ -148,16 +147,6 @@ var RdTool = {
       }
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_STARTED_ON_PORT + result, '', '-', 60, true));
     });
-
-    reverseProxy.RdHandler.startServer(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT, function (err, result) {
-      if (err) {
-        console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
-        console.log('Exiting the Reverse Proxy...');
-        process.exit(1);
-      }
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_REVERSE_PROXY_STARTED_ON_PORT + result, '', '-', 60, true));
-    });
-
   }
 };
 

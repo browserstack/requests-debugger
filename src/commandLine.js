@@ -15,7 +15,7 @@ var CommandLineManager = {
                      + "ARGUMENTS:\n"
                      + "  --port            <port>                    : Port on which the Requests Debugger Tool's Proxy will run\n"
                      + "                                                Default: " + RdGlobalConfig.RD_HANDLER_PORT + "\n"
-                     + "  --scheme          <https/http>              : Scheme for requests to browserstack\n"
+                     + "  --scheme          <https/http>              : Scheme for requests to browserstack. Scheme is applicable to only\n"
                      + "                                                Default: " + constants.DEFAULT_SCHEME + "\n"
                      + "  --proxy-host      <hostname>                : Hostname of the Upstream Proxy\n"
                      + "  --proxy-port      <port>                    : Port of the Upstream Proxy. Default: " + constants.DEFAULT_PROXY_PORT + " (if hostname is provided)\n"
@@ -77,24 +77,6 @@ var CommandLineManager = {
         argv.splice(index, 2);
       } else {
         invalidArgs.add('--port');
-        argv.splice(index, 1);
-      }
-    }
-
-    // port for Requests Debugger Reverse Proxy
-    index = argv.indexOf('--reverse-proxy-port');
-    if (index !== -1) {
-      if (CommandLineManager.validArgValue(argv[index + 1])) {
-        var probablePort = parseInt(argv[index + 1]);
-        if (!isNaN(probablePort) && (probablePort <= constants.PORTS.MAX) && (probablePort >= constants.PORTS.MIN)) {
-          RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT = probablePort;
-        } else {
-          console.log("\nPort can only range from:", constants.PORTS.MIN, "to:", constants.PORTS.MAX);
-          invalidArgs.add('--reverse-proxy-port');
-        }
-        argv.splice(index, 2);
-      } else {
-        invalidArgs.add('--reverse-proxy-port');
         argv.splice(index, 1);
       }
     }
