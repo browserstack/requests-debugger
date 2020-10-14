@@ -12,7 +12,7 @@ var RequestLib = {
    * @param {http.IncomingMessage} clientRequest 
    * @param {Number} retries 
    */
-  _makeRequest: function (params, clientRequest, retries) {
+  _makeRequest: function (schemeObj, params, clientRequest, retries) {
     return new Promise(function (resolve, reject) {
       var requestOptions = {
         headers:{
@@ -20,68 +20,37 @@ var RequestLib = {
           'X-Requests-Debugger': clientRequest 
         }
       };
-      
       // Initialize the request to be fired on behalf of the client
       var request = null;
       var keepAliveAgent = null;
-      if(RdGlobalConfig.SCHEME == "http") {
-        keepAliveAgent = new http.Agent({keepAlive: true});  
-        requestOptions = Object.assign(requestOptions, params.furtherRequestOptions, {
-          agent: keepAliveAgent
+      keepAliveAgent = new schemeObj.Agent({keepAlive: true});  
+      requestOptions = Object.assign(requestOptions, params.furtherRequestOptions, {
+        agent: keepAliveAgent
+      });
+      request = schemeObj.request(requestOptions, function (response) {
+        var responseToSend = {
+          statusCode: response.statusCode,
+          headers: response.headers,
+          data: []
+        };
+  
+        response.on('data', function (chunk) {
+          responseToSend.data.push(chunk);
         });
-        request = http.request(requestOptions, function (response) {
-          var responseToSend = {
-            statusCode: response.statusCode,
-            headers: response.headers,
-            data: []
-          };
-
-          response.on('data', function (chunk) {
-            responseToSend.data.push(chunk);
-          });
-
-          response.on('end', function () {
-            responseToSend.data = Buffer.concat(responseToSend.data).toString();
-            resolve(responseToSend);
-          });
-
-          response.on('error', function (err) {
-            reject({
-              message: err,
-              customTopic: constants.TOPICS.TOOL_RESPONSE_ERROR
-            });
+  
+        response.on('end', function () {
+          responseToSend.data = Buffer.concat(responseToSend.data).toString();
+          resolve(responseToSend);
+        });
+  
+        response.on('error', function (err) {
+          reject({
+            message: err,
+            customTopic: constants.TOPICS.TOOL_RESPONSE_ERROR
           });
         });
-      }
-      else {
-        keepAliveAgent = new https.Agent({keepAlive: true});  
-        requestOptions = Object.assign(requestOptions, params.furtherRequestOptions, {
-          agent: keepAliveAgent
-        });
-        request = https.request(requestOptions, function (response) {
-          var responseToSend = {
-            statusCode: response.statusCode,
-            headers: response.headers,
-            data: []
-          };
+      });
 
-          response.on('data', function (chunk) {
-            responseToSend.data.push(chunk);
-          });
-
-          response.on('end', function () {
-            responseToSend.data = Buffer.concat(responseToSend.data).toString();
-            resolve(responseToSend);
-          });
-
-          response.on('error', function (err) {
-            reject({
-              message: err,
-              customTopic: constants.TOPICS.TOOL_RESPONSE_ERROR
-            });
-          });
-        });
-      }
       // Log the request that will be initiated on behalf of the client
       request.on('finish', function () {
         RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, clientRequest.method + ' ' + clientRequest.url,
@@ -152,7 +121,8 @@ var RequestLib = {
    */
   call: function (params, clientRequest, retries) {
     retries = (typeof retries === 'number') ? Math.min(constants.MAX_RETRIES, Math.max(retries, 0)) : constants.MAX_RETRIES;
-    return RequestLib._makeRequest(params, clientRequest, retries)
+    var schemeObj = RdGlobalConfig.SCHEME == "http" ? http : https;
+    return RequestLib._makeRequest(schemeObj, params, clientRequest, retries)
       .catch(function (err) {
         var errTopic = err.customTopic || constants.TOPICS.UNEXPECTED_ERROR;
         // Collect Network & Connectivity Logs whenever a request fails
