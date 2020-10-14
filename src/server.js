@@ -50,7 +50,12 @@ var RdHandler = {
      */
     RdHandler._generateRequestOptions = function (clientRequest) {
       var parsedClientUrl = url.parse(clientRequest.url);
-      requestOptions.path = RdGlobalConfig.SCHEME + "://" + constants.HUB_HOST + parsedClientUrl.path;
+      if (RdGlobalConfig.proxy) {
+        requestOptions.path = RdGlobalConfig.SCHEME + "://" + constants.HUB_HOST + parsedClientUrl.path;
+      }
+      else {
+        requestOptions.path = parsedClientUrl.path;
+      }
       requestOptions.method = clientRequest.method;
       requestOptions.headers = Object.assign({}, clientRequest.headers, RdHandler._reqObjTemplate.headers);
       if (parsedClientUrl.auth) {

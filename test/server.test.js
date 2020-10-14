@@ -1,29 +1,30 @@
 var constants = require('../config/constants');
 var RdGlobalConfig = constants.RdGlobalConfig;
 var nock = require('nock');
-var proxy = require('../src/proxy');
+var RdHandler = require('../src/server');
 var http = require('http');
 var assert = require('chai').assert;
 var testHelper = require('./testHelper');
+
+STATUS_URL = `http://${constants.HUB_HOST}/wd/hub/status`
 
 describe('RdHandler', function () {
   context('Proxy Server', function () {
 
     before(function (done) {
       this.timeout = 5000;
-      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
       testHelper.initializeDummyLoggers();
       testHelper.initializeDummyHandlers();
       
-      proxy.RdHandler.startServer(RdGlobalConfig.RD_HANDLER_PORT, function (port) {
-        console.log('Test Network Utility Proxy Started on Port: ', port);
+      RdHandler.startServer(RdGlobalConfig.RD_HANDLER_PORT, function (port) {
+        console.log('Test Network Utility Server Started on Port: ', port);
         done();
       });
     });
 
     after(function (done) {
       this.timeout = 5000;
-      proxy.RdHandler.stopServer(function () {
+      RdHandler.stopServer(function () {
         done();
       });
       testHelper.deleteLoggers();
@@ -33,12 +34,13 @@ describe('RdHandler', function () {
 
     it('Requests on behalf of the client and returns the response', function (done) {
       this.timeout = 5000;
+      testHelper.nockGetRequest(STATUS_URL, 'https', null, 200);
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
         port: RdGlobalConfig.RD_HANDLER_PORT,
         headers: {},
-        path: constants.HUB_STATUS_URL
+        path: '/wd/hub/status'
       };
 
       var responseData = [];
@@ -59,9 +61,10 @@ describe('RdHandler', function () {
 
     it('Requests on behalf of the client via external proxy and returns the response', function (done) {
       this.timeout = 5000;
+      testHelper.nockGetRequest(STATUS_URL, 'https', null, 200);
       testHelper.initializeDummyProxy();
       testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'http', 'hub', null, 200);
-      proxy.RdHandler.generatorForRequestOptionsObject();
+      RdHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
@@ -90,9 +93,9 @@ describe('RdHandler', function () {
     it('Requests on behalf of the client via external proxy and returns the response even if request by tool fails', function (done) {
       this.timeout = 5000;
       for (var i = 0; i <= constants.MAX_RETRIES; i++) {
-        testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
+        testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'https');
       }
-      proxy.RdHandler.generatorForRequestOptionsObject();
+      RdHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
