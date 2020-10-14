@@ -108,3 +108,9 @@ dist
 RequestsDebugger-Mac
 RequestsDebugger.exe
 RequestsDebugger-Linux*
+
+# VS code settings
+.vscode/
+
+# Others
+.DS_Store

@@ -140,7 +140,7 @@ var RdTool = {
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CONNECTIVITY_CHECKS_DONE, '', '-', 60, true));
     });
 
-    proxy.RdHandler.startServer(RdGlobalConfig.RD_HANDLER_PORT, function (err, result) {
+    reverseProxy.RdHandler.startServer(RdGlobalConfig.RD_HANDLER_PORT, function (err, result) {
       if (err) {
         console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
         console.log('Exiting the Proxy...');

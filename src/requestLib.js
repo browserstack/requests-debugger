@@ -1,10 +1,17 @@
 var http = require('http');
+var https = require('https');
 var constants = require('../config/constants');
 var Utils = require('./utils');
-var keepAliveAgent = new http.Agent({
-  keepAlive: true
-});
+
 var RdGlobalConfig = constants.RdGlobalConfig;
+
+var keepAliveAgent = null;
+if (RdGlobalConfig.SCHEME == "http"){
+  keepAliveAgent = new http.Agent({keepAlive: true});  
+}
+else{
+  keepAliveAgent = new https.Agent({keepAlive: true});  
+}
 
 var RequestLib = {
   /**
@@ -15,38 +22,74 @@ var RequestLib = {
    */
   _makeRequest: function (params, clientRequest, retries) {
     return new Promise(function (resolve, reject) {
-      var requestOptions = Object.assign({}, params.furtherRequestOptions, {
-        agent: keepAliveAgent
-      });
-
-      // Adding a custom header for usage and debugging purpose at BrowserStack
-      requestOptions.headers['X-Requests-Debugger'] = clientRequest.id;
-
+      var requestOptions = {
+        headers:{
+          // Adding a custom header for usage and debugging purpose at BrowserStack
+          'X-Requests-Debugger': clientRequest 
+        }
+      };
+      
       // Initialize the request to be fired on behalf of the client
-      var request = http.request(requestOptions, function (response) {
-        var responseToSend = {
-          statusCode: response.statusCode,
-          headers: response.headers,
-          data: []
-        };
+      var request = null;
 
-        response.on('data', function (chunk) {
-          responseToSend.data.push(chunk);
+      if(RdGlobalConfig.SCHEME == "http") {
+        keepAliveAgent = new http.Agent({keepAlive: true});  
+        requestOptions = Object.assign(requestOptions, params.furtherRequestOptions, {
+          agent: keepAliveAgent
         });
+        request = http.request(requestOptions, function (response) {
+          var responseToSend = {
+            statusCode: response.statusCode,
+            headers: response.headers,
+            data: []
+          };
 
-        response.on('end', function () {
-          responseToSend.data = Buffer.concat(responseToSend.data).toString();
-          resolve(responseToSend);
-        });
+          response.on('data', function (chunk) {
+            responseToSend.data.push(chunk);
+          });
 
-        response.on('error', function (err) {
-          reject({
-            message: err,
-            customTopic: constants.TOPICS.TOOL_RESPONSE_ERROR
+          response.on('end', function () {
+            responseToSend.data = Buffer.concat(responseToSend.data).toString();
+            resolve(responseToSend);
+          });
+
+          response.on('error', function (err) {
+            reject({
+              message: err,
+              customTopic: constants.TOPICS.TOOL_RESPONSE_ERROR
+            });
           });
         });
-      });
+      }
+      else {
+        keepAliveAgent = new https.Agent({keepAlive: true});  
+        requestOptions = Object.assign(requestOptions, params.furtherRequestOptions, {
+          agent: keepAliveAgent
+        });
+        request = https.request(requestOptions, function (response) {
+          var responseToSend = {
+            statusCode: response.statusCode,
+            headers: response.headers,
+            data: []
+          };
 
+          response.on('data', function (chunk) {
+            responseToSend.data.push(chunk);
+          });
+
+          response.on('end', function () {
+            responseToSend.data = Buffer.concat(responseToSend.data).toString();
+            resolve(responseToSend);
+          });
+
+          response.on('error', function (err) {
+            reject({
+              message: err,
+              customTopic: constants.TOPICS.TOOL_RESPONSE_ERROR
+            });
+          });
+        });
+      }
       // Log the request that will be initiated on behalf of the client
       request.on('finish', function () {
         RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, clientRequest.method + ' ' + clientRequest.url,

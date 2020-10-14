@@ -1,7 +1,8 @@
 module.exports.VERSION = '1.0.0';
-module.exports.HUB_HOST = 'hub-cloud.browserstack.com';
-module.exports.HUB_STATUS_URL = 'http://hub-cloud.browserstack.com/wd/hub/status';
-module.exports.RAILS_AUTOMATE = 'http://automate.browserstack.com';
+module.exports.BS_DOMAIN = 'browserstack.com';
+module.exports.HUB_HOST = `hub-cloud.${this.BS_DOMAIN}`;
+module.exports.HUB_STATUS_URL = `http://${this.HUB_HOST}/wd/hub/status`;
+module.exports.RAILS_AUTOMATE = `http://automate.${this.BS_DOMAIN}`;
 module.exports.CONNECTIVITY_REQ_TIMEOUT = 30000;
 module.exports.DEFAULT_PROXY_PORT = 3128;
 module.exports.CUSTOM_ERROR_RESPONSE_CODE = 502;
@@ -27,11 +28,12 @@ module.exports.RdGlobalConfig = {
   RD_HANDLER_PORT: process.env.NODE_ENV === 'test' ? 8787 : 9687,
   RD_HANDLER_REVERSE_PROXY_PORT: process.env.NODE_ENV === 'test' ? 8788 : 9688,
   CLIENT_REQ_TIMEOUT: 260000, // in ms
+  SCHEME: 'https'
 };
 
 module.exports.COMMON = Object.freeze({
-  PING_HUB: 'ping -c 5 hub-cloud.browserstack.com',
-  PING_AUTOMATE: 'ping -c 5 automate.browserstack.com'
+  PING_HUB: `ping -c 5 ${this.HUB_HOST}`,
+  PING_AUTOMATE: `ping -c 5 ${this.RAILS_AUTOMATE}`
 });
 
 module.exports.MAC = Object.freeze({
@@ -51,8 +53,8 @@ module.exports.WIN = Object.freeze({
   NETSTAT_ROUTING_TABLE: 'netstat -r',
   IPCONFIG_ALL: 'ipconfig /all',
   SWAP_USAGE: 'pagefile get AllocatedBaseSize, CurrentUsage', // this is a WMIC command. Prefix with WMIC Path
-  PING_HUB: 'ping -n 5 hub-cloud.browserstack.com',
-  PING_AUTOMATE: 'ping -n 5 automate.browserstack.com',
+  PING_HUB: `ping -n 5 ${this.HUB_HOST}`,
+  PING_AUTOMATE: `ping -n 5 ${this.RAILS_AUTOMATE}`,
   LOAD_PERCENTAGE: 'cpu get loadpercentage', // prefix wmic path
 });
 

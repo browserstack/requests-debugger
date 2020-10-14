@@ -15,6 +15,8 @@ var CommandLineManager = {
                      + "ARGUMENTS:\n"
                      + "  --port            <port>                    : Port on which the Requests Debugger Tool's Proxy will run\n"
                      + "                                                Default: " + RdGlobalConfig.RD_HANDLER_PORT + "\n"
+                     + "  --scheme          <https/http>              : Scheme for requests to browserstack\n"
+                     + "                                                Default: " + constants.DEFAULT_SCHEME + "\n"
                      + "  --proxy-host      <hostname>                : Hostname of the Upstream Proxy\n"
                      + "  --proxy-port      <port>                    : Port of the Upstream Proxy. Default: " + constants.DEFAULT_PROXY_PORT + " (if hostname is provided)\n"
                      + "  --proxy-user      <username>                : Username for auth of the Upstream Proxy\n"
@@ -79,6 +81,24 @@ var CommandLineManager = {
       }
     }
 
+    // port for Requests Debugger Reverse Proxy
+    index = argv.indexOf('--reverse-proxy-port');
+    if (index !== -1) {
+      if (CommandLineManager.validArgValue(argv[index + 1])) {
+        var probablePort = parseInt(argv[index + 1]);
+        if (!isNaN(probablePort) && (probablePort <= constants.PORTS.MAX) && (probablePort >= constants.PORTS.MIN)) {
+          RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT = probablePort;
+        } else {
+          console.log("\nPort can only range from:", constants.PORTS.MIN, "to:", constants.PORTS.MAX);
+          invalidArgs.add('--reverse-proxy-port');
+        }
+        argv.splice(index, 2);
+      } else {
+        invalidArgs.add('--reverse-proxy-port');
+        argv.splice(index, 1);
+      }
+    }
+    
     // delay for retries in case of request failures
     index = argv.indexOf('--retry-delay');
     if (index !== -1) {
@@ -115,6 +135,27 @@ var CommandLineManager = {
       }
     }
 
+    // process proxy host
+    index = argv.indexOf('--scheme');
+    if (index !== -1) {
+      if (CommandLineManager.validArgValue(argv[index + 1])) {
+        var scheme = argv[index + 1];
+        if (!(scheme == 'http' || scheme == 'https')){
+          console.log("\nScheme can only be http/https");
+          invalidArgs.add('--scheme');
+        }
+        else{
+          RdGlobalConfig.SCHEME = scheme;
+          console.log(RdGlobalConfig.SCHEME);
+          argv.splice(index, 2);  
+        }
+      } else {
+        invalidArgs.add('--scheme');
+        argv.splice(index, 1);
+      }
+    }
+
+        
     // process proxy host
     index = argv.indexOf('--proxy-host');
     if (index !== -1) {
