@@ -39,8 +39,7 @@ var RdHandler = {
       }
     }   
     var requestOptions = Object.assign({}, RdHandler._reqObjTemplate);
-    requestOptions.host = constants.HUB_HOST;
-    requestOptions.port = RdGlobalConfig.SCHEME == 'http' ? 80 : 443; 
+
 
     /**
      * Sets the internal method to generate request options
@@ -51,9 +50,13 @@ var RdHandler = {
     RdHandler._generateRequestOptions = function (clientRequest) {
       var parsedClientUrl = url.parse(clientRequest.url);
       if (RdGlobalConfig.proxy) {
+        requestOptions.host = RdGlobalConfig.proxy.host;
+        requestOptions.port = RdGlobalConfig.proxy.port; 
         requestOptions.path = RdGlobalConfig.SCHEME + "://" + constants.HUB_HOST + parsedClientUrl.path;
       }
       else {
+        requestOptions.host = constants.HUB_HOST;
+        requestOptions.port = RdGlobalConfig.SCHEME == 'http' ? 80 : 443; 
         requestOptions.path = parsedClientUrl.path;
       }
       requestOptions.method = clientRequest.method;
