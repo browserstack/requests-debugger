@@ -128,7 +128,6 @@ var CommandLineManager = {
         }
         else{
           RdGlobalConfig.SCHEME = scheme;
-          console.log(RdGlobalConfig.SCHEME);
           argv.splice(index, 2);  
         }
       } else {
