@@ -1,4 +1,4 @@
-module.exports.VERSION = '1.0.0';
+module.exports.VERSION = '1.1.0';
 module.exports.BS_DOMAIN = 'browserstack.com';
 module.exports.HUB_HOST = `hub-cloud.${this.BS_DOMAIN}`;
 module.exports.HUB_STATUS_URL = `http://${this.HUB_HOST}/wd/hub/status`;
