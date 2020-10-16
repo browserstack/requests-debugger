@@ -63,7 +63,6 @@ describe('RdHandler', function () {
       testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
       testHelper.initializeDummyProxy();
       testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'http', 'hub', null, 200);
-      RdHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
@@ -94,7 +93,6 @@ describe('RdHandler', function () {
       for (var i = 0; i <= constants.MAX_RETRIES; i++) {
         testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'https');
       }
-      RdHandler.generatorForRequestOptionsObject();
       var reqOptions = {
         method: 'GET',
         host: 'localhost',

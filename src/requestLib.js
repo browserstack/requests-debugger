@@ -2,32 +2,31 @@ var http = require('http');
 var https = require('https');
 var constants = require('../config/constants');
 var Utils = require('./utils');
+var url = require('url');
+var HttpProxyAgent = require('https-proxy-agent');
+var HttpsProxyAgent = require('https-proxy-agent');
 
 var RdGlobalConfig = constants.RdGlobalConfig;
 
 var RequestLib = {
   /**
    * Method to perform the request on behalf of the client
+   * @param {schemeObj: Object} schemeObj 
    * @param {{request: Object, furtherRequestOptions: Object}} params 
    * @param {http.IncomingMessage} clientRequest 
    * @param {Number} retries 
    */
   _makeRequest: function (schemeObj, params, clientRequest, retries) {
     return new Promise(function (resolve, reject) {
-      var requestOptions = {
-        headers:{
-          // Adding a custom header for usage and debugging purpose at BrowserStack
-          'X-Requests-Debugger': clientRequest 
-        }
-      };
-      // Initialize the request to be fired on behalf of the client
-      var request = null;
-      var keepAliveAgent = null;
-      keepAliveAgent = new schemeObj.Agent({keepAlive: true});  
-      requestOptions = Object.assign(requestOptions, params.furtherRequestOptions, {
-        agent: keepAliveAgent
-      });
-      request = schemeObj.request(requestOptions, function (response) {
+      var requestOptions = Object.assign({}, params.furtherRequestOptions);
+      requestOptions.agent = new schemeObj.Agent({keepAlive: true});
+      if(RdGlobalConfig.proxy) { 
+        var proxyOpts = url.parse(`${RdGlobalConfig.proxy.host}:${RdGlobalConfig.proxy.port}`);
+        if(RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password);
+          proxyOpts.auth = `${RdGlobalConfig.proxy.username}:${RdGlobalConfig.proxy.password}`;
+        requestOptions.agent = RdGlobalConfig.SCHEME == 'http' ? new HttpProxyAgent(proxyOpts) : new HttpsProxyAgent(proxyOpts);
+      }
+      var request = schemeObj.request(requestOptions, function (response) {
         var responseToSend = {
           statusCode: response.statusCode,
           headers: response.headers,
@@ -148,4 +147,3 @@ var RequestLib = {
 };
 
 module.exports = RequestLib;
-

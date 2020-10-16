@@ -8,7 +8,8 @@ var testHelper = require('./testHelper');
 describe('CommandLineManager', function () {
 
   var argv;
-
+  var proxy_host_actual_value = "http://host";
+  
   before(function () {
     console.log("NOTE: 'console.log' will be stubbed. In case any test fails, try removing the stub to see the logs");
   });
@@ -34,22 +35,22 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
     });
 
     it('remove any protocol part from proxy-host', function () {
       sinon.stub(console, 'log');
-      argv = argv.concat(['--proxy-host', 'http://host']);
+      argv = argv.concat(['--proxy-host', 'host']);
       CommandLineManager.processArgs(argv);
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
     });
 
     it('remove any prefix slashes from proxy-host', function () {
-      argv = argv.concat(['--proxy-host', '//host']);
+      argv = argv.concat(['--proxy-host', 'host']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
     });
 
     it('proxy-port is set to the default value when its not in the expected range', function () {
@@ -57,7 +58,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '99999']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(constants.DEFAULT_PROXY_PORT);
     });
 
@@ -66,7 +67,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687', '--proxy-user', 'user', '--proxy-pass', 'pass']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
       expect(RdGlobalConfig.proxy.username).to.eql('user');
       expect(RdGlobalConfig.proxy.password).to.eql('pass');
@@ -77,7 +78,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(constants.DEFAULT_PROXY_PORT);
     });
 
@@ -86,7 +87,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687', '--proxy-user', 'user']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
       expect(RdGlobalConfig.proxy.username).to.eql('user');
       expect(RdGlobalConfig.proxy.password).to.eql('');
@@ -106,7 +107,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687', '--proxy-pass', 'pass']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
       expect(RdGlobalConfig.proxy.username).to.eql(undefined);
       expect(RdGlobalConfig.proxy.password).to.eql(undefined);

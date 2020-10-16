@@ -11,6 +11,7 @@ var uuidv4 = require('uuid/v4');
 var Utils = require('./utils');
 var constants = require('../config/constants');
 var ReqLib = require('./requestLib');
+
 var RdGlobalConfig = constants.RdGlobalConfig;
 
 var RdHandler = {
@@ -18,54 +19,25 @@ var RdHandler = {
   _requestCounter: 0,
 
   /**
-   * Generates the request options template for firing requests
+   * Generates the request options for firing requests
+   * @param {http.IncomingMessage} clientRequest 
+   * @returns {Object}
    */
-  generatorForRequestOptionsObject: function () {
-    RdHandler._reqObjTemplate = {
-      method: null,
-      headers: {},
-      host: null,
-      port: null,
-      path: null
+  _generateRequestOptions: function (clientRequest) {
+    var requestOptions = {
+      headers: {}
     };
-    RdHandler._reqObjTemplate.headers['host'] = constants.BS_DOMAIN;
-
-    if (RdGlobalConfig.proxy) {
-      RdHandler._reqObjTemplate.host = RdGlobalConfig.proxy.host;
-      RdHandler._reqObjTemplate.port = RdGlobalConfig.proxy.port;
-      
-      if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
-        RdHandler._reqObjTemplate.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);
-      }
-    }   
-    var requestOptions = Object.assign({}, RdHandler._reqObjTemplate);
-
-
-    /**
-     * Sets the internal method to generate request options
-     * doesn't exists
-     * @param {http.IncomingMessage} clientRequest 
-     * @returns {Object}
-     */
-    RdHandler._generateRequestOptions = function (clientRequest) {
-      var parsedClientUrl = url.parse(clientRequest.url);
-      if (RdGlobalConfig.proxy) {
-        requestOptions.host = RdGlobalConfig.proxy.host;
-        requestOptions.port = RdGlobalConfig.proxy.port; 
-        requestOptions.path = RdGlobalConfig.SCHEME + "://" + constants.HUB_HOST + parsedClientUrl.path;
-      }
-      else {
-        requestOptions.host = constants.HUB_HOST;
-        requestOptions.port = RdGlobalConfig.SCHEME == 'http' ? 80 : 443; 
-        requestOptions.path = parsedClientUrl.path;
-      }
-      requestOptions.method = clientRequest.method;
-      requestOptions.headers = Object.assign({}, clientRequest.headers, RdHandler._reqObjTemplate.headers);
-      if (parsedClientUrl.auth) {
-        requestOptions.headers['authorization'] = Utils.proxyAuthToBase64(parsedClientUrl.auth);
-      }
-      return requestOptions;
-    };
+    var parsedClientUrl = url.parse(clientRequest.url);
+    requestOptions.host = constants.HUB_HOST;
+    requestOptions.port = RdGlobalConfig.SCHEME == 'http' ? 80 : 443; 
+    requestOptions.path = parsedClientUrl.path;
+    requestOptions.method = clientRequest.method;
+    requestOptions.headers = clientRequest.headers;
+    requestOptions.headers['X-Requests-Debugger'] =  clientRequest.id;
+    if (parsedClientUrl.auth) {
+      requestOptions.headers['Authorization'] = Utils.proxyAuthToBase64(parsedClientUrl.auth);
+    }
+    return requestOptions;
   },
 
   /**
@@ -168,7 +140,6 @@ var RdHandler = {
    */
   startServer: function (port, callback) {
     try {
-      RdHandler.generatorForRequestOptionsObject();
       RdHandler.server = http.createServer(RdHandler.requestHandler);
       RdHandler.server.listen(port);
       RdHandler.server.on('listening', function () {

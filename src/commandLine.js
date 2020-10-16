@@ -2,8 +2,9 @@
  * Command Line Manager to parse the command line arguments
  * and set the necessary fields in RdGlobalConfig.
  */
-
+var url = require('url');
 var constants = require('../config/constants');
+
 var RdGlobalConfig = constants.RdGlobalConfig;
 
 var CommandLineManager = {
@@ -16,7 +17,7 @@ var CommandLineManager = {
                      + "  --port            <port>                    : Port on which the Requests Debugger Tool's Proxy will run\n"
                      + "                                                Default: " + RdGlobalConfig.RD_HANDLER_PORT + "\n"
                      + "  --scheme          <https/http>              : Scheme for requests to browserstack.\n"
-                     + "                                                Default: " + constants.DEFAULT_SCHEME + "\n"
+                     + "                                                Default: " + RdGlobalConfig.SCHEME + "\n"
                      + "  --proxy-host      <hostname>                : Hostname of the Upstream Proxy\n"
                      + "  --proxy-port      <port>                    : Port of the Upstream Proxy. Default: " + constants.DEFAULT_PROXY_PORT + " (if hostname is provided)\n"
                      + "  --proxy-user      <username>                : Username for auth of the Upstream Proxy\n"
@@ -142,7 +143,9 @@ var CommandLineManager = {
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         var host = argv[index + 1];
-        host = host.replace(constants.PROTOCOL_REGEX, '');
+        if(host.lastIndexOf("http") != 0){
+          host = `http://${host}`;
+        }
         RdGlobalConfig.proxy = RdGlobalConfig.proxy || {};
         RdGlobalConfig.proxy.host = host;
         argv.splice(index, 2);
