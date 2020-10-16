@@ -52,7 +52,8 @@ var RequestLib = {
 
       // Log the request that will be initiated on behalf of the client
       request.on('finish', function () {
-        RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, clientRequest.method + ' ' + clientRequest.url,
+        RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, clientRequest.method + ' ' + 
+        clientRequest.url.replace("http://", RdGlobalConfig.SCHEME + "://"),
           false,
           Object.assign({}, params.furtherRequestOptions, {
             data: Buffer.concat(params.request.data).toString()
