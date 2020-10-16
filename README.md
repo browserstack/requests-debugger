@@ -2,7 +2,7 @@
 ### Tool for debugging client side failure of requests, leading to requests getting dropped or not reaching BrowserStack.
 
 ## Features
-- Proxy Server to intercept requests fired by client bindings to keep track of their flow.
+- Proxy and Reverse Server to intercept requests fired by client bindings to keep track of their flow.
 - Connectivity Checker : To check for the reachability of BrowserStack components, i.e. Rails & Hub.
 - Multi-Platform Stats Compatibility : Ability to collect stats of CPU, Network & Memory Stats.
 - Retry Mechanism in case a request fails at the client side
@@ -12,7 +12,7 @@
   - Install all the required packages: `npm install`
   - Start Requests Debugger with the required arguments: `npm run start -- <args>`. 
   - Supported `args`:
-    - `--port <port>`: Port on which the Requests Debugger Tool's Proxy will run. Default: 9687
+    - `--port <port>`: Port on which the Requests Debugger Tool's Server will run. Default: 9687
     - `--proxy-host <hostname>`: Hostname of the Upstream Proxy
     - `--proxy-port <port>`: Port of the Upstream Proxy. Default: 3128 (if hostname is provided)
     - `--proxy-user <username>`: Username for auth of the Upstream Proxy
@@ -30,7 +30,7 @@
     - Windows: `RequestsDebugger.exe <args>`
 
 ## How to use
-- Since the tool acts like a proxy, you will have to set the proxy to be used by your client binding to `localhost:9687`. i.e.
+- To use tool as proxy, you will have to set the proxy to be used by your client binding to `localhost:9687`. i.e.
   - For Java:
     - ```
       System.getProperties().put("http.proxyHost", "localhost");
@@ -40,7 +40,8 @@
     - Set your system's env variable `http_proxy=localhost:9687` and Ruby's Selenium Client Binding will pick the value. Or,
     - Run you test by giving the environment variable to your command itself, i.e. `http_proxy=localhost:9687 ruby <your_script.rb>`
   - Similarly, you can also set proxy for other client bindings.
-  
+- To use tool as reverse proxy, you will have to replace hub-cloud.browserstack.com in hub url with `localhost:9687`.
+
 ## Steps to build the executables
 - Linux
   - `npm run build:linux`

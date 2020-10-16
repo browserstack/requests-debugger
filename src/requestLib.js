@@ -15,10 +15,7 @@ var RequestLib = {
   _makeRequest: function (schemeObj, params, clientRequest, retries) {
     return new Promise(function (resolve, reject) {
       var requestOptions = {
-        headers:{
-          // Adding a custom header for usage and debugging purpose at BrowserStack
-          'X-Requests-Debugger': clientRequest 
-        }
+        headers:{}
       };
       // Initialize the request to be fired on behalf of the client
       var request = null;
@@ -27,6 +24,8 @@ var RequestLib = {
       requestOptions = Object.assign(requestOptions, params.furtherRequestOptions, {
         agent: keepAliveAgent
       });
+      // Adding a custom header for usage and debugging purpose at BrowserStack
+      requestOptions.headers['X-Requests-Debugger'] = clientRequest.id;
       request = schemeObj.request(requestOptions, function (response) {
         var responseToSend = {
           statusCode: response.statusCode,

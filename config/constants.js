@@ -27,7 +27,8 @@ module.exports.RdGlobalConfig = {
   RETRY_DELAY: 1000, // in ms
   RD_HANDLER_PORT: process.env.NODE_ENV === 'test' ? 8787 : 9687,
   CLIENT_REQ_TIMEOUT: 260000, // in ms
-  SCHEME: 'https'
+  SCHEME: 'http',
+  PORT: 80
 };
 
 module.exports.COMMON = Object.freeze({

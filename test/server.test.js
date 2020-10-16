@@ -33,7 +33,7 @@ describe('RdHandler', function () {
 
     it('Requests on behalf of the client and returns the response', function (done) {
       this.timeout = 5000;
-      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
@@ -60,7 +60,7 @@ describe('RdHandler', function () {
 
     it('Requests on behalf of the client via external proxy and returns the response', function (done) {
       this.timeout = 5000;
-      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
       testHelper.initializeDummyProxy();
       testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'http', 'hub', null, 200);
       RdHandler.generatorForRequestOptionsObject();
@@ -92,7 +92,7 @@ describe('RdHandler', function () {
     it('Requests on behalf of the client via external proxy and returns the response even if request by tool fails', function (done) {
       this.timeout = 5000;
       for (var i = 0; i <= constants.MAX_RETRIES; i++) {
-        testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'https');
+        testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'http');
       }
       RdHandler.generatorForRequestOptionsObject();
       var reqOptions = {

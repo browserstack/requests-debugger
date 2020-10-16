@@ -15,8 +15,6 @@ var CommandLineManager = {
                      + "ARGUMENTS:\n"
                      + "  --port            <port>                    : Port on which the Requests Debugger Tool's Proxy will run\n"
                      + "                                                Default: " + RdGlobalConfig.RD_HANDLER_PORT + "\n"
-                     + "  --scheme          <https/http>              : Scheme for requests to browserstack.\n"
-                     + "                                                Default: " + constants.DEFAULT_SCHEME + "\n"
                      + "  --proxy-host      <hostname>                : Hostname of the Upstream Proxy\n"
                      + "  --proxy-port      <port>                    : Port of the Upstream Proxy. Default: " + constants.DEFAULT_PROXY_PORT + " (if hostname is provided)\n"
                      + "  --proxy-user      <username>                : Username for auth of the Upstream Proxy\n"
@@ -117,26 +115,6 @@ var CommandLineManager = {
       }
     }
 
-    // process proxy host
-    index = argv.indexOf('--scheme');
-    if (index !== -1) {
-      if (CommandLineManager.validArgValue(argv[index + 1])) {
-        var scheme = argv[index + 1];
-        if (!(scheme == 'http' || scheme == 'https')){
-          console.log("\nScheme can only be http/https");
-          invalidArgs.add('--scheme');
-        }
-        else{
-          RdGlobalConfig.SCHEME = scheme;
-          argv.splice(index, 2);  
-        }
-      } else {
-        invalidArgs.add('--scheme');
-        argv.splice(index, 1);
-      }
-    }
-
-        
     // process proxy host
     index = argv.indexOf('--proxy-host');
     if (index !== -1) {

@@ -28,8 +28,7 @@ var RdHandler = {
       port: null,
       path: null
     };
-    RdHandler._reqObjTemplate.headers['host'] = constants.BS_DOMAIN;
-
+    
     if (RdGlobalConfig.proxy) {
       RdHandler._reqObjTemplate.host = RdGlobalConfig.proxy.host;
       RdHandler._reqObjTemplate.port = RdGlobalConfig.proxy.port;
@@ -48,6 +47,7 @@ var RdHandler = {
      * @returns {Object}
      */
     RdHandler._generateRequestOptions = function (clientRequest) {
+      requestOptions.method = clientRequest.method;
       var parsedClientUrl = url.parse(clientRequest.url);
       if (RdGlobalConfig.proxy) {
         requestOptions.host = RdGlobalConfig.proxy.host;
@@ -56,11 +56,11 @@ var RdHandler = {
       }
       else {
         requestOptions.host = constants.HUB_HOST;
-        requestOptions.port = RdGlobalConfig.SCHEME == 'http' ? 80 : 443; 
+        requestOptions.port = RdGlobalConfig.PORT; 
         requestOptions.path = parsedClientUrl.path;
       }
-      requestOptions.method = clientRequest.method;
-      requestOptions.headers = Object.assign({}, clientRequest.headers, RdHandler._reqObjTemplate.headers);
+      requestOptions.headers = Object.assign(requestOptions.headers, clientRequest.headers, RdHandler._reqObjTemplate.headers);
+      RdHandler._reqObjTemplate.headers['host'] = constants.BS_DOMAIN;
       if (parsedClientUrl.auth) {
         requestOptions.headers['authorization'] = Utils.proxyAuthToBase64(parsedClientUrl.auth);
       }
