@@ -1,5 +1,4 @@
 var http = require('http');
-var https = require('https');
 var constants = require('../config/constants');
 var Utils = require('./utils');
 
@@ -14,19 +13,13 @@ var RequestLib = {
    */
   _makeRequest: function (schemeObj, params, clientRequest, retries) {
     return new Promise(function (resolve, reject) {
-      var requestOptions = {
-        headers:{}
-      };
-      // Initialize the request to be fired on behalf of the client
-      var request = null;
-      var keepAliveAgent = null;
-      keepAliveAgent = new schemeObj.Agent({keepAlive: true});  
-      requestOptions = Object.assign(requestOptions, params.furtherRequestOptions, {
-        agent: keepAliveAgent
+      var requestOptions = Object.assign({}, params.furtherRequestOptions, {
+        agent: new schemeObj.Agent({keepAlive: true})
       });
       // Adding a custom header for usage and debugging purpose at BrowserStack
       requestOptions.headers['X-Requests-Debugger'] = clientRequest.id;
-      request = schemeObj.request(requestOptions, function (response) {
+      // Initialize the request to be fired on behalf of the client
+      var request = schemeObj.request(requestOptions, function (response) {
         var responseToSend = {
           statusCode: response.statusCode,
           headers: response.headers,

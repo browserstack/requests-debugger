@@ -39,10 +39,8 @@ var RdHandler = {
     }   
     var requestOptions = Object.assign({}, RdHandler._reqObjTemplate);
 
-
     /**
      * Sets the internal method to generate request options
-     * doesn't exists
      * @param {http.IncomingMessage} clientRequest 
      * @returns {Object}
      */
