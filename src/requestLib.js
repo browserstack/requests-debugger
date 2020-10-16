@@ -52,10 +52,8 @@ var RequestLib = {
 
       // Log the request that will be initiated on behalf of the client
       request.on('finish', function () {
-        RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, clientRequest.method + ' ' + 
-        clientRequest.url.replace("http://", RdGlobalConfig.SCHEME + "://"),
-          false,
-          Object.assign({}, params.furtherRequestOptions, {
+        RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, 
+          clientRequest.method + ' ' + requestOptions.path, false, Object.assign({}, params.furtherRequestOptions, {
             data: Buffer.concat(params.request.data).toString()
           }),
           clientRequest.id);
@@ -100,7 +98,7 @@ var RequestLib = {
         });
   
         clientRequest.on('end', function () {
-          RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + params.request.url, false, {
+          RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + requestOptions.path, false, {
             data: Buffer.concat(params.request.data).toString()
           },
           clientRequest.id);
