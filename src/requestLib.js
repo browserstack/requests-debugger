@@ -120,8 +120,7 @@ var RequestLib = {
    */
   call: function (params, clientRequest, retries) {
     retries = (typeof retries === 'number') ? Math.min(constants.MAX_RETRIES, Math.max(retries, 0)) : constants.MAX_RETRIES;
-    var schemeObj = RdGlobalConfig.SCHEME == "http" ? http : https;
-    return RequestLib._makeRequest(schemeObj, params, clientRequest, retries)
+    return RequestLib._makeRequest(http, params, clientRequest, retries)
       .catch(function (err) {
         var errTopic = err.customTopic || constants.TOPICS.UNEXPECTED_ERROR;
         // Collect Network & Connectivity Logs whenever a request fails
