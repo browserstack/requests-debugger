@@ -3,7 +3,7 @@ var https = require('https');
 var constants = require('../config/constants');
 var Utils = require('./utils');
 var url = require('url');
-var HttpProxyAgent = require('https-proxy-agent');
+var HttpProxyAgent = require('http-proxy-agent');
 var HttpsProxyAgent = require('https-proxy-agent');
 
 var RdGlobalConfig = constants.RdGlobalConfig;
@@ -22,7 +22,7 @@ var RequestLib = {
       requestOptions.agent = new schemeObj.Agent({keepAlive: true});
       if(RdGlobalConfig.proxy) { 
         var proxyOpts = url.parse(`${RdGlobalConfig.proxy.host}:${RdGlobalConfig.proxy.port}`);
-        if(RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password);
+        if(RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password)
           proxyOpts.auth = `${RdGlobalConfig.proxy.username}:${RdGlobalConfig.proxy.password}`;
         requestOptions.agent = RdGlobalConfig.SCHEME == 'http' ? new HttpProxyAgent(proxyOpts) : new HttpsProxyAgent(proxyOpts);
       }
