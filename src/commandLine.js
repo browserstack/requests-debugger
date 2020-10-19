@@ -81,7 +81,7 @@ var CommandLineManager = {
         argv.splice(index, 1);
       }
     }
-    
+        
     // delay for retries in case of request failures
     index = argv.indexOf('--retry-delay');
     if (index !== -1) {
@@ -123,11 +123,11 @@ var CommandLineManager = {
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         var scheme = argv[index + 1];
-        if (!(scheme == 'http' || scheme == 'https')){
+        if (!(scheme === 'http' || scheme === 'https')){
           console.log("\nScheme can only be http/https");
           invalidArgs.add('--scheme');
         }
-        else{
+        else {
           RdGlobalConfig.SCHEME = scheme;
           argv.splice(index, 2);  
         }
@@ -143,7 +143,7 @@ var CommandLineManager = {
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         var host = argv[index + 1];
-        if(host.lastIndexOf("http") != 0){
+        if(host.lastIndexOf("http") !== 0){
           host = `http://${host}`;
         }
         RdGlobalConfig.proxy = RdGlobalConfig.proxy || {};

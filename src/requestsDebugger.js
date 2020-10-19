@@ -142,7 +142,7 @@ var RdTool = {
     RdHandler.startServer(RdGlobalConfig.RD_HANDLER_PORT, function (err, result) {
       if (err) {
         console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
-        console.log('Exiting the Proxy...');
+        console.log('Exiting the Server...');
         process.exit(1);
       }
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_STARTED_ON_PORT + result, '', '-', 60, true));
