@@ -31,7 +31,7 @@ module.exports.LOGS = Object.freeze({
 
 module.exports.RdGlobalConfig = {
   RETRY_DELAY: 1000, // in ms
-  RD_HANDLER_PORT: process.env.NODE_ENV === 'test' ? 8787 : 9687,
+  RD_HANDLER_PROXY_PORT: process.env.NODE_ENV === 'test' ? 8787 : 9687,
   RD_HANDLER_REVERSE_PROXY_PORT: process.env.NODE_ENV === 'test' ? 8788 : 9688,
   CLIENT_REQ_TIMEOUT: 260000, // in ms
   SCHEME: 'https'
@@ -89,8 +89,8 @@ module.exports.STATIC_MESSAGES = Object.freeze({
   CHECK_MEMORY_STATS: 'Stats : Checking Memory Stats',
   CHECK_CONNECTIVITY: 'Checks : Checking Connectivity With BrowserStack',
   ERR_STARTING_TOOL: 'Error in starting Requests Debugger Tool: ',
-  TOOL_STARTED_ON_PORT: 'Requests Debugger Tool Proxy Started on Port: ',
-  TOOL_STARTED_ON_PORT: 'Requests Debugger Tool Reverse Proxy Started on Port: ',
+  TOOL_PROXY_STARTED_ON_PORT: 'Requests Debugger Tool Proxy Server Started on Port: ',
+  TOOL_REVESE_PROXY_STARTED_ON_PORT: 'Requests Debugger Tool Reverse Proxy Server Started on Port: ',
   CPU_STATS_COLLECTED: 'Stats : Initial CPU Stats Collected',
   NETWORK_STATS_COLLECTED: 'Stats : Initial Network Stats Collected',
   MEMORY_STATS_COLLECTED: 'Stats : Initial Memory Stats Collected',

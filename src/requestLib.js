@@ -7,8 +7,12 @@ var HttpProxyAgent = require('http-proxy-agent');
 var HttpsProxyAgent = require('https-proxy-agent');
 
 var RdGlobalConfig = constants.RdGlobalConfig;
-
+var httpKeepAliveAgent = new http.Agent({keepAlive: true});
+var httpsKeepAliveAgent = new https.Agent({keepAlive: true});
+var httpProxyAgent = null;
+var httpsProxyAgent = null;
 var RequestLib = {
+
   /**
    * Method to perform the request on behalf of the client
    * @param {schemeObj: Object} schemeObj 
@@ -19,12 +23,17 @@ var RequestLib = {
   _makeRequest: function (schemeObj, params, clientRequest, retries) {
     return new Promise(function (resolve, reject) {
       var requestOptions = Object.assign({}, params.furtherRequestOptions);
-      requestOptions.agent = new schemeObj.Agent({keepAlive: true});
+      requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpKeepAliveAgent : httpsKeepAliveAgent;
       if(RdGlobalConfig.proxy) { 
-        var proxyOpts = url.parse(`${RdGlobalConfig.proxy.host}:${RdGlobalConfig.proxy.port}`);
-        if(RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password)
-          proxyOpts.auth = `${RdGlobalConfig.proxy.username}:${RdGlobalConfig.proxy.password}`;
-        requestOptions.agent = RdGlobalConfig.SCHEME == 'http' ? new HttpProxyAgent(proxyOpts) : new HttpsProxyAgent(proxyOpts);
+        if (!httpProxyAgent && !httpsProxyAgent) {
+          var proxyOpts = url.parse(`${RdGlobalConfig.proxy.host}:${RdGlobalConfig.proxy.port}`);
+          if(RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
+            proxyOpts.auth = `${RdGlobalConfig.proxy.username}:${RdGlobalConfig.proxy.password}`;
+          }
+          httpProxyAgent =  HttpProxyAgent(proxyOpts);
+          httpsProxyAgent = HttpsProxyAgent(proxyOpts);
+        }
+        requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpProxyAgent : httpsProxyAgent;  
       }
       var request = schemeObj.request(requestOptions, function (response) {
         var responseToSend = {
@@ -119,7 +128,7 @@ var RequestLib = {
    */
   call: function (params, clientRequest, retries) {
     retries = (typeof retries === 'number') ? Math.min(constants.MAX_RETRIES, Math.max(retries, 0)) : constants.MAX_RETRIES;
-    var schemeObj = RdGlobalConfig.SCHEME == "http" ? http : https;
+    var schemeObj = RdGlobalConfig.SCHEME === "http" ? http : https;
     return RequestLib._makeRequest(schemeObj, params, clientRequest, retries)
       .catch(function (err) {
         var errTopic = err.customTopic || constants.TOPICS.UNEXPECTED_ERROR;

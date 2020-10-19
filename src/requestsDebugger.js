@@ -139,7 +139,7 @@ var RdTool = {
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CONNECTIVITY_CHECKS_DONE, '', '-', 60, true));
     });
 
-    RdHandler.startProxyServer(RdGlobalConfig.RD_HANDLER_PORT, function (err, result) {
+    RdHandler.startProxyServer(RdGlobalConfig.RD_HANDLER_PROXY_PORT, function (err, result) {
       if (err) {
         console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
         console.log('Exiting the Proxy Server...');
@@ -151,7 +151,7 @@ var RdTool = {
     RdHandler.startReverseProxyServer(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT, function (err, result) {
       if (err) {
         console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
-        console.log('Exiting the Reverse Server...');
+        console.log('Exiting the Reverse Proxy Server...');
         process.exit(1);
       }
       console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_REVESE_PROXY_STARTED_ON_PORT + result, '', '-', 60, true));
