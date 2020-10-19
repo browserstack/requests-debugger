@@ -26,9 +26,9 @@ var RequestLib = {
       requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpKeepAliveAgent : httpsKeepAliveAgent;
       if(RdGlobalConfig.proxy) { 
         if (!httpProxyAgent && !httpsProxyAgent) {
-          var proxyOpts = url.parse(`${RdGlobalConfig.proxy.host}:${RdGlobalConfig.proxy.port}`);
+          var proxyOpts = url.parse(RdGlobalConfig.proxy.host + ":" +RdGlobalConfig.proxy.port);
           if(RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
-            proxyOpts.auth = `${RdGlobalConfig.proxy.username}:${RdGlobalConfig.proxy.password}`;
+            proxyOpts.auth = RdGlobalConfig.proxy.username + ":" + RdGlobalConfig.proxy.password;
           }
           httpProxyAgent =  HttpProxyAgent(proxyOpts);
           httpsProxyAgent = HttpsProxyAgent(proxyOpts);
@@ -61,8 +61,9 @@ var RequestLib = {
 
       // Log the request that will be initiated on behalf of the client
       request.on('finish', function () {
+        var url = RdGlobalConfig.SCHEME + "://" + requestOptions.host + requestOptions.path;
         RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, 
-          clientRequest.method + ' ' + requestOptions.path, false, Object.assign({}, params.furtherRequestOptions, {
+          clientRequest.method + ' ' + url, false, Object.assign({}, params.furtherRequestOptions, {
             data: Buffer.concat(params.request.data).toString()
           }),
           clientRequest.id);

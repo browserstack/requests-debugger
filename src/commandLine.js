@@ -2,7 +2,6 @@
  * Command Line Manager to parse the command line arguments
  * and set the necessary fields in RdGlobalConfig.
  */
-var url = require('url');
 var constants = require('../config/constants');
 
 var RdGlobalConfig = constants.RdGlobalConfig;
@@ -14,23 +13,25 @@ var CommandLineManager = {
                      + "\n"
                      + "Usage: RequestsDebugger [ARGUMENTS]\n\n"
                      + "ARGUMENTS:\n"
-                     + "  --port            <port>                    : Port on which the Requests Debugger Tool's Proxy will run\n"
-                     + "                                                Default: " + RdGlobalConfig.RD_HANDLER_PORT + "\n"
-                     + "  --scheme          <https/http>              : Scheme for requests to browserstack.\n"
-                     + "                                                Default: " + RdGlobalConfig.SCHEME + "\n"
-                     + "  --proxy-host      <hostname>                : Hostname of the Upstream Proxy\n"
-                     + "  --proxy-port      <port>                    : Port of the Upstream Proxy. Default: " + constants.DEFAULT_PROXY_PORT + " (if hostname is provided)\n"
-                     + "  --proxy-user      <username>                : Username for auth of the Upstream Proxy\n"
-                     + "  --proxy-pass      <password>                : Password for auth of the Upstream Proxy\n"
-                     + "  --retry-delay     <milliseconds>            : Delay for the retry of a failed request. Default: " + RdGlobalConfig.RETRY_DELAY + "ms\n"
-                     + "  --request-timeout <milliseconds>            : Hard timeout for the requests being fired by the tool before receiving any response\n"
-                     + "                                                Default: " + RdGlobalConfig.CLIENT_REQ_TIMEOUT + "ms\n"
-                     + "  --logs-path       <relative/absolute path>  : Directory where the '" + constants.LOGS_FOLDER + "' folder will be created\n"
-                     + "                                                for storing logs. Default: Current Working Directory\n"
-                     + "  --del-logs                                  : Deletes any existing logs from the " + constants.LOGS_FOLDER + "/ directory and initializes\n"
-                     + "                                                new files for logging\n"
-                     + "  --help                                      : Help for Requests Debugger Tool\n"
-                     + "  --version                                   : Version of the Requests Debugger Tool\n";
+                     + "  --proxy-port         <port>                    : Port on which the Requests Debugger Tool's Proxy will run\n"
+                     + "                                                   Default: " + RdGlobalConfig.RD_HANDLER_PROXY_PORT + "\n"
+                     + "  --reverse-proxy-port <port>                    : Port on which the Requests Debugger Tool's Reverse Proxy will run\n"
+                     + "                                                   Default: " + RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT + "\n"
+                     + "  --scheme             <https/http>              : Scheme for requests to browserstack.\n"
+                     + "                                                   Default: " + RdGlobalConfig.SCHEME + "\n"
+                     + "  --proxy-host         <hostname>                : Hostname of the Upstream Proxy\n"
+                     + "  --proxy-port         <port>                    : Port of the Upstream Proxy. Default: " + constants.DEFAULT_PROXY_PORT + " (if hostname is provided)\n"
+                     + "  --proxy-user         <username>                : Username for auth of the Upstream Proxy\n"
+                     + "  --proxy-pass         <password>                : Password for auth of the Upstream Proxy\n"
+                     + "  --retry-delay        <milliseconds>            : Delay for the retry of a failed request. Default: " + RdGlobalConfig.RETRY_DELAY + "ms\n"
+                     + "  --request-timeout    <milliseconds>            : Hard timeout for the requests being fired by the tool before receiving any response\n"
+                     + "                                                   Default: " + RdGlobalConfig.CLIENT_REQ_TIMEOUT + "ms\n"
+                     + "  --logs-path          <relative/absolute path>  : Directory where the '" + constants.LOGS_FOLDER + "' folder will be created\n"
+                     + "                                                   for storing logs. Default: Current Working Directory\n"
+                     + "  --del-logs                                     : Deletes any existing logs from the " + constants.LOGS_FOLDER + "/ directory and initializes\n"
+                     + "                                                   new files for logging\n"
+                     + "  --help                                         : Help for Requests Debugger Tool\n"
+                     + "  --version                                      : Version of the Requests Debugger Tool\n";
 
     console.log(helpOutput);
   },
@@ -70,7 +71,7 @@ var CommandLineManager = {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         var probablePort = parseInt(argv[index + 1]);
         if (!isNaN(probablePort) && (probablePort <= constants.PORTS.MAX) && (probablePort >= constants.PORTS.MIN)) {
-          RdGlobalConfig.RD_HANDLER_PORT = probablePort;
+          RdGlobalConfig.RD_HANDLER_PROXY_PORT = probablePort;
         } else {
           console.log("\nPort can only range from:", constants.PORTS.MIN, "to:", constants.PORTS.MAX);
           invalidArgs.add('--port');
@@ -78,6 +79,24 @@ var CommandLineManager = {
         argv.splice(index, 2);
       } else {
         invalidArgs.add('--port');
+        argv.splice(index, 1);
+      }
+    }
+
+    // port for Requests Debugger Reverse Proxy
+    index = argv.indexOf('--reverse-proxy-port');
+    if (index !== -1) {
+      if (CommandLineManager.validArgValue(argv[index + 1])) {
+        var probableReverseProxyPort = parseInt(argv[index + 1]);
+        if (!isNaN(probableReverseProxyPort) && (probableReverseProxyPort <= constants.PORTS.MAX) && (probableReverseProxyPort >= constants.PORTS.MIN)) {
+          RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT = probablePort;
+        } else {
+          console.log("\nPort can only range from:", constants.PORTS.MIN, "to:", constants.PORTS.MAX);
+          invalidArgs.add('--reverse-proxy-port');
+        }
+        argv.splice(index, 2);
+      } else {
+        invalidArgs.add('--reverse-proxy-port');
         argv.splice(index, 1);
       }
     }
@@ -144,7 +163,7 @@ var CommandLineManager = {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         var host = argv[index + 1];
         if(host.lastIndexOf("http") !== 0){
-          host = `http://${host}`;
+          host = 'http://' + host; 
         }
         RdGlobalConfig.proxy = RdGlobalConfig.proxy || {};
         RdGlobalConfig.proxy.host = host;

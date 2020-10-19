@@ -11,7 +11,8 @@ var RdGlobalConfig = constants.RdGlobalConfig;
 var STATIC_MESSAGES = constants.STATIC_MESSAGES;
 var CommandLineManager = require('./commandLine');
 var ConnectivityChecker = require('./connectivity');
-var RdHandler = require('./server');
+var proxy = require('./proxy');
+var reverseProxy = require('./reverseProxy');
 var StatsFactory = require('./stats/statsFactory');
 var LogManager = require('./logger');
 var fs = require('fs');
@@ -110,51 +111,51 @@ var RdTool = {
    * collection and connectivity checks. Finally, sets up the tool proxy
    */
   start: function () {
+    var lineLength = 70;
     CommandLineManager.processArgs(process.argv);
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.STARTING_TOOL, '-', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.STARTING_TOOL, '-', '-', lineLength, true));
     RdTool.initLoggersAndHandlers();
     /* eslint-disable indent */
     console.log(Utils.formatAndBeautifyLine("Refer '" + RdGlobalConfig.LOGS_DIRECTORY + "' folder for CPU/Network/Memory" +
                                             " Stats and Connectivity Checks with BrowserStack components",
                                             '', '-', 60, true));
     /*eslint-enable indent*/
-
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CPU_STATS, '', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CPU_STATS, '', '-', lineLength, true));
     RdGlobalConfig.cpuLogHandler('Initial CPU', null, function () {
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CPU_STATS_COLLECTED, '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CPU_STATS_COLLECTED, '', '-', lineLength, true));
     });
 
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_NETWORK_STATS, '', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_NETWORK_STATS, '', '-', lineLength, true));
     RdGlobalConfig.networkLogHandler('Initial Network', null, function () {
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.NETWORK_STATS_COLLECTED, '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.NETWORK_STATS_COLLECTED, '', '-', lineLength, true));
     });
 
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_MEMORY_STATS, '', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_MEMORY_STATS, '', '-', lineLength, true));
     RdGlobalConfig.memLogHandler('Initial Memory', null, function () {
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.MEMORY_STATS_COLLECTED, '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.MEMORY_STATS_COLLECTED, '', '-', lineLength, true));
     });
 
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CONNECTIVITY, '', '-', 60, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CONNECTIVITY, '', '-', lineLength, true));
     RdGlobalConfig.connHandler('Initial Connectivity', null, function () {
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CONNECTIVITY_CHECKS_DONE, '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CONNECTIVITY_CHECKS_DONE, '', '-', lineLength, true));
     });
 
-    RdHandler.startProxyServer(RdGlobalConfig.RD_HANDLER_PROXY_PORT, function (err, result) {
+    proxy.startProxyServer(RdGlobalConfig.RD_HANDLER_PROXY_PORT, function (err, result) {
       if (err) {
         console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
         console.log('Exiting the Proxy Server...');
         process.exit(1);
       }
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_PROXY_STARTED_ON_PORT + result, '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_PROXY_STARTED_ON_PORT + result, '', '-', lineLength, true));
     });
 
-    RdHandler.startReverseProxyServer(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT, function (err, result) {
+    reverseProxy.startReverseProxyServer(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT, function (err, result) {
       if (err) {
         console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
         console.log('Exiting the Reverse Proxy Server...');
         process.exit(1);
       }
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_REVESE_PROXY_STARTED_ON_PORT + result, '', '-', 60, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_REVESE_PROXY_STARTED_ON_PORT + result, '', '-', lineLength, true));
     });
 
   }
