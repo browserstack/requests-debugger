@@ -20,20 +20,24 @@ var RdHandler = {
 
   /**
    * Generates the request options for firing requests
-   * @param {http.IncomingMessage} clientRequest 
+   * @param {http.IncomingMessage} clientRequest
+   * @param {String} serverType 
    * @returns {Object}
    */
-  _generateRequestOptions: function (clientRequest) {
+  _generateRequestOptions: function (clientRequest, serverType) {
     var requestOptions = {
       headers: {}
     };
     var parsedClientUrl = url.parse(clientRequest.url);
-    requestOptions.host = constants.HUB_HOST;
-    requestOptions.port = RdGlobalConfig.SCHEME == 'http' ? 80 : 443; 
+    requestOptions.host = parsedClientUrl.host;
+    requestOptions.port = RdGlobalConfig.SCHEME == 'http' ? 80 : 443;
     requestOptions.path = parsedClientUrl.path;
     requestOptions.method = clientRequest.method;
     requestOptions.headers = clientRequest.headers;
-    requestOptions.headers.host = constants.HUB_HOST;
+    if(serverType == constants.SERVER_TYPES.REVERSE_PROXY){
+      requestOptions.host = constants.HUB_HOST;
+      requestOptions.headers.host = constants.HUB_HOST;
+    }
     requestOptions.headers['X-Requests-Debugger'] =  clientRequest.id;
     if (parsedClientUrl.auth) {
       requestOptions.headers['Authorization'] = Utils.proxyAuthToBase64(parsedClientUrl.auth);
@@ -80,8 +84,9 @@ var RdHandler = {
    * Handler for incoming requests to Requests Debugger Tool server.
    * @param {http.IncomingMessage} clientRequest 
    * @param {http.ServerResponse} clientResponse 
+   * @param {String} serverType 
    */
-  requestHandler: function (clientRequest, clientResponse) {
+  requestHandler: function (clientRequest, clientResponse, serverType) {
     clientRequest.id = ++RdHandler._requestCounter + '::' + uuidv4();
     var path = url.parse(clientRequest.url).path;
     var request = {
@@ -96,7 +101,7 @@ var RdHandler = {
       }, 
       clientRequest.id);
 
-    var furtherRequestOptions = RdHandler._generateRequestOptions(clientRequest);
+    var furtherRequestOptions = RdHandler._generateRequestOptions(clientRequest, serverType);
 
     var paramsForRequest = {
       request: request,
@@ -134,18 +139,56 @@ var RdHandler = {
   },
 
   /**
-   * Starts the server on the given port
+   * Handler for incoming requests to Requests Debugger Tool proxy server.
+   * @param {http.IncomingMessage} clientRequest 
+   * @param {http.ServerResponse} clientResponse 
+   */
+  proxyRequestHandler: function (clientRequest, clientResponse) {
+    RdHandler.requestHandler(clientRequest, clientResponse, constants.SERVER_TYPES.PROXY);
+  },
+
+  /**
+   * Handler for incoming requests to Requests Debugger Tool reverse proxy server.
+   * @param {http.IncomingMessage} clientRequest 
+   * @param {http.ServerResponse} clientResponse 
+   */
+  reverseProxyRequestHandler: function (clientRequest, clientResponse) {
+    RdHandler.requestHandler(clientRequest, clientResponse, constants.SERVER_TYPES.REVERSE_PROXY);
+  },
+
+  /**
+   * Starts the proxy server on the given port
    * @param {String|Number} port 
    * @param {Function} callback 
    */
-  startServer: function (port, callback) {
+  startProxyServer: function (port, callback) {
     try {
-      RdHandler.server = http.createServer(RdHandler.requestHandler);
-      RdHandler.server.listen(port);
-      RdHandler.server.on('listening', function () {
+      RdHandler.proxyServer = http.createServer(RdHandler.proxyRequestHandler);
+      RdHandler.proxyServer.listen(port);
+      RdHandler.proxyServer.on('listening', function () {
         callback(null, port);
       });
-      RdHandler.server.on('error', function (err) {
+      RdHandler.proxyServer.on('error', function (err) {
+        callback(err.toString(), null);
+      });
+    } catch (e) {
+      callback(e.toString(), null);
+    }
+  },
+  
+  /**
+   * Starts the reverse proxy server on the given port
+   * @param {String|Number} port 
+   * @param {Function} callback 
+   */
+  startReverseProxyServer: function (port, callback) {
+    try {
+      RdHandler.reverseProxyServer = http.createServer(RdHandler.reverseProxyRequestHandler);
+      RdHandler.reverseProxyServer.listen(port);
+      RdHandler.reverseProxyServer.on('listening', function () {
+        callback(null, port);
+      });
+      RdHandler.reverseProxyServer.on('error', function (err) {
         callback(err.toString(), null);
       });
     } catch (e) {
@@ -154,20 +197,37 @@ var RdHandler = {
   },
 
   /**
-   * Stops the currently running server
+   * Stops the currently running proxy server
    * @param {Function} callback 
    */
-  stopServer: function (callback) {
+  stopProxyServer: function (callback) {
     try {
-      if (RdHandler.server) {
-        RdHandler.server.close();
-        RdHandler.server = null;
+      if (RdHandler.proxyServer) {
+        RdHandler.proxyServer.close();
+        RdHandler.proxyServer = null;
+      }
+      callback(null, true);
+    } catch (e) {
+      callback(e.toString(), null);
+    }
+  },
+
+  /**
+   * Stops the currently running reverse proxy server
+   * @param {Function} callback 
+   */
+  stopReverseProxyServer: function (callback) {
+    try {
+      if (RdHandler.reverseProxyServer) {
+        RdHandler.reverseProxyServer.close();
+        RdHandler.reverseProxyServer = null;
       }
       callback(null, true);
     } catch (e) {
       callback(e.toString(), null);
     }
   }
+
 };
 
 module.exports = RdHandler;
