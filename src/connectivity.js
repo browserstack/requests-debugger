@@ -17,11 +17,11 @@ var HttpsProxyAgent = require('https-proxy-agent');
 
 /**
  * Fires the requests to perform connectivity checks
- * @param {Object} requestOptions 
- * @param {'http'|'https'} requestType 
- * @param {String} description 
- * @param {Array<Number>} successCodes 
- * @param {Function} callback 
+ * @param {Object} requestOptions
+ * @param {'http'|'https'} requestType
+ * @param {String} description
+ * @param {Array<Number>} successCodes
+ * @param {Function} callback
  */
 var fireRequest = function (requestOptions, requestType, description, successCodes, callback) {
   var httpOrHttps = requestType === 'http' ? http : https;
@@ -203,9 +203,9 @@ var ConnectivityChecker = {
 
   /**
    * Fires the Connectivity Checks in Async Manner
-   * @param {String} topic 
-   * @param {Number|String} uuid 
-   * @param {Function} callback 
+   * @param {String} topic
+   * @param {Number|String} uuid
+   * @param {Function} callback
    */
   fireChecks: function (topic, uuid, callback) {
     ConnectivityChecker.decideConnectionChecks();

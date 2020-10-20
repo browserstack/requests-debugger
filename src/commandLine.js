@@ -42,7 +42,7 @@ var CommandLineManager = {
 
   /**
    * Processes the args from the given input array and sets the global config.
-   * @param {Array<String>} argv 
+   * @param {Array<String>} argv
    */
   processArgs: function (argv) {
 
@@ -149,7 +149,7 @@ var CommandLineManager = {
         }
         else {
           RdGlobalConfig.SCHEME = scheme;
-          argv.splice(index, 2);  
+          argv.splice(index, 2);
         }
       } else {
         invalidArgs.add('--scheme');
@@ -163,7 +163,7 @@ var CommandLineManager = {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         var host = argv[index + 1];
         if (host.lastIndexOf("http") !== 0){
-          host = 'http://' + host; 
+          host = 'http://' + host;
         }
         RdGlobalConfig.proxy = RdGlobalConfig.proxy || {};
         RdGlobalConfig.proxy.host = host;

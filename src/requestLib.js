@@ -15,25 +15,25 @@ var RequestLib = {
 
   /**
    * Method to perform the request on behalf of the client
-   * @param {schemeObj: Object} schemeObj 
-   * @param {{request: Object, furtherRequestOptions: Object}} params 
-   * @param {http.IncomingMessage} clientRequest 
-   * @param {Number} retries 
+   * @param {schemeObj: Object} schemeObj
+   * @param {{request: Object, furtherRequestOptions: Object}} params
+   * @param {http.IncomingMessage} clientRequest
+   * @param {Number} retries
    */
   _makeRequest: function (schemeObj, params, clientRequest, retries) {
     return new Promise(function (resolve, reject) {
       var requestOptions = Object.assign({}, params.furtherRequestOptions);
       requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpKeepAliveAgent : httpsKeepAliveAgent;
-      if (RdGlobalConfig.proxy) { 
+      if (RdGlobalConfig.proxy) {
         if (!httpProxyAgent && !httpsProxyAgent) {
           var proxyOpts = url.parse(RdGlobalConfig.proxy.host + ":" +RdGlobalConfig.proxy.port);
           if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
             proxyOpts.auth = RdGlobalConfig.proxy.username + ":" + RdGlobalConfig.proxy.password;
           }
           httpProxyAgent =  new HttpProxyAgent(proxyOpts);
-          httpsProxyAgent = new HttpsProxyAgent(proxyOpts); 
+          httpsProxyAgent = new HttpsProxyAgent(proxyOpts);
         }
-        requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpProxyAgent : httpsProxyAgent;  
+        requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpProxyAgent : httpsProxyAgent;
       }
       var request = schemeObj.request(requestOptions, function (response) {
         var responseToSend = {
@@ -41,7 +41,7 @@ var RequestLib = {
           headers: response.headers,
           data: []
         };
-  
+
         response.on('data', function (chunk) {
           responseToSend.data.push(chunk);
         });
@@ -62,7 +62,7 @@ var RequestLib = {
       // Log the request that will be initiated on behalf of the client
       request.on('finish', function () {
         var url = RdGlobalConfig.SCHEME + "://" + requestOptions.host + requestOptions.path;
-        RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, 
+        RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries,
           clientRequest.method + ' ' + url, false, Object.assign({}, params.furtherRequestOptions, {
             data: Buffer.concat(params.request.data).toString()
           }),
@@ -123,9 +123,9 @@ var RequestLib = {
 
   /**
    * Handler for performing request. Includes the retry mechanism when request fails.
-   * @param {{request: Object, furtherRequestOptions: Object}} params 
-   * @param {http.IncomingMessage} clientRequest 
-   * @param {Number} retries 
+   * @param {{request: Object, furtherRequestOptions: Object}} params
+   * @param {http.IncomingMessage} clientRequest
+   * @param {Number} retries
    */
   call: function (params, clientRequest, retries) {
     retries = (typeof retries === 'number') ? Math.min(constants.MAX_RETRIES, Math.max(retries, 0)) : constants.MAX_RETRIES;

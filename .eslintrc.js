@@ -17,7 +17,8 @@ module.exports = {
     "linebreak-style": [ "error", "unix"],
     "semi": ["error", "always"],
     "eol-last": ["error", "always"],
-    "keyword-spacing": [1]
+    "keyword-spacing": [1],
+    "no-trailing-spaces": ["error", { "skipBlankLines": true }]
   },
   "overrides": [{
     "files": ["src/requestsDebugger.js", "src/commandLine.js", "test/**/*.test.js"],

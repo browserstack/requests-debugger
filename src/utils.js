@@ -8,7 +8,7 @@ var fs = require('fs');
  * Input can be in the form of:
  * 1. 'user:pass'
  * 2. { username: 'user', password: 'pass' }
- * @param {String|{username: String, password: String, host: String, port: String|Number}} proxyObj 
+ * @param {String|{username: String, password: String, host: String, port: String|Number}} proxyObj
  * @returns {String}
  */
 var proxyAuthToBase64 = function (proxyObj) {
@@ -23,9 +23,9 @@ var proxyAuthToBase64 = function (proxyObj) {
 
 /**
  * Fetch the property value from the string array of content, each separated by a separator
- * @param {Array<String>} content 
- * @param {String} propertyToFetch 
- * @param {String} separator 
+ * @param {Array<String>} content
+ * @param {String} propertyToFetch
+ * @param {String} separator
  * @returns {String}
  */
 var fetchPropertyValue = function (content, propertyToFetch, separator) {
@@ -48,11 +48,11 @@ var fetchPropertyValue = function (content, propertyToFetch, separator) {
 
 /**
  * Beautifies the lines and add prefix/suffix characters to make the line of the required length.
- * @param {String} line 
- * @param {String} prefix 
- * @param {String} suffix 
- * @param {Number} idealLength 
- * @param {Boolean} newLine 
+ * @param {String} line
+ * @param {String} prefix
+ * @param {String} suffix
+ * @param {Number} idealLength
+ * @param {Boolean} newLine
  * @returns {String}
  */
 var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine) {
@@ -79,10 +79,10 @@ var formatAndBeautifyLine = function (line, prefix, suffix, idealLength, newLine
 
 /**
  * Generates header and footer for the given content.
- * @param {String} content 
- * @param {String} title 
- * @param {Date} generatedAt 
- * @param {Date} startTime 
+ * @param {String} content
+ * @param {String} title
+ * @param {Date} generatedAt
+ * @param {Date} startTime
  * @returns {String}
  */
 var generateHeaderAndFooter = function (content, title, generatedAt, startTime) {
@@ -109,8 +109,8 @@ var generateHeaderAndFooter = function (content, title, generatedAt, startTime) 
 /**
  * Performs multiple exec commands asynchronously and returns the
  * result in the same order of the commands array.
- * @param {Array<String>} commands 
- * @param {Function} callback 
+ * @param {Array<String>} commands
+ * @param {Function} callback
  * @returns {Array<Object>}
  */
 var execMultiple = function (commands, callback) {
@@ -131,7 +131,7 @@ var execMultiple = function (commands, callback) {
 
       if (++totalCommandsCompleted === commands.length) {
         if (isValidCallback(callback)) callback(resultArray);
-      } 
+      }
     });
   });
 };
@@ -164,9 +164,9 @@ var getWmicPath = function () {
 /**
  * Beautifies the whole object and returns in a format which can be logged and read easily.
  * Can take an object or array of objects as input.
- * @param {Object|Array<Object>} obj 
- * @param {String} keysTitle 
- * @param {String} valuesTitle 
+ * @param {Object|Array<Object>} obj
+ * @param {String} keysTitle
+ * @param {String} valuesTitle
  * @param {Number} maxKeyLength Optional
  * @param {Number} maxValLength Optional
  * @returns {String}
@@ -215,7 +215,7 @@ var beautifyObject = function (obj, keysTitle, valuesTitle, maxKeyLength, maxVal
 
 /**
  * Returns the length of the longest entry in the Array
- * @param {Array} arr 
+ * @param {Array} arr
  * @returns {Number}
  */
 var getLongestVal = function (arr) {
@@ -230,7 +230,7 @@ var getLongestVal = function (arr) {
 
 /**
  * Returns string value by trying .toString() & JSON.stringify()
- * @param {any} val 
+ * @param {any} val
  */
 var safeToString = function (val) {
   try {

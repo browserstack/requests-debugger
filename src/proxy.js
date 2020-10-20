@@ -44,8 +44,8 @@ var RdHandler = {
    * Frames the error response based on the type of request.
    * i.e., if its a request originating for Hub, the response
    * is in the format which the client binding would understand.
-   * @param {Object} parsedRequest 
-   * @param {String} errorMessage 
+   * @param {Object} parsedRequest
+   * @param {String} errorMessage
    */
   _frameErrorResponse: function (parsedRequest, errorMessage) {
     errorMessage += '. ' + constants.STATIC_MESSAGES.REQ_FAILED_MSG;
@@ -77,8 +77,8 @@ var RdHandler = {
 
   /**
    * Handler for incoming requests to Requests Debugger Tool server.
-   * @param {http.IncomingMessage} clientRequest 
-   * @param {http.ServerResponse} clientResponse 
+   * @param {http.IncomingMessage} clientRequest
+   * @param {http.ServerResponse} clientResponse
    */
   requestHandler: function (clientRequest, clientResponse) {
     clientRequest.id = ++RdHandler._requestCounter + '::' + uuidv4();
@@ -90,9 +90,9 @@ var RdHandler = {
       data: []
     };
     RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_START, request.method + ' ' + url,
-      false, { 
-        headers: request.headers 
-      }, 
+      false, {
+        headers: request.headers
+      },
       clientRequest.id);
 
     var furtherRequestOptions = RdHandler._generateRequestOptions(clientRequest);
@@ -134,8 +134,8 @@ var RdHandler = {
 
   /**
    * Starts the proxy server on the given port
-   * @param {String|Number} port 
-   * @param {Function} callback 
+   * @param {String|Number} port
+   * @param {Function} callback
    */
   startProxyServer: function (port, callback) {
     try {
@@ -151,10 +151,10 @@ var RdHandler = {
       callback(e.toString(), null);
     }
   },
-  
+
   /**
    * Stops the currently running proxy server
-   * @param {Function} callback 
+   * @param {Function} callback
    */
   stopProxyServer: function (callback) {
     try {

@@ -94,7 +94,7 @@ describe('CommandLineManager', function () {
     });
 
     it("proxy won't be set if proxy host is not provided", function () {
-      sinon.stub(console, 'log'); 
+      sinon.stub(console, 'log');
       argv = argv.concat(['--proxy-port', '9687']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
