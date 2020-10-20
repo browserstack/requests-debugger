@@ -39,20 +39,6 @@ describe('CommandLineManager', function () {
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
     });
 
-    it('remove any protocol part from proxy-host', function () {
-      sinon.stub(console, 'log');
-      argv = argv.concat(['--proxy-host', 'host']);
-      CommandLineManager.processArgs(argv);
-      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
-    });
-
-    it('remove any prefix slashes from proxy-host', function () {
-      argv = argv.concat(['--proxy-host', 'host']);
-      CommandLineManager.processArgs(argv);
-      console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
-    });
-
     it('proxy-port is set to the default value when its not in the expected range', function () {
       sinon.stub(console, 'log');
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '99999']);
