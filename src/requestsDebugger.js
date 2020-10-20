@@ -111,33 +111,32 @@ var RdTool = {
    * collection and connectivity checks. Finally, sets up the tool proxy
    */
   start: function () {
-    var lineLength = 70;
     CommandLineManager.processArgs(process.argv);
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.STARTING_TOOL, '-', '-', lineLength, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.STARTING_TOOL, '-', '-', constants.LINE_LENGTH, true));
     RdTool.initLoggersAndHandlers();
     /* eslint-disable indent */
     console.log(Utils.formatAndBeautifyLine("Refer '" + RdGlobalConfig.LOGS_DIRECTORY + "' folder for CPU/Network/Memory" +
                                             " Stats and Connectivity Checks with BrowserStack components",
                                             '', '-', 60, true));
     /*eslint-enable indent*/
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CPU_STATS, '', '-', lineLength, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CPU_STATS, '', '-', constants.LINE_LENGTH, true));
     RdGlobalConfig.cpuLogHandler('Initial CPU', null, function () {
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CPU_STATS_COLLECTED, '', '-', lineLength, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CPU_STATS_COLLECTED, '', '-', constants.LINE_LENGTH, true));
     });
 
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_NETWORK_STATS, '', '-', lineLength, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_NETWORK_STATS, '', '-', constants.LINE_LENGTH, true));
     RdGlobalConfig.networkLogHandler('Initial Network', null, function () {
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.NETWORK_STATS_COLLECTED, '', '-', lineLength, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.NETWORK_STATS_COLLECTED, '', '-', constants.LINE_LENGTH, true));
     });
 
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_MEMORY_STATS, '', '-', lineLength, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_MEMORY_STATS, '', '-', constants.LINE_LENGTH, true));
     RdGlobalConfig.memLogHandler('Initial Memory', null, function () {
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.MEMORY_STATS_COLLECTED, '', '-', lineLength, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.MEMORY_STATS_COLLECTED, '', '-', constants.LINE_LENGTH, true));
     });
 
-    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CONNECTIVITY, '', '-', lineLength, true));
+    console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CHECK_CONNECTIVITY, '', '-', constants.LINE_LENGTH, true));
     RdGlobalConfig.connHandler('Initial Connectivity', null, function () {
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CONNECTIVITY_CHECKS_DONE, '', '-', lineLength, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.CONNECTIVITY_CHECKS_DONE, '', '-', constants.LINE_LENGTH, true));
     });
 
     proxy.startProxyServer(RdGlobalConfig.RD_HANDLER_PROXY_PORT, function (err, result) {
@@ -146,7 +145,7 @@ var RdTool = {
         console.log('Exiting the Proxy Server...');
         process.exit(1);
       }
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_PROXY_STARTED_ON_PORT + result, '', '-', lineLength, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_PROXY_STARTED_ON_PORT + result, '', '-', constants.LINE_LENGTH, true));
     });
 
     reverseProxy.startReverseProxyServer(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT, function (err, result) {
@@ -155,7 +154,7 @@ var RdTool = {
         console.log('Exiting the Reverse Proxy Server...');
         process.exit(1);
       }
-      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_REVESE_PROXY_STARTED_ON_PORT + result, '', '-', lineLength, true));
+      console.log(Utils.formatAndBeautifyLine(STATIC_MESSAGES.TOOL_REVESE_PROXY_STARTED_ON_PORT + result, '', '-', constants.LINE_LENGTH, true));
     });
 
   }

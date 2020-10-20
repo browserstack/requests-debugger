@@ -68,7 +68,7 @@ var ConnectivityChecker = {
   connectionChecks: [],
 
   reqOpsWithoutProxy: function () {},
-  reqOpsWithProxy: function () {},
+  reqOpsHttpWithProxy: function () {},
   reqOpsHttpsWithProxy: function () {},
 
   httpToHubWithoutProxy: function (callback) {
@@ -105,7 +105,7 @@ var ConnectivityChecker = {
 
   httpToHubWithProxy: function (callback) {
     var requestUrl = constants.HUB_STATUS_URL;
-    var requestOptions = ConnectivityChecker.reqOpsWithProxy(requestUrl, 'http');
+    var requestOptions = ConnectivityChecker.reqOpsHttpWithProxy(requestUrl, 'http');
     fireRequest(requestOptions, 'http', 'HTTP Request To ' + requestUrl + ' With Proxy', [200], function (response) {
       callback(response);
     });
@@ -113,7 +113,7 @@ var ConnectivityChecker = {
 
   httpToRailsWithProxy: function (callback) {
     var requestUrl = constants.RAILS_AUTOMATE;
-    var requestOptions = ConnectivityChecker.reqOpsWithProxy(requestUrl, 'http');
+    var requestOptions = ConnectivityChecker.reqOpsHttpWithProxy(requestUrl, 'http');
     fireRequest(requestOptions, 'http', 'HTTP Request To ' + requestUrl + ' With Proxy', [301, 302], function (response) {
       callback(response);
     });
@@ -164,13 +164,13 @@ var ConnectivityChecker = {
 
         ConnectivityChecker.connectionChecks.push(this.httpToHubWithProxy, this.httpToRailsWithProxy);
         /* eslint-disable-next-line no-unused-vars */
-        ConnectivityChecker.reqOpsWithProxy = function (reqUrl, reqType) {
+        ConnectivityChecker.reqOpsHttpWithProxy = function (reqUrl, reqType) {
           var parsedUrl = url.parse(reqUrl);
           var reqOptions = {
             method: 'GET',
             headers: {},
             host: parsedUrl.hostname,
-            port: parsedUrl.port || ( reqType === 'http' ? 80 : 443 ),
+            port: parsedUrl.port || 80,
             path: parsedUrl.path,
             agent: new HttpProxyAgent(proxyOpts)
           };
@@ -188,7 +188,7 @@ var ConnectivityChecker = {
             method: 'GET',
             headers: {},
             host: parsedUrl.hostname,
-            port: parsedUrl.port || ( reqType === 'http' ? 80 : 443 ),
+            port: parsedUrl.port || 443,
             path: parsedUrl.path,
             agent: new HttpsProxyAgent(proxyOpts)
           };

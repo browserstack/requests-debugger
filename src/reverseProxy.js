@@ -1,5 +1,5 @@
 /**
- * Server to Intercept the client's requests and handle them on their behalf.
+ * Reverse Proxy Server to Intercept the client's requests and handle them on their behalf.
  * Initiates stats and connectivity checks when a requests fails.
  * It also responds in selenium understandable error when a request fails
  * at tool.

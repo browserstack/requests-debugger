@@ -13,6 +13,7 @@ module.exports.PORTS = {
   MIN: 1
 };
 
+module.exports.LINE_LENGTH = 70;
 module.exports.PROTOCOL_REGEX = /(^\w+:|^)\/\//;
 
 module.exports.LOGS = Object.freeze({
