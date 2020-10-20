@@ -212,11 +212,11 @@ describe('CommandLineManager', function () {
 
     // --port
     it("sets the port of Requests Debugger Tool Proxy using the '--port' argument", function () {
-      argv = argv.concat(['--port', '9098']);
+      argv = argv.concat(['--port', '9687']);
       sinon.stub(console, 'log');
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.RD_HANDLER_PORT).to.eql(9098);
+      expect(RdGlobalConfig.RD_HANDLER_PROXY_PORT).to.eql(9687);
     });
 
     it('Uses the default port of Requests Debugger Tool Proxy if not provided via arguments', function () {
@@ -254,6 +254,95 @@ describe('CommandLineManager', function () {
       sinon.assert.called(process.exit);
     });
 
+    // --reverse-proxy-port
+    it("sets the port of Requests Debugger Tool Reverse Proxy using the '--reverse-proxy-port' argument", function () {
+      argv = argv.concat(['--reverse-proxy-port', '9688']);
+      CommandLineManager.processArgs(argv);
+      expect(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT).to.eql(9688);
+    });
+
+    it('Uses the default reverse port of Requests Debugger Tool Proxy if not provided via arguments', function () {
+      var portBeforeParsing = RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT;
+      CommandLineManager.processArgs(argv);
+      expect(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT).to.eql(portBeforeParsing);
+    });
+
+    it("exits with invalid args if reverse port provided doesn't lie in the Max Min Range", function () {
+      argv = argv.concat(['--reverse-proxy-port', '99999']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--reverse-proxy-port', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the reverse port provided is not a number', function () {
+      argv = argv.concat(['--reverse-proxy-port', 'random string']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--reverse-proxy-port', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the reverse port arg is provided without any value', function () {
+      argv = argv.concat(['--reverse-proxy-port']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--reverse-proxy-port', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+    
+    it('exits with invalid args if the reverse port arg is provided without any value', function () {
+      argv = argv.concat(['--reverse-proxy-port']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--reverse-proxy-port', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    // --scheme
+    it('Uses the default https scheme for Requests Debugger Tool Proxy if not provided via arguments', function () {
+      sinon.stub(console, 'log');
+      var schemeBeforeParsing = RdGlobalConfig.SCHEME;
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.SCHEME).to.eql(schemeBeforeParsing);
+    });
+
+    it("sets the port of Requests Debugger Tool Reverse scheme to http using the '--scheme' argument", function () {
+      argv = argv.concat(['--scheme', 'http']);
+      CommandLineManager.processArgs(argv);
+      expect(RdGlobalConfig.SCHEME).to.eql('http');
+    });
+
+    it('exits with invalid args if the scheme arg is provided with wrong value', function () {
+      argv = argv.concat(['--scheme', 'random string']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--scheme', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the scheme arg is provided without any value', function () {
+      argv = argv.concat(['--scheme']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--scheme', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    // --reverse-proxy-port
+    it("sets the port of Requests Debugger Tool Reverse scheme to https using the '--scheme' argument", function () {
+      argv = argv.concat(['--scheme', 'https']);
+      CommandLineManager.processArgs(argv);
+      expect(RdGlobalConfig.SCHEME).to.eql('https');
+    });
+    
     // --request-timeout
     it("sets the timeout for the request being fired from the tool using the arg --request-timeout", function () {
       argv = argv.concat(['--request-timeout', '200000']);

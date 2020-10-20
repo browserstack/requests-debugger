@@ -30,8 +30,8 @@ var RequestLib = {
           if(RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
             proxyOpts.auth = RdGlobalConfig.proxy.username + ":" + RdGlobalConfig.proxy.password;
           }
-          httpProxyAgent =  HttpProxyAgent(proxyOpts);
-          httpsProxyAgent = HttpsProxyAgent(proxyOpts);
+          httpProxyAgent =  new HttpProxyAgent(proxyOpts);
+          httpsProxyAgent = new HttpsProxyAgent(proxyOpts); 
         }
         requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpProxyAgent : httpsProxyAgent;  
       }

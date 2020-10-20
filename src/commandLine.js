@@ -89,7 +89,7 @@ var CommandLineManager = {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         var probableReverseProxyPort = parseInt(argv[index + 1]);
         if (!isNaN(probableReverseProxyPort) && (probableReverseProxyPort <= constants.PORTS.MAX) && (probableReverseProxyPort >= constants.PORTS.MIN)) {
-          RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT = probablePort;
+          RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT = probableReverseProxyPort;
         } else {
           console.log("\nPort can only range from:", constants.PORTS.MIN, "to:", constants.PORTS.MAX);
           invalidArgs.add('--reverse-proxy-port');
