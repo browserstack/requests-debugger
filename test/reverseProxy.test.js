@@ -1,47 +1,51 @@
 var constants = require('../config/constants');
 var RdGlobalConfig = constants.RdGlobalConfig;
 var nock = require('nock');
-var RdHandler = require('../src/server');
+var RdHandler = require('../src/reverseProxy');
 var http = require('http');
 var assert = require('chai').assert;
 var testHelper = require('./testHelper');
 
 
 describe('RdHandler', function () {
-  context('Proxy Server', function () {
-
+  context('Reverse Proxy Server', function () {
+    var originalScheme;
     before(function (done) {
       this.timeout = 5000;
       testHelper.initializeDummyLoggers();
       testHelper.initializeDummyHandlers();
+      originalScheme = RdGlobalConfig.SCHEME;
+      RdGlobalConfig.SCHEME = 'https';
       
-      RdHandler.startServer(RdGlobalConfig.RD_HANDLER_PORT, function (port) {
-        console.log('Test Network Utility Server Started on Port: ', port);
+      RdHandler.startReverseProxyServer(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT, function (port) {
+        console.log('Test Network Utility Reverse Proxy Server Started on Port: ', port);
         done();
       });
     });
 
     after(function (done) {
       this.timeout = 5000;
-      RdHandler.stopServer(function () {
+      RdHandler.stopReverseProxyServer(function () {
         done();
       });
       testHelper.deleteLoggers();
       testHelper.deleteHandlers();
       nock.cleanAll();
+      RdGlobalConfig.SCHEME.restore();
+      RdGlobalConfig.SCHEME = originalScheme;
     });
 
-    it('Requests on behalf of the client and returns the response', function (done) {
+    it('Requests reverse proxy on behalf of the client and returns the response', function (done) {
       this.timeout = 5000;
       testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: RdGlobalConfig.RD_HANDLER_PORT,
+        port: RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT,
         headers: {},
         path: '/wd/hub/status'
       };
-
+      
       var responseData = [];
       var request = http.request(reqOptions, function (response) {
 
@@ -58,17 +62,17 @@ describe('RdHandler', function () {
       request.end();
     });
 
-    it('Requests on behalf of the client via external proxy and returns the response', function (done) {
+    it('Requests reverse proxy on behalf of the client via external proxy and returns the response', function (done) {
       this.timeout = 5000;
       testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
       testHelper.initializeDummyProxy();
-      testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'http', 'hub', null, 200);
+      testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'https', 'hub', null, 200);
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: RdGlobalConfig.RD_HANDLER_PORT,
+        port: RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT,
         headers: {},
-        path: constants.HUB_STATUS_URL
+        path: '/wd/hub/status'
       };
 
       var responseData = [];
@@ -88,7 +92,7 @@ describe('RdHandler', function () {
       testHelper.deleteProxy();
     });
 
-    it('Requests on behalf of the client via external proxy and returns the response even if request by tool fails', function (done) {
+    it('Requests reverse proxy on behalf of the client via external proxy and returns the response even if request by tool fails', function (done) {
       this.timeout = 5000;
       for (var i = 0; i <= constants.MAX_RETRIES; i++) {
         testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'https');
@@ -96,9 +100,9 @@ describe('RdHandler', function () {
       var reqOptions = {
         method: 'GET',
         host: 'localhost',
-        port: RdGlobalConfig.RD_HANDLER_PORT,
+        port: RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT,
         headers: {},
-        path: constants.HUB_STATUS_URL
+        path: '/wd/hub/status'
       };
 
       var responseData = [];

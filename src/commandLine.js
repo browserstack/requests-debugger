@@ -145,6 +145,7 @@ var CommandLineManager = {
         if (!(scheme === 'http' || scheme === 'https')){
           console.log("\nScheme can only be http/https");
           invalidArgs.add('--scheme');
+          argv.splice(index, 2);
         }
         else {
           RdGlobalConfig.SCHEME = scheme;
@@ -155,7 +156,6 @@ var CommandLineManager = {
         argv.splice(index, 1);
       }
     }
-
         
     // process proxy host
     index = argv.indexOf('--proxy-host');
