@@ -162,7 +162,7 @@ var CommandLineManager = {
     if (index !== -1) {
       if (CommandLineManager.validArgValue(argv[index + 1])) {
         var host = argv[index + 1];
-        if(host.lastIndexOf("http") !== 0){
+        if (host.lastIndexOf("http") !== 0){
           host = 'http://' + host; 
         }
         RdGlobalConfig.proxy = RdGlobalConfig.proxy || {};

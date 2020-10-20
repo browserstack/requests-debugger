@@ -12,6 +12,8 @@ var constants = require('../config/constants');
 var RdGlobalConfig = constants.RdGlobalConfig;
 var Utils = require('./utils');
 var https = require('https');
+var HttpProxyAgent = require('http-proxy-agent');
+var HttpsProxyAgent = require('https-proxy-agent');
 
 /**
  * Fires the requests to perform connectivity checks
@@ -116,6 +118,21 @@ var ConnectivityChecker = {
     });
   },
 
+  httpsToHubWithProxy: function (callback) {
+    var requestUrl = constants.HUB_STATUS_URL;
+    var requestOptions = ConnectivityChecker.reqOpsWithProxy(requestUrl, 'https');
+    fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' With Proxy', [200], function (response) {
+      callback(response);
+    });
+  },
+
+  httpsToRailsWithProxy: function (callback) {
+    var requestUrl = constants.RAILS_AUTOMATE;
+    var requestOptions = ConnectivityChecker.reqOpsWithProxy(requestUrl, 'https');
+    fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' With Proxy', [200], function (response) {
+      callback(response);
+    });
+  },
 
   /**
    * Decides the checks to perform based on whether any proxy is provided by the
@@ -138,16 +155,29 @@ var ConnectivityChecker = {
       };
 
       if (RdGlobalConfig.proxy) {
-        ConnectivityChecker.connectionChecks.push(this.httpToHubWithProxy, this.httpToRailsWithProxy);
+        var proxyOpts = url.parse(RdGlobalConfig.proxy.host + ":" +RdGlobalConfig.proxy.port);
+        if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
+          proxyOpts.auth = RdGlobalConfig.proxy.username + ":" + RdGlobalConfig.proxy.password;
+        }
+        var agent = null;
+        if (RdGlobalConfig.SCHEME == "http") {
+          agent = new HttpProxyAgent(proxyOpts);
+          ConnectivityChecker.connectionChecks.push(this.httpToHubWithProxy, this.httpToRailsWithProxy);
+        } else {
+          agent = new HttpsProxyAgent(proxyOpts);
+          ConnectivityChecker.connectionChecks.push(this.httpsToHubWithProxy, this.httpsToRailsWithProxy);
+        }
+        
         /* eslint-disable-next-line no-unused-vars */
         ConnectivityChecker.reqOpsWithProxy = function (reqUrl, reqType) {
           var parsedUrl = url.parse(reqUrl);
           var reqOptions = {
             method: 'GET',
             headers: {},
-            host: RdGlobalConfig.proxy.host,
-            port: RdGlobalConfig.proxy.port,
-            path: parsedUrl.href
+            host: parsedUrl.hostname,
+            port: parsedUrl.port || ( reqType === 'http' ? 80 : 443 ),
+            path: parsedUrl.path,
+            agent: agent
           };
           if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
             reqOptions.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);

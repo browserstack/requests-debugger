@@ -24,10 +24,10 @@ var RequestLib = {
     return new Promise(function (resolve, reject) {
       var requestOptions = Object.assign({}, params.furtherRequestOptions);
       requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpKeepAliveAgent : httpsKeepAliveAgent;
-      if(RdGlobalConfig.proxy) { 
+      if (RdGlobalConfig.proxy) { 
         if (!httpProxyAgent && !httpsProxyAgent) {
           var proxyOpts = url.parse(RdGlobalConfig.proxy.host + ":" +RdGlobalConfig.proxy.port);
-          if(RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
+          if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
             proxyOpts.auth = RdGlobalConfig.proxy.username + ":" + RdGlobalConfig.proxy.password;
           }
           httpProxyAgent =  new HttpProxyAgent(proxyOpts);
