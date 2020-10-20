@@ -43,7 +43,7 @@ describe('RdHandler', function () {
         host: 'localhost',
         port: RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT,
         headers: {},
-        path: '/wd/hub/status'
+        path: constants.HUB_STATUS_PATH
       };
       
       var responseData = [];
@@ -72,7 +72,7 @@ describe('RdHandler', function () {
         host: 'localhost',
         port: RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT,
         headers: {},
-        path: '/wd/hub/status'
+        path: constants.HUB_STATUS_PATH
       };
 
       var responseData = [];
@@ -101,7 +101,7 @@ describe('RdHandler', function () {
         host: 'localhost',
         port: RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT,
         headers: {},
-        path: '/wd/hub/status'
+        path: constants.HUB_STATUS_PATH
       };
 
       var responseData = [];

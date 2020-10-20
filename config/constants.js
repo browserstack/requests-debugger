@@ -1,8 +1,11 @@
 module.exports.VERSION = '1.1.0';
 module.exports.BS_DOMAIN = 'browserstack.com';
 module.exports.HUB_HOST = 'hub-cloud.' + this.BS_DOMAIN;
-module.exports.HUB_STATUS_URL = 'http://' + this.HUB_HOST + '/wd/hub/status';
+module.exports.HUB_STATUS_PATH = '/wd/hub/status';
+module.exports.HUB_STATUS_URL = 'http://' + this.HUB_HOST + this.HUB_STATUS_PATH;
+module.exports.HUB_STATUS_URL_HTTPS = 'https://' + this.HUB_HOST + this.HUB_STATUS_PATH;
 module.exports.RAILS_AUTOMATE = 'http://automate.' + this.BS_DOMAIN;
+module.exports.RAILS_AUTOMATE_HTTPS = 'https://automate.' + this.BS_DOMAIN;
 module.exports.CONNECTIVITY_REQ_TIMEOUT = 30000;
 module.exports.DEFAULT_PROXY_PORT = 3128;
 module.exports.CUSTOM_ERROR_RESPONSE_CODE = 502;

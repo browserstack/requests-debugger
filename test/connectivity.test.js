@@ -32,13 +32,13 @@ describe('Connectivity Checker for BrowserStack Components', function () {
     data: '{"data":"value"}',
     statusCode: 200,
     errorMessage: null,
-    description: 'HTTPS Request To ' + constants.HUB_STATUS_URL.replace("http://", "https://") + ' Without Proxy',
+    description: 'HTTPS Request To ' + constants.HUB_STATUS_URL_HTTPS + ' Without Proxy',
     result: 'Passed'
   }, {
     data: '{"data":"value"}',
     statusCode: 302,
     errorMessage: null,
-    description: 'HTTPS Request to ' + constants.RAILS_AUTOMATE.replace("http://", "https://") + ' Without Proxy',
+    description: 'HTTPS Request to ' + constants.RAILS_AUTOMATE_HTTPS + ' Without Proxy',
     result: 'Passed'
   }];
 
@@ -58,13 +58,13 @@ describe('Connectivity Checker for BrowserStack Components', function () {
     data: [],
     statusCode: null,
     errorMessage: 'Error: something terrible',
-    description: 'HTTPS Request To ' + constants.HUB_STATUS_URL.replace("http://", "https://") + ' Without Proxy',
+    description: 'HTTPS Request To ' + constants.HUB_STATUS_URL_HTTPS+ ' Without Proxy',
     result: 'Failed'
   }, {
     data: [],
     statusCode: null,
     errorMessage: 'Error: something terrible',
-    description: 'HTTPS Request to ' + constants.RAILS_AUTOMATE.replace("http://", "https://") + ' Without Proxy',
+    description: 'HTTPS Request to ' + constants.RAILS_AUTOMATE_HTTPS + ' Without Proxy',
     result: 'Failed'
   }];
 
@@ -133,13 +133,13 @@ describe('Connectivity Checker for BrowserStack Components', function () {
         statusCode: 301
       },{
         data: '{"data":"value"}',
-        description: "HTTPS Request To " + constants.HUB_STATUS_URL.replace("http://", "https://") + " With Proxy",
+        description: "HTTPS Request To " + constants.HUB_STATUS_URL_HTTPS + " With Proxy",
         errorMessage: null,
         result: "Passed",
         statusCode: 200
       }, {
         data: '{"data":"value"}',
-        description: "HTTPS Request To " + constants.RAILS_AUTOMATE.replace("http://", "https://")+ " With Proxy",
+        description: "HTTPS Request To " + constants.RAILS_AUTOMATE_HTTPS + " With Proxy",
         errorMessage: null,
         result: "Passed",
         statusCode: 302

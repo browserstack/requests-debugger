@@ -44,7 +44,7 @@ describe('RdHandler', function () {
         host: constants.HUB_HOST,
         port: constants.RD_HANDLER_PROXY_PORT,
         headers: {},
-        path: '/wd/hub/status'
+        path: constants.HUB_STATUS_PATH
       };
 
       var responseData = [];
@@ -73,7 +73,7 @@ describe('RdHandler', function () {
         host: 'localhost',
         port: RdGlobalConfig.RD_HANDLER_PROXY_PORT,
         headers: {},
-        path: "http://user1:pass1@" + constants.HUB_HOST + "/wd/hub/status"
+        path: "http://user1:pass1@" + constants.HUB_HOST + constants.HUB_STATUS_PATH
       };
 
       var responseData = [];
@@ -84,6 +84,8 @@ describe('RdHandler', function () {
         });
 
         response.on('end', function () {
+          console.log("$$$$$$");
+          console.log(Buffer.concat(responseData).toString());
           assert(Buffer.concat(responseData).toString() === '{"data":"value"}');
           done();
           testHelper.deleteProxy();

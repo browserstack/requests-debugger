@@ -88,7 +88,7 @@ var ConnectivityChecker = {
   },
 
   httpsToHubWithoutProxy: function (callback) {
-    var requestUrl = constants.HUB_STATUS_URL.replace("http://", "https://");
+    var requestUrl = constants.HUB_STATUS_URL_HTTPS;
     var requestOptions = ConnectivityChecker.reqOpsWithoutProxy(requestUrl, 'https');
     fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' Without Proxy', [200], function (response) {
       callback(response);
@@ -96,7 +96,7 @@ var ConnectivityChecker = {
   },
 
   httpsToRailsWithoutProxy: function (callback) {
-    var requestUrl = constants.RAILS_AUTOMATE.replace("http://", "https://");
+    var requestUrl = constants.RAILS_AUTOMATE_HTTPS;
     var requestOptions = ConnectivityChecker.reqOpsWithoutProxy(requestUrl, 'https');
     fireRequest(requestOptions, 'https', 'HTTPS Request to ' + requestUrl + ' Without Proxy', [301, 302], function (response) {
       callback(response);
@@ -120,7 +120,7 @@ var ConnectivityChecker = {
   },
 
   httpsToHubWithProxy: function (callback) {
-    var requestUrl = constants.HUB_STATUS_URL.replace("http", "https");
+    var requestUrl = constants.HUB_STATUS_URL_HTTPS;
     var requestOptions = ConnectivityChecker.reqOpsHttpsWithProxy(requestUrl, 'https');
     fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' With Proxy', [200], function (response) {
       callback(response);
@@ -128,7 +128,7 @@ var ConnectivityChecker = {
   },
 
   httpsToRailsWithProxy: function (callback) {
-    var requestUrl = constants.RAILS_AUTOMATE.replace("http", "https");
+    var requestUrl = constants.RAILS_AUTOMATE_HTTPS;
     var requestOptions = ConnectivityChecker.reqOpsHttpsWithProxy(requestUrl, 'https');
     fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' With Proxy', [301, 302], function (response) {
       callback(response);
