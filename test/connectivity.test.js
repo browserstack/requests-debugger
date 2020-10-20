@@ -32,13 +32,13 @@ describe('Connectivity Checker for BrowserStack Components', function () {
     data: '{"data":"value"}',
     statusCode: 200,
     errorMessage: null,
-    description: 'HTTPS Request To ' + constants.HUB_STATUS_URL + ' Without Proxy',
+    description: 'HTTPS Request To ' + constants.HUB_STATUS_URL.replace("http://", "https://") + ' Without Proxy',
     result: 'Passed'
   }, {
     data: '{"data":"value"}',
     statusCode: 302,
     errorMessage: null,
-    description: 'HTTPS Request to ' + constants.RAILS_AUTOMATE + ' Without Proxy',
+    description: 'HTTPS Request to ' + constants.RAILS_AUTOMATE.replace("http://", "https://") + ' Without Proxy',
     result: 'Passed'
   }];
 
@@ -58,13 +58,13 @@ describe('Connectivity Checker for BrowserStack Components', function () {
     data: [],
     statusCode: null,
     errorMessage: 'Error: something terrible',
-    description: 'HTTPS Request To ' + constants.HUB_STATUS_URL + ' Without Proxy',
+    description: 'HTTPS Request To ' + constants.HUB_STATUS_URL.replace("http://", "https://") + ' Without Proxy',
     result: 'Failed'
   }, {
     data: [],
     statusCode: null,
     errorMessage: 'Error: something terrible',
-    description: 'HTTPS Request to ' + constants.RAILS_AUTOMATE + ' Without Proxy',
+    description: 'HTTPS Request to ' + constants.RAILS_AUTOMATE.replace("http://", "https://") + ' Without Proxy',
     result: 'Failed'
   }];
 
@@ -99,7 +99,10 @@ describe('Connectivity Checker for BrowserStack Components', function () {
       testHelper.initializeDummyProxy();
       ConnectivityChecker.connectionChecks = [];
       testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
       testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
+      testHelper.nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
       testHelper.nockGetRequest(constants.RAILS_AUTOMATE, 'http', null, 301);
       testHelper.nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
       testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'http', 'hub', null, 200);
@@ -113,6 +116,8 @@ describe('Connectivity Checker for BrowserStack Components', function () {
 
     it('HTTP(S) to Hub & Rails', function (done) {
       this.timeout(2000);
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
+      testHelper.nockGetRequest(constants.RAILS_AUTOMATE, 'https', null, 302);
       sinon.stub(Utils, 'beautifyObject');
       var resultWithProxy = resultWithoutProxy.concat([{
         data: '{"data":"value"}',
@@ -126,6 +131,18 @@ describe('Connectivity Checker for BrowserStack Components', function () {
         errorMessage: null,
         result: "Passed",
         statusCode: 301
+      },{
+        data: '{"data":"value"}',
+        description: "HTTPS Request To " + constants.HUB_STATUS_URL.replace("http://", "https://") + " With Proxy",
+        errorMessage: null,
+        result: "Passed",
+        statusCode: 200
+      }, {
+        data: '{"data":"value"}',
+        description: "HTTPS Request To " + constants.RAILS_AUTOMATE.replace("http://", "https://")+ " With Proxy",
+        errorMessage: null,
+        result: "Passed",
+        statusCode: 302
       }]);
 
       ConnectivityChecker.fireChecks("some topic", 1, function () {
@@ -146,6 +163,7 @@ describe('Connectivity Checker for BrowserStack Components', function () {
       testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'https');
       testHelper.nockGetRequestWithError(constants.RAILS_AUTOMATE, 'http');
       testHelper.nockGetRequestWithError(constants.RAILS_AUTOMATE, 'https');
+      
     });
 
     afterEach(function () {

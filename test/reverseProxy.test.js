@@ -85,11 +85,10 @@ describe('RdHandler', function () {
         response.on('end', function () {
           assert(Buffer.concat(responseData).toString() === '{"data":"value"}');
           done();
+          testHelper.deleteProxy();
         });
       });
-
       request.end();
-      testHelper.deleteProxy();
     });
 
     it('Requests reverse proxy on behalf of the client via external proxy and returns the response even if request by tool fails', function (done) {

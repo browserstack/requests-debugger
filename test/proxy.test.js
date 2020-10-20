@@ -14,6 +14,7 @@ describe('RdHandler', function () {
       this.timeout = 5000;
       testHelper.initializeDummyLoggers();
       testHelper.initializeDummyHandlers();
+      testHelper.initializeDummyProxy();
       originalScheme = RdGlobalConfig.SCHEME;
       RdGlobalConfig.SCHEME = 'http';
       
@@ -72,7 +73,7 @@ describe('RdHandler', function () {
         host: 'localhost',
         port: RdGlobalConfig.RD_HANDLER_PROXY_PORT,
         headers: {},
-        path: constants.HUB_STATUS_URL
+        path: "http://user1:pass1@" + constants.HUB_HOST + "/wd/hub/status"
       };
 
       var responseData = [];
@@ -85,11 +86,10 @@ describe('RdHandler', function () {
         response.on('end', function () {
           assert(Buffer.concat(responseData).toString() === '{"data":"value"}');
           done();
+          testHelper.deleteProxy();
         });
       });
-
       request.end();
-      testHelper.deleteProxy();
     });
 
     it('Requests on behalf of the client via external proxy and returns the response even if request by tool fails', function (done) {

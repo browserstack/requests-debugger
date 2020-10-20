@@ -69,6 +69,7 @@ var ConnectivityChecker = {
 
   reqOpsWithoutProxy: function () {},
   reqOpsWithProxy: function () {},
+  reqOpsHttpsWithProxy: function () {},
 
   httpToHubWithoutProxy: function (callback) {
     var requestUrl = constants.HUB_STATUS_URL;
@@ -87,7 +88,7 @@ var ConnectivityChecker = {
   },
 
   httpsToHubWithoutProxy: function (callback) {
-    var requestUrl = constants.HUB_STATUS_URL;
+    var requestUrl = constants.HUB_STATUS_URL.replace("http://", "https://");
     var requestOptions = ConnectivityChecker.reqOpsWithoutProxy(requestUrl, 'https');
     fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' Without Proxy', [200], function (response) {
       callback(response);
@@ -95,7 +96,7 @@ var ConnectivityChecker = {
   },
 
   httpsToRailsWithoutProxy: function (callback) {
-    var requestUrl = constants.RAILS_AUTOMATE;
+    var requestUrl = constants.RAILS_AUTOMATE.replace("http://", "https://");
     var requestOptions = ConnectivityChecker.reqOpsWithoutProxy(requestUrl, 'https');
     fireRequest(requestOptions, 'https', 'HTTPS Request to ' + requestUrl + ' Without Proxy', [301, 302], function (response) {
       callback(response);
@@ -113,23 +114,23 @@ var ConnectivityChecker = {
   httpToRailsWithProxy: function (callback) {
     var requestUrl = constants.RAILS_AUTOMATE;
     var requestOptions = ConnectivityChecker.reqOpsWithProxy(requestUrl, 'http');
-    fireRequest(requestOptions, 'http', 'HTTP Request To ' + requestUrl + ' With Proxy', [301], function (response) {
+    fireRequest(requestOptions, 'http', 'HTTP Request To ' + requestUrl + ' With Proxy', [301, 302], function (response) {
       callback(response);
     });
   },
 
   httpsToHubWithProxy: function (callback) {
-    var requestUrl = constants.HUB_STATUS_URL;
-    var requestOptions = ConnectivityChecker.reqOpsWithProxy(requestUrl, 'https');
+    var requestUrl = constants.HUB_STATUS_URL.replace("http", "https");
+    var requestOptions = ConnectivityChecker.reqOpsHttpsWithProxy(requestUrl, 'https');
     fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' With Proxy', [200], function (response) {
       callback(response);
     });
   },
 
   httpsToRailsWithProxy: function (callback) {
-    var requestUrl = constants.RAILS_AUTOMATE;
-    var requestOptions = ConnectivityChecker.reqOpsWithProxy(requestUrl, 'https');
-    fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' With Proxy', [200], function (response) {
+    var requestUrl = constants.RAILS_AUTOMATE.replace("http", "https");
+    var requestOptions = ConnectivityChecker.reqOpsHttpsWithProxy(requestUrl, 'https');
+    fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' With Proxy', [301, 302], function (response) {
       callback(response);
     });
   },
@@ -154,20 +155,14 @@ var ConnectivityChecker = {
         return reqOptions;
       };
 
+
       if (RdGlobalConfig.proxy) {
         var proxyOpts = url.parse(RdGlobalConfig.proxy.host + ":" +RdGlobalConfig.proxy.port);
         if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
           proxyOpts.auth = RdGlobalConfig.proxy.username + ":" + RdGlobalConfig.proxy.password;
         }
-        var agent = null;
-        if (RdGlobalConfig.SCHEME == "http") {
-          agent = new HttpProxyAgent(proxyOpts);
-          ConnectivityChecker.connectionChecks.push(this.httpToHubWithProxy, this.httpToRailsWithProxy);
-        } else {
-          agent = new HttpsProxyAgent(proxyOpts);
-          ConnectivityChecker.connectionChecks.push(this.httpsToHubWithProxy, this.httpsToRailsWithProxy);
-        }
-        
+
+        ConnectivityChecker.connectionChecks.push(this.httpToHubWithProxy, this.httpToRailsWithProxy);
         /* eslint-disable-next-line no-unused-vars */
         ConnectivityChecker.reqOpsWithProxy = function (reqUrl, reqType) {
           var parsedUrl = url.parse(reqUrl);
@@ -177,7 +172,25 @@ var ConnectivityChecker = {
             host: parsedUrl.hostname,
             port: parsedUrl.port || ( reqType === 'http' ? 80 : 443 ),
             path: parsedUrl.path,
-            agent: agent
+            agent: new HttpProxyAgent(proxyOpts)
+          };
+          if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
+            reqOptions.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);
+          }
+          return reqOptions;
+        };
+
+        ConnectivityChecker.connectionChecks.push(this.httpsToHubWithProxy, this.httpsToRailsWithProxy);
+        /* eslint-disable-next-line no-unused-vars */
+        ConnectivityChecker.reqOpsHttpsWithProxy = function (reqUrl, reqType) {
+          var parsedUrl = url.parse(reqUrl);
+          var reqOptions = {
+            method: 'GET',
+            headers: {},
+            host: parsedUrl.hostname,
+            port: parsedUrl.port || ( reqType === 'http' ? 80 : 443 ),
+            path: parsedUrl.path,
+            agent: new HttpsProxyAgent(proxyOpts)
           };
           if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
             reqOptions.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);
