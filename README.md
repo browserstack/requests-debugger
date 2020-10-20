@@ -13,6 +13,7 @@
   - Start Requests Debugger with the required arguments: `npm run start -- <args>`. 
   - Supported `args`:
     - `--port <port>`: Port on which the Requests Debugger Tool's Proxy will run. Default: 9687
+    - `--reverse-proxy-port <port>`: Port on which the Requests Debugger Tool's Reverse Proxy will run. Default: 9688
     - `--scheme <https/http>`: Scheme for requests to browserstack. Default: https"
     - `--proxy-host <hostname>`: Hostname of the Upstream Proxy
     - `--proxy-port <port>`: Port of the Upstream Proxy. Default: 3128 (if hostname is provided)
@@ -41,7 +42,7 @@
     - Set your system's env variable `http_proxy=localhost:9687` and Ruby's Selenium Client Binding will pick the value. Or,
     - Run you test by giving the environment variable to your command itself, i.e. `http_proxy=localhost:9687 ruby <your_script.rb>`
   - Similarly, you can also set proxy for other client bindings.
-- To use tool as reverse proxy, you will have to replace hub-cloud.browserstack.com in hub url with `localhost:9687`.
+- To use tool as reverse proxy, you will have to replace hub-cloud.browserstack.com in hub url with `localhost:9688`.
   
 ## Steps to build the executables
 - Linux

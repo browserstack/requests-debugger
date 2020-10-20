@@ -142,7 +142,7 @@ var RdTool = {
 
     proxy.startProxyServer(RdGlobalConfig.RD_HANDLER_PROXY_PORT, function (err, result) {
       if (err) {
-        console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
+        console.log(STATIC_MESSAGES.ERR_STARTING_TOOL_PROXY, err);
         console.log('Exiting the Proxy Server...');
         process.exit(1);
       }
@@ -151,7 +151,7 @@ var RdTool = {
 
     reverseProxy.startReverseProxyServer(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT, function (err, result) {
       if (err) {
-        console.log(STATIC_MESSAGES.ERR_STARTING_TOOL, err);
+        console.log(STATIC_MESSAGES.ERR_STARTING_TOOL_REVERSE_PROXY, err);
         console.log('Exiting the Reverse Proxy Server...');
         process.exit(1);
       }

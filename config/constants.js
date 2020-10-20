@@ -13,11 +13,6 @@ module.exports.PORTS = {
   MIN: 1
 };
 
-module.exports.SERVER_TYPES = {
-  PROXY: "proxy",
-  REVERSE_PROXY: "reverse_proxy"
-};
-
 module.exports.PROTOCOL_REGEX = /(^\w+:|^)\/\//;
 
 module.exports.LOGS = Object.freeze({
@@ -88,7 +83,8 @@ module.exports.STATIC_MESSAGES = Object.freeze({
   CHECK_NETWORK_STATS: 'Stats : Checking Network Stats',
   CHECK_MEMORY_STATS: 'Stats : Checking Memory Stats',
   CHECK_CONNECTIVITY: 'Checks : Checking Connectivity With BrowserStack',
-  ERR_STARTING_TOOL: 'Error in starting Requests Debugger Tool: ',
+  ERR_STARTING_TOOL_PROXY: 'Error in starting Requests Debugger Tool Proxy: ',
+  ERR_STARTING_TOOL_REVERSE_PROXY: 'Error in starting Requests Debugger Tool Reverse Proxy: ',
   TOOL_PROXY_STARTED_ON_PORT: 'Requests Debugger Tool Proxy Server Started on Port: ',
   TOOL_REVESE_PROXY_STARTED_ON_PORT: 'Requests Debugger Tool Reverse Proxy Server Started on Port: ',
   CPU_STATS_COLLECTED: 'Stats : Initial CPU Stats Collected',
