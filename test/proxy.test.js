@@ -32,7 +32,6 @@ describe('RdHandler', function () {
       testHelper.deleteLoggers();
       testHelper.deleteHandlers();
       nock.cleanAll();
-      RdGlobalConfig.SCHEME.restore();
       RdGlobalConfig.SCHEME = originalScheme;
     });
 

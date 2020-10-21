@@ -39,6 +39,30 @@ describe('CommandLineManager', function () {
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
     });
 
+    it('parse proxy-host with without protocol', function () {
+      sinon.stub(console, 'log');
+      argv = argv.concat(['--proxy-host', 'host']);
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
+    });
+
+    it('parse proxy-host with protocol http', function () {
+      sinon.stub(console, 'log');
+      argv = argv.concat(['--proxy-host', 'http://host']);
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
+    });
+
+    it('parse proxy-host with protocol https', function () {
+      sinon.stub(console, 'log');
+      argv = argv.concat(['--proxy-host', 'https://host', '--proxy-port', '9687']);
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.proxy.host).to.eql('https://host');
+    });
+
     it('proxy-port is set to the default value when its not in the expected range', function () {
       sinon.stub(console, 'log');
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '99999']);
