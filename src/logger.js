@@ -36,7 +36,7 @@ var LogManager = {
     newLogger.transports.file.json = false;
 
     newLogger.info("************* LOGGER INITIALIZED **************\r\n");
-    
+
     return {
       info: function (topic, message, stringify, data, uuid) {
         stringify = stringify || false;

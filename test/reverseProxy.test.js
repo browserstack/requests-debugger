@@ -16,7 +16,7 @@ describe('RdHandler', function () {
       testHelper.initializeDummyHandlers();
       originalScheme = RdGlobalConfig.SCHEME;
       RdGlobalConfig.SCHEME = 'http';
-      
+
       RdHandler.startReverseProxyServer(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT, function (port) {
         console.log('Test Network Utility Reverse Proxy Server Started on Port: ', port);
         done();
@@ -44,7 +44,7 @@ describe('RdHandler', function () {
         headers: {},
         path: constants.HUB_STATUS_PATH
       };
-      
+
       var responseData = [];
       var request = http.request(reqOptions, function (response) {
 
@@ -128,7 +128,7 @@ describe('RdHandler', function () {
       testHelper.initializeDummyHandlers();
       originalScheme = RdGlobalConfig.SCHEME;
       RdGlobalConfig.SCHEME = 'https';
-      
+
       RdHandler.startReverseProxyServer(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT, function (port) {
         console.log('Test Network Utility Reverse Proxy Server Started on Port: ', port);
         done();
@@ -157,7 +157,7 @@ describe('RdHandler', function () {
         headers: {},
         path: constants.HUB_STATUS_PATH
       };
-      
+
       var responseData = [];
       var request = http.request(reqOptions, function (response) {
 

@@ -163,7 +163,6 @@ describe('Connectivity Checker for BrowserStack Components', function () {
       testHelper.nockGetRequestWithError(constants.HUB_STATUS_URL, 'https');
       testHelper.nockGetRequestWithError(constants.RAILS_AUTOMATE, 'http');
       testHelper.nockGetRequestWithError(constants.RAILS_AUTOMATE, 'https');
-      
     });
 
     afterEach(function () {

@@ -84,28 +84,29 @@ var RdHandler = {
    */
   requestHandler: function (clientRequest, clientResponse) {
     clientRequest.id = ++RdHandler._requestCounter + '::' + uuidv4();
-    var url = "http://" + clientRequest.headers.host + clientRequest.url;
+    var parsedClientUrl = url.parse(clientRequest.url);
+    var requestUrl = "http://" + clientRequest.headers.host + parsedClientUrl.path;
     var request = {
       method: clientRequest.method,
       url: clientRequest.url,
       headers: clientRequest.headers,
       data: []
     };
-    RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_START, request.method + ' ' + url,
+    RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_START, request.method + ' ' + requestUrl,
       false, {
         headers: request.headers
       },
       clientRequest.id);
-      
+
     var furtherRequestOptions = RdHandler._generateRequestOptions(clientRequest);
 
     var paramsForRequest = {
       request: request,
       furtherRequestOptions: furtherRequestOptions
     };
-    ReqLib.call(paramsForRequest, clientRequest, constants.REQUEST_TYPES.REVERSE_PROXY)
+    ReqLib.call(paramsForRequest, clientRequest, constants.SERVER_TYPES.REVERSE_PROXY)
       .then(function (response) {
-        RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + url + ', Status Code: ' + response.statusCode,
+        RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + requestUrl + ', Status Code: ' + response.statusCode,
           false, {
             data: response.data,
             headers: response.headers,
@@ -116,14 +117,14 @@ var RdHandler = {
         clientResponse.end(response.data);
       })
       .catch(function (err) {
-        RdGlobalConfig.reqLogger.error(err.customTopic || constants.TOPICS.UNEXPECTED_ERROR, clientRequest.method + ' ' + clientRequest.url,
+        RdGlobalConfig.reqLogger.error(err.customTopic || constants.TOPICS.UNEXPECTED_ERROR, clientRequest.method + ' ' + requestUrl,
           false, {
             errorMessage: err.message.toString()
           },
           clientRequest.id);
 
         var errorResponse = RdHandler._frameErrorResponse(furtherRequestOptions, err.message.toString());
-        RdGlobalConfig.reqLogger.error(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + url + ', Status Code: ' + errorResponse.statusCode,
+        RdGlobalConfig.reqLogger.error(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + requestUrl + ', Status Code: ' + errorResponse.statusCode,
           false,
           errorResponse.data,
           clientRequest.id);

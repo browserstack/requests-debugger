@@ -100,7 +100,7 @@ var CommandLineManager = {
         argv.splice(index, 1);
       }
     }
-        
+
     // delay for retries in case of request failures
     index = argv.indexOf('--retry-delay');
     if (index !== -1) {
@@ -156,7 +156,7 @@ var CommandLineManager = {
         argv.splice(index, 1);
       }
     }
-        
+
     // process proxy host
     index = argv.indexOf('--proxy-host');
     if (index !== -1) {
@@ -195,7 +195,7 @@ var CommandLineManager = {
         argv.splice(index, 1);
       }
     }
-    
+
     // if proxy port value in invalid or doesn't exist and host exists, set the default value
     if (RdGlobalConfig.proxy && RdGlobalConfig.proxy.host && (invalidArgs.has('--proxy-port') || !RdGlobalConfig.proxy.port)) {
       console.log('\nSetting Default Proxy Port:', constants.DEFAULT_PROXY_PORT, '\n');
@@ -234,7 +234,7 @@ var CommandLineManager = {
         argv.splice(index, 1);
       }
     }
-    
+
     // if proxy pass is invalid or doesn't exist and username exists, set the password as empty
     if (RdGlobalConfig.proxy && RdGlobalConfig.proxy.username && (invalidArgs.has('--proxy-pass') || !RdGlobalConfig.proxy.password)) {
       console.log('Setting Proxy Password as Empty\n');

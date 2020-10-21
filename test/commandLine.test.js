@@ -9,7 +9,7 @@ describe('CommandLineManager', function () {
 
   var argv;
   var proxy_host_actual_value = "http://host";
-  
+
   before(function () {
     console.log("NOTE: 'console.log' will be stubbed. In case any test fails, try removing the stub to see the logs");
   });
@@ -39,7 +39,7 @@ describe('CommandLineManager', function () {
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
     });
 
-    it('parse proxy-host with without protocol', function () {
+    it('parse proxy-host inputted without protocol', function () {
       sinon.stub(console, 'log');
       argv = argv.concat(['--proxy-host', 'host']);
       CommandLineManager.processArgs(argv);
@@ -303,7 +303,7 @@ describe('CommandLineManager', function () {
       console.log.restore();
       sinon.assert.called(process.exit);
     });
-    
+
     it('exits with invalid args if the reverse port arg is provided without any value', function () {
       argv = argv.concat(['--reverse-proxy-port']);
       sinon.stub(console, 'log');
@@ -352,7 +352,7 @@ describe('CommandLineManager', function () {
       CommandLineManager.processArgs(argv);
       expect(RdGlobalConfig.SCHEME).to.eql('https');
     });
-    
+
     // --request-timeout
     it("sets the timeout for the request being fired from the tool using the arg --request-timeout", function () {
       argv = argv.concat(['--request-timeout', '200000']);

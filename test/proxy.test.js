@@ -17,7 +17,7 @@ describe('RdHandler', function () {
       testHelper.initializeDummyProxy();
       originalScheme = RdGlobalConfig.SCHEME;
       RdGlobalConfig.SCHEME = 'http';
-      
+
       RdHandler.startProxyServer(RdGlobalConfig.RD_HANDLER_PROXY_PORT, function (port) {
         console.log('Test Network Utility Proxy Server Started on Port: ', port);
         done();
@@ -130,7 +130,7 @@ describe('RdHandler', function () {
       testHelper.initializeDummyProxy();
       originalScheme = RdGlobalConfig.SCHEME;
       RdGlobalConfig.SCHEME = 'https';
-      
+
       RdHandler.startProxyServer(RdGlobalConfig.RD_HANDLER_PROXY_PORT, function (port) {
         console.log('Test Network Utility Proxy Server Started on Port: ', port);
         done();

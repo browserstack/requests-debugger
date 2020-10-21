@@ -17,7 +17,7 @@ module.exports.PORTS = {
   MIN: 1
 };
 
-module.exports.REQUEST_TYPES = {
+module.exports.SERVER_TYPES = {
   PROXY: "proxy",
   REVERSE_PROXY: "reverse proxy"
 };

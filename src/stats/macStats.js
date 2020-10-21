@@ -49,11 +49,11 @@ MacStats.mem = function (callback) {
               case 'total':
                 memStats.swapTotal = parseFloat(statLines[index].split('=')[1].trim()) * 1024 * 1024;
                 break;
-  
+
               case 'used':
                 memStats.swapUsed = parseFloat(statLines[index].split('=')[1].trim()) * 1024 * 1024;
                 break;
-              
+
               case 'free':
                 memStats.swapFree = parseFloat(statLines[index].split('=')[1].trim()) * 1024 * 1024;
                 break;
