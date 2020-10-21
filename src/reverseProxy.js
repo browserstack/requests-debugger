@@ -31,7 +31,8 @@ var RdHandler = {
     requestOptions.port = RdGlobalConfig.SCHEME == 'http' ? 80 : 443;
     requestOptions.path = parsedClientUrl.path;
     requestOptions.method = clientRequest.method;
-    requestOptions.headers = clientRequest.headers;
+    // Below line copies clientRequest.headers object to requestOptions.headers instead of refering same object
+    requestOptions.headers = Object.assign({}, clientRequest.headers);
     requestOptions.host = constants.HUB_HOST;
     requestOptions.headers.host = constants.HUB_HOST;
     requestOptions.headers['X-Requests-Debugger'] =  clientRequest.id;
@@ -95,15 +96,14 @@ var RdHandler = {
         headers: request.headers
       },
       clientRequest.id);
-
+      
     var furtherRequestOptions = RdHandler._generateRequestOptions(clientRequest);
 
     var paramsForRequest = {
       request: request,
       furtherRequestOptions: furtherRequestOptions
     };
-
-    ReqLib.call(paramsForRequest, clientRequest)
+    ReqLib.call(paramsForRequest, clientRequest, constants.REQUEST_TYPES.REVERSE_PROXY)
       .then(function (response) {
         RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + url + ', Status Code: ' + response.statusCode,
           false, {

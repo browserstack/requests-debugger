@@ -102,7 +102,7 @@ var RdHandler = {
       furtherRequestOptions: furtherRequestOptions
     };
 
-    ReqLib.call(paramsForRequest, clientRequest)
+    ReqLib.call(paramsForRequest, clientRequest, constants.REQUEST_TYPES.PROXY)
       .then(function (response) {
         RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_RESPONSE_END, clientRequest.method + ' ' + url + ', Status Code: ' + response.statusCode,
           false, {

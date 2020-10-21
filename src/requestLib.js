@@ -20,7 +20,7 @@ var RequestLib = {
    * @param {http.IncomingMessage} clientRequest
    * @param {Number} retries
    */
-  _makeRequest: function (schemeObj, params, clientRequest, retries) {
+  _makeRequest: function (schemeObj, params, clientRequest, requestType, retries) {
     return new Promise(function (resolve, reject) {
       var requestOptions = Object.assign({}, params.furtherRequestOptions);
       requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpKeepAliveAgent : httpsKeepAliveAgent;
@@ -108,7 +108,8 @@ var RequestLib = {
         });
   
         clientRequest.on('end', function () {
-          RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + requestOptions.path, false, {
+          var url = requestType === constants.REQUEST_TYPES.PROXY ? clientRequest.url : "http://" + clientRequest.headers.host + clientRequest.url;
+          RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + url, false, {
             data: Buffer.concat(params.request.data).toString()
           },
           clientRequest.id);
@@ -127,10 +128,10 @@ var RequestLib = {
    * @param {http.IncomingMessage} clientRequest
    * @param {Number} retries
    */
-  call: function (params, clientRequest, retries) {
+  call: function (params, clientRequest, requestType, retries) {
     retries = (typeof retries === 'number') ? Math.min(constants.MAX_RETRIES, Math.max(retries, 0)) : constants.MAX_RETRIES;
     var schemeObj = RdGlobalConfig.SCHEME === "http" ? http : https;
-    return RequestLib._makeRequest(schemeObj, params, clientRequest, retries)
+    return RequestLib._makeRequest(schemeObj, params, clientRequest, requestType, retries)
       .catch(function (err) {
         var errTopic = err.customTopic || constants.TOPICS.UNEXPECTED_ERROR;
         // Collect Network & Connectivity Logs whenever a request fails
