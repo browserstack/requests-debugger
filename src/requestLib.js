@@ -147,7 +147,7 @@ var RequestLib = {
 
           return Utils.delay(RdGlobalConfig.RETRY_DELAY)
             .then(function () {
-              return RequestLib.call(params, clientRequest, retries - 1, false);
+              return RequestLib.call(params, clientRequest, requestType, retries - 1, false);
             });
         } else {
           throw err;
