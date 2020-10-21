@@ -14,7 +14,7 @@
   - Supported `args`:
     - `--port <port>`: Port on which the Requests Debugger Tool's Proxy will run. Default: 9687
     - `--reverse-proxy-port <port>`: Port on which the Requests Debugger Tool's Reverse Proxy will run. Default: 9688
-    - `--scheme <https/http>`: Scheme for requests to browserstack. Default: https"
+    - `--scheme <https/http>`: Scheme for requests to browserstack. Default: https
     - `--proxy-host <hostname>`: Hostname of the Upstream Proxy
     - `--proxy-port <port>`: Port of the Upstream Proxy. Default: 3128 (if hostname is provided)
     - `--proxy-user <username>`: Username for auth of the Upstream Proxy

@@ -41,10 +41,10 @@ describe('RdHandler', function () {
       testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'http', null, 200);
       var reqOptions = {
         method: 'GET',
-        host: constants.HUB_HOST,
-        port: constants.RD_HANDLER_PROXY_PORT,
+        host: 'localhost',
+        port: RdGlobalConfig.RD_HANDLER_PROXY_PORT,
         headers: {},
-        path: constants.HUB_STATUS_PATH
+        path: constants.HUB_STATUS_URL
       };
 
       var responseData = [];
@@ -84,8 +84,6 @@ describe('RdHandler', function () {
         });
 
         response.on('end', function () {
-          console.log("$$$$$$");
-          console.log(Buffer.concat(responseData).toString());
           assert(Buffer.concat(responseData).toString() === '{"data":"value"}');
           done();
           testHelper.deleteProxy();

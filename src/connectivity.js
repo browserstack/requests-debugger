@@ -174,9 +174,6 @@ var ConnectivityChecker = {
             path: parsedUrl.path,
             agent: new HttpProxyAgent(proxyOpts)
           };
-          if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
-            reqOptions.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);
-          }
           return reqOptions;
         };
 
@@ -192,9 +189,6 @@ var ConnectivityChecker = {
             path: parsedUrl.path,
             agent: new HttpsProxyAgent(proxyOpts)
           };
-          if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
-            reqOptions.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);
-          }
           return reqOptions;
         };
       }

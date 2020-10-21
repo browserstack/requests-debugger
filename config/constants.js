@@ -1,11 +1,12 @@
 module.exports.VERSION = '1.1.0';
 module.exports.BS_DOMAIN = 'browserstack.com';
 module.exports.HUB_HOST = 'hub-cloud.' + this.BS_DOMAIN;
+module.exports.RAILS_HOST = 'automate.' + this.BS_DOMAIN;
 module.exports.HUB_STATUS_PATH = '/wd/hub/status';
 module.exports.HUB_STATUS_URL = 'http://' + this.HUB_HOST + this.HUB_STATUS_PATH;
 module.exports.HUB_STATUS_URL_HTTPS = 'https://' + this.HUB_HOST + this.HUB_STATUS_PATH;
-module.exports.RAILS_AUTOMATE = 'http://automate.' + this.BS_DOMAIN;
-module.exports.RAILS_AUTOMATE_HTTPS = 'https://automate.' + this.BS_DOMAIN;
+module.exports.RAILS_AUTOMATE = 'http://' + this.RAILS_HOST;
+module.exports.RAILS_AUTOMATE_HTTPS = 'https://' + this.RAILS_HOST;
 module.exports.CONNECTIVITY_REQ_TIMEOUT = 30000;
 module.exports.DEFAULT_PROXY_PORT = 3128;
 module.exports.CUSTOM_ERROR_RESPONSE_CODE = 502;
@@ -38,7 +39,7 @@ module.exports.RdGlobalConfig = {
 
 module.exports.COMMON = Object.freeze({
   PING_HUB: 'ping -c 5 ' + this.HUB_HOST,
-  PING_AUTOMATE: 'ping -c 5 ' + this.RAILS_AUTOMATE
+  PING_AUTOMATE: 'ping -c 5 ' + this.RAILS_HOST
 });
 
 module.exports.MAC = Object.freeze({
@@ -59,7 +60,7 @@ module.exports.WIN = Object.freeze({
   IPCONFIG_ALL: 'ipconfig /all',
   SWAP_USAGE: 'pagefile get AllocatedBaseSize, CurrentUsage', // this is a WMIC command. Prefix with WMIC Path
   PING_HUB: 'ping -n 5 ' + this.HUB_HOST,
-  PING_AUTOMATE: 'ping -n 5 ' + this.RAILS_AUTOMATE,
+  PING_AUTOMATE: 'ping -n 5 ' + this.RAILS_HOST,
   LOAD_PERCENTAGE: 'cpu get loadpercentage', // prefix wmic path
 });
 
