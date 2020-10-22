@@ -1,7 +1,7 @@
 var exec = require('child_process').exec;
 var os = require('os');
-var cmd = "cp hooks/* .git/hooks/; chmod +x .git/hooks/*"
-var cmdWin = "xcopy .\\hooks\\* .\\.git\\hooks\\ /Y"
+var cmd = "cp hooks/* .git/hooks/; chmod +x .git/hooks/*";
+var cmdWin = "xcopy .\\hooks\\* .\\.git\\hooks\\ /Y";
 var callback = function(error, stdout, stderr) {
    if (error) {
        console.log(`error: ${error.message}`);
