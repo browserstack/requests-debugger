@@ -186,6 +186,35 @@ describe('RdHandler', function () {
         host: 'localhost',
         port: RdGlobalConfig.RD_HANDLER_PROXY_PORT,
         headers: {},
+        path: constants.HUB_STATUS_URL
+      };
+
+      var responseData = [];
+      var request = http.request(reqOptions, function (response) {
+
+        response.on('data', function (chunk) {
+          responseData.push(chunk);
+        });
+
+        response.on('end', function () {
+          assert(Buffer.concat(responseData).toString() === '{"data":"value"}');
+          done();
+          testHelper.deleteProxy();
+        });
+      });
+      request.end();
+    });
+
+    it('Requests on behalf of the client with username and password in url via external proxy and returns the response', function (done) {
+      this.timeout = 5000;
+      testHelper.nockGetRequest(constants.HUB_STATUS_URL, 'https', null, 200);
+      testHelper.initializeDummyProxy();
+      testHelper.nockProxyUrl(RdGlobalConfig.proxy, 'https', 'hub', null, 200);
+      var reqOptions = {
+        method: 'GET',
+        host: 'localhost',
+        port: RdGlobalConfig.RD_HANDLER_PROXY_PORT,
+        headers: {},
         path: "http://user1:pass1@" + constants.HUB_HOST + constants.HUB_STATUS_PATH
       };
 
