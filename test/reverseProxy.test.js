@@ -184,7 +184,7 @@ describe('RdHandler', function () {
         host: 'localhost',
         port: RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT,
         headers: {},
-        path: constants.HUB_STATUS_PATH
+        path: "http://user1:pass1@" + constants.HUB_HOST + constants.HUB_STATUS_PATH
       };
 
       var responseData = [];

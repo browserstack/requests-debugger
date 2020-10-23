@@ -17,11 +17,6 @@ module.exports.PORTS = {
   MIN: 1
 };
 
-module.exports.SERVER_TYPES = {
-  PROXY: "proxy",
-  REVERSE_PROXY: "reverse proxy"
-};
-
 module.exports.LINE_LENGTH = 70;
 module.exports.PROTOCOL_REGEX = /(^\w+:|^)\/\//;
 

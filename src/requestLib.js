@@ -20,7 +20,7 @@ var RequestLib = {
    * @param {http.IncomingMessage} clientRequest
    * @param {Number} retries
    */
-  _makeRequest: function (schemeObj, params, clientRequest, serverType, retries) {
+  _makeRequest: function (schemeObj, params, clientRequest, metaData, retries) {
     return new Promise(function (resolve, reject) {
       var requestOptions = Object.assign({}, params.furtherRequestOptions);
       requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpKeepAliveAgent : httpsKeepAliveAgent;
@@ -61,9 +61,8 @@ var RequestLib = {
 
       // Log the request that will be initiated on behalf of the client
       request.on('finish', function () {
-        var requestUrl = RdGlobalConfig.SCHEME + "://" + requestOptions.host + requestOptions.path;
         RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries,
-          clientRequest.method + ' ' + requestUrl, false, Object.assign({}, params.furtherRequestOptions, {
+          clientRequest.method + ' ' + metaData.toolRequestUrl, false, Object.assign({}, params.furtherRequestOptions, {
             data: Buffer.concat(params.request.data).toString()
           }),
           clientRequest.id);
@@ -108,8 +107,7 @@ var RequestLib = {
         });
 
         clientRequest.on('end', function () {
-          var requestUrl = serverType === constants.SERVER_TYPES.PROXY ? clientRequest.url : "http://" + clientRequest.headers.host + requestOptions.path;
-          RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + requestUrl, false, {
+          RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + metaData.clientRequestUrl, false, {
             data: Buffer.concat(params.request.data).toString()
           },
           clientRequest.id);
@@ -128,10 +126,10 @@ var RequestLib = {
    * @param {http.IncomingMessage} clientRequest
    * @param {Number} retries
    */
-  call: function (params, clientRequest, serverType, retries) {
+  call: function (params, clientRequest, metaData, retries) {
     retries = (typeof retries === 'number') ? Math.min(constants.MAX_RETRIES, Math.max(retries, 0)) : constants.MAX_RETRIES;
     var schemeObj = RdGlobalConfig.SCHEME === "http" ? http : https;
-    return RequestLib._makeRequest(schemeObj, params, clientRequest, serverType, retries)
+    return RequestLib._makeRequest(schemeObj, params, clientRequest, metaData, retries)
       .catch(function (err) {
         var errTopic = err.customTopic || constants.TOPICS.UNEXPECTED_ERROR;
         // Collect Network & Connectivity Logs whenever a request fails
@@ -139,7 +137,7 @@ var RequestLib = {
         RdGlobalConfig.connHandler(errTopic, clientRequest.id);
 
         if (retries > 0) {
-          RdGlobalConfig.reqLogger.error(errTopic, clientRequest.method + ' ' + clientRequest.url,
+          RdGlobalConfig.reqLogger.error(errTopic, clientRequest.method + ' ' + metaData.toolRequestUrl,
             false, {
               errorMessage: err.message.toString()
             },
@@ -147,7 +145,7 @@ var RequestLib = {
 
           return Utils.delay(RdGlobalConfig.RETRY_DELAY)
             .then(function () {
-              return RequestLib.call(params, clientRequest, serverType, retries - 1, false);
+              return RequestLib.call(params, clientRequest, metaData, retries - 1, false);
             });
         } else {
           throw err;
