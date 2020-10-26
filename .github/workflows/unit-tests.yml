@@ -1,0 +1,32 @@
+name: 'unit-tests'
+on:
+  pull_request:
+    paths:
+    - './**'
+    - '.github/workflows/unit-tests*'
+  push:
+    paths:
+    - './**'
+    - '.github/workflows/unit-tests*'
+    
+jobs:
+  unit-tests:
+    runs-on: ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest, macos-latest]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set Node.js 4.9.1
+      uses: actions/setup-node@master
+      with:
+        node-version: 4.9.1
+
+    - name: npm install
+      working-directory: ./
+      run: npm install
+
+    - name: Lint and Unit tests
+      working-directory: ./
+      run: npm run test

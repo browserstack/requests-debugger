@@ -1,4 +1,13 @@
 ## Requests Debugger
+
+<p align="center">
+  <a href="https://browserstack.com"><img alt="BrowserStack Logo" src="https://d98b8t1nnulk5.cloudfront.net/production/images/layout/logo-invoice.svg"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/browserstack/requests-debugger/actions?query=workflow%3Aunit-tests"><img alt="unit-tests build status" src="https://github.com/browserstack/requests-debugger/workflows/unit-tests/badge.svg"></a>
+</p>
+
 ### Tool for debugging client side failure of requests, leading to requests getting dropped or not reaching BrowserStack.
 
 ## Features
