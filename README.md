@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/rchougule/requests-debugger/actions?query=workflow%3Aunit-tests"><img alt="unit-tests build status" src="https://github.com/rchougule/requests-debugger/workflows/unit-tests/badge.svg"></a>
+  <a href="https://github.com/browserstack/requests-debugger/actions?query=workflow%3Aunit-tests"><img alt="unit-tests build status" src="https://github.com/browserstack/requests-debugger/workflows/unit-tests/badge.svg"></a>
 </p>
 
 ### Tool for debugging client side failure of requests, leading to requests getting dropped or not reaching BrowserStack.
