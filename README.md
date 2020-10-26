@@ -32,6 +32,7 @@
     - Windows: `RequestsDebugger.exe <args>`
 
 ## How to use
+- To use tool as reverse proxy, you will have to replace `hub-cloud.browserstack.com` in hub url with `localhost:9688`.
 - To use tool as a proxy, you will have to set the proxy to be used by your client binding to `localhost:9687`. i.e.
   - For Java:
     - ```
@@ -42,8 +43,7 @@
     - Set your system's env variable `http_proxy=localhost:9687` and Ruby's Selenium Client Binding will pick the value. Or,
     - Run you test by giving the environment variable to your command itself, i.e. `http_proxy=localhost:9687 ruby <your_script.rb>`
   - Similarly, you can also set proxy for other client bindings.
-- To use tool as reverse proxy, you will have to replace hub-cloud.browserstack.com in hub url with `localhost:9688`.
-  
+
 ## Steps to build the executables
 - Linux
   - `npm run build:linux`
