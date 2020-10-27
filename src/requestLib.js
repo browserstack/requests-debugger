@@ -1,29 +1,41 @@
 var http = require('http');
+var https = require('https');
 var constants = require('../config/constants');
 var Utils = require('./utils');
-var keepAliveAgent = new http.Agent({
-  keepAlive: true
-});
-var RdGlobalConfig = constants.RdGlobalConfig;
+var url = require('url');
+var HttpProxyAgent = require('http-proxy-agent');
+var HttpsProxyAgent = require('https-proxy-agent');
 
+var RdGlobalConfig = constants.RdGlobalConfig;
+var httpKeepAliveAgent = new http.Agent({keepAlive: true});
+var httpsKeepAliveAgent = new https.Agent({keepAlive: true});
+var httpProxyAgent = null;
+var httpsProxyAgent = null;
 var RequestLib = {
+
   /**
    * Method to perform the request on behalf of the client
-   * @param {{request: Object, furtherRequestOptions: Object}} params 
-   * @param {http.IncomingMessage} clientRequest 
-   * @param {Number} retries 
+   * @param {schemeObj: Object} schemeObj
+   * @param {{request: Object, furtherRequestOptions: Object}} params
+   * @param {http.IncomingMessage} clientRequest
+   * @param {Number} retries
    */
-  _makeRequest: function (params, clientRequest, retries) {
+  _makeRequest: function (schemeObj, params, clientRequest, metaData, retries) {
     return new Promise(function (resolve, reject) {
-      var requestOptions = Object.assign({}, params.furtherRequestOptions, {
-        agent: keepAliveAgent
-      });
-
-      // Adding a custom header for usage and debugging purpose at BrowserStack
-      requestOptions.headers['X-Requests-Debugger'] = clientRequest.id;
-
-      // Initialize the request to be fired on behalf of the client
-      var request = http.request(requestOptions, function (response) {
+      var requestOptions = Object.assign({}, params.furtherRequestOptions);
+      requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpKeepAliveAgent : httpsKeepAliveAgent;
+      if (RdGlobalConfig.proxy) {
+        if (!httpProxyAgent && !httpsProxyAgent) {
+          var proxyOpts = url.parse(RdGlobalConfig.proxy.host + ":" +RdGlobalConfig.proxy.port);
+          if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
+            proxyOpts.auth = RdGlobalConfig.proxy.username + ":" + RdGlobalConfig.proxy.password;
+          }
+          httpProxyAgent =  new HttpProxyAgent(proxyOpts);
+          httpsProxyAgent = new HttpsProxyAgent(proxyOpts);
+        }
+        requestOptions.agent = RdGlobalConfig.SCHEME === 'http' ? httpProxyAgent : httpsProxyAgent;
+      }
+      var request = schemeObj.request(requestOptions, function (response) {
         var responseToSend = {
           statusCode: response.statusCode,
           headers: response.headers,
@@ -49,9 +61,8 @@ var RequestLib = {
 
       // Log the request that will be initiated on behalf of the client
       request.on('finish', function () {
-        RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries, clientRequest.method + ' ' + clientRequest.url,
-          false,
-          Object.assign({}, params.furtherRequestOptions, {
+        RdGlobalConfig.reqLogger.info(constants.TOPICS.TOOL_REQUEST_WITH_RETRIES + retries,
+          clientRequest.method + ' ' + metaData.toolRequestUrl, false, Object.assign({}, params.furtherRequestOptions, {
             data: Buffer.concat(params.request.data).toString()
           }),
           clientRequest.id);
@@ -86,7 +97,7 @@ var RequestLib = {
             });
           }
         });
-  
+
         clientRequest.on('error', function (err) {
           request.end();
           reject({
@@ -94,9 +105,9 @@ var RequestLib = {
             customTopic: constants.TOPICS.CLIENT_REQUEST_WITH_RETRIES + retries
           });
         });
-  
+
         clientRequest.on('end', function () {
-          RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + params.request.url, false, {
+          RdGlobalConfig.reqLogger.info(constants.TOPICS.CLIENT_REQUEST_END, params.request.method + ' ' + metaData.clientRequestUrl, false, {
             data: Buffer.concat(params.request.data).toString()
           },
           clientRequest.id);
@@ -111,13 +122,14 @@ var RequestLib = {
 
   /**
    * Handler for performing request. Includes the retry mechanism when request fails.
-   * @param {{request: Object, furtherRequestOptions: Object}} params 
-   * @param {http.IncomingMessage} clientRequest 
-   * @param {Number} retries 
+   * @param {{request: Object, furtherRequestOptions: Object}} params
+   * @param {http.IncomingMessage} clientRequest
+   * @param {Number} retries
    */
-  call: function (params, clientRequest, retries) {
+  call: function (params, clientRequest, metaData, retries) {
     retries = (typeof retries === 'number') ? Math.min(constants.MAX_RETRIES, Math.max(retries, 0)) : constants.MAX_RETRIES;
-    return RequestLib._makeRequest(params, clientRequest, retries)
+    var schemeObj = RdGlobalConfig.SCHEME === "http" ? http : https;
+    return RequestLib._makeRequest(schemeObj, params, clientRequest, metaData, retries)
       .catch(function (err) {
         var errTopic = err.customTopic || constants.TOPICS.UNEXPECTED_ERROR;
         // Collect Network & Connectivity Logs whenever a request fails
@@ -125,7 +137,7 @@ var RequestLib = {
         RdGlobalConfig.connHandler(errTopic, clientRequest.id);
 
         if (retries > 0) {
-          RdGlobalConfig.reqLogger.error(errTopic, clientRequest.method + ' ' + clientRequest.url,
+          RdGlobalConfig.reqLogger.error(errTopic, clientRequest.method + ' ' + metaData.toolRequestUrl,
             false, {
               errorMessage: err.message.toString()
             },
@@ -133,7 +145,7 @@ var RequestLib = {
 
           return Utils.delay(RdGlobalConfig.RETRY_DELAY)
             .then(function () {
-              return RequestLib.call(params, clientRequest, retries - 1, false);
+              return RequestLib.call(params, clientRequest, metaData, retries - 1, false);
             });
         } else {
           throw err;
@@ -143,4 +155,3 @@ var RequestLib = {
 };
 
 module.exports = RequestLib;
-

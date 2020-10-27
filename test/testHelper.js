@@ -52,7 +52,7 @@ function nockGetRequestWithError(reqUrl, type) {
 function initializeDummyProxy() {
   constants.RdGlobalConfig.proxy = {
     host: "dummyhost12345.com",
-    port: "3128",
+    port: "3130",
     username: "user",
     password: "pass"
   };

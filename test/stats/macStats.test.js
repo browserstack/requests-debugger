@@ -11,21 +11,21 @@ describe('MacStats', function () {
     it('callbacks with the result of cpu stats', function () {
       var stats = "CPU Stats Generated";
       var statsWithHeaderFooter = "Header" + os.EOL + stats + os.EOL + "Footer" + os.EOL;
-      
+
       sinon.stub(cp, 'exec').callsArgWith(1, null, stats);
       sinon.stub(Utils, 'generateHeaderAndFooter').returns(statsWithHeaderFooter);
-      
+
       MacStats.cpu(function (result) {
         expect(result).to.eql(statsWithHeaderFooter);
       });
-      
+
       cp.exec.restore();
       Utils.generateHeaderAndFooter.restore();
     });
 
     it('callbacks with proper message when no stats are available', function () {
       sinon.stub(cp, 'exec').callsArgWith(1, "err", null);
-      
+
       MacStats.cpu(function (result) {
         expect(result).to.eql(constants.STATIC_MESSAGES.NO_REPORT_GENERATED + 'CPU' + os.EOL);
       });
@@ -99,10 +99,10 @@ describe('MacStats', function () {
         content: 'resultThree',
         generatedAt: new Date().toISOString()
       }];
-  
+
       sinon.stub(Utils, 'execMultiple').callsArgWith(1, results);
       sinon.stub(Utils, 'generateHeaderAndFooter').returns('headerFooterContent');
-  
+
       MacStats.network(function (result) {
         sinon.assert.calledThrice(Utils.generateHeaderAndFooter);
         expect(result).to.eql('headerFooterContent'.repeat(3));
