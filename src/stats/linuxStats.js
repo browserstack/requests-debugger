@@ -45,7 +45,6 @@ LinuxStats.mem = function (callback) {
         memStats.free = parseInt(Utils.fetchPropertyValue(memStatLines, 'memfree'));
         memStats.free = memStats.free ? memStats.free * 1024 : os.freemem();
         memStats.used = memStats.total - memStats.free;
-  
         memStats.swapTotal = parseInt(Utils.fetchPropertyValue(memStatLines, 'swaptotal'));
         memStats.swapTotal = memStats.swapTotal ? memStats.swapTotal * 1024 : 0;
         memStats.swapFree = parseInt(Utils.fetchPropertyValue(memStatLines, 'swapfree'));

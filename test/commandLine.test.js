@@ -8,6 +8,7 @@ var testHelper = require('./testHelper');
 describe('CommandLineManager', function () {
 
   var argv;
+  var proxy_host_actual_value = "http://host";
 
   before(function () {
     console.log("NOTE: 'console.log' will be stubbed. In case any test fails, try removing the stub to see the logs");
@@ -34,22 +35,32 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
     });
 
-    it('remove any protocol part from proxy-host', function () {
+    it('parse proxy-host inputted without protocol', function () {
+      sinon.stub(console, 'log');
+      argv = argv.concat(['--proxy-host', 'host']);
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
+    });
+
+    it('parse proxy-host with protocol http', function () {
       sinon.stub(console, 'log');
       argv = argv.concat(['--proxy-host', 'http://host']);
       CommandLineManager.processArgs(argv);
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      console.log.restore();
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
     });
 
-    it('remove any prefix slashes from proxy-host', function () {
-      argv = argv.concat(['--proxy-host', '//host']);
+    it('parse proxy-host with protocol https', function () {
+      sinon.stub(console, 'log');
+      argv = argv.concat(['--proxy-host', 'https://host', '--proxy-port', '9687']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql('https://host');
     });
 
     it('proxy-port is set to the default value when its not in the expected range', function () {
@@ -57,7 +68,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '99999']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(constants.DEFAULT_PROXY_PORT);
     });
 
@@ -66,7 +77,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687', '--proxy-user', 'user', '--proxy-pass', 'pass']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
       expect(RdGlobalConfig.proxy.username).to.eql('user');
       expect(RdGlobalConfig.proxy.password).to.eql('pass');
@@ -77,7 +88,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(constants.DEFAULT_PROXY_PORT);
     });
 
@@ -86,14 +97,14 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687', '--proxy-user', 'user']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
       expect(RdGlobalConfig.proxy.username).to.eql('user');
       expect(RdGlobalConfig.proxy.password).to.eql('');
     });
 
     it("proxy won't be set if proxy host is not provided", function () {
-      sinon.stub(console, 'log'); 
+      sinon.stub(console, 'log');
       argv = argv.concat(['--proxy-port', '9687']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
@@ -106,7 +117,7 @@ describe('CommandLineManager', function () {
       argv = argv.concat(['--proxy-host', 'host', '--proxy-port', '9687', '--proxy-pass', 'pass']);
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.proxy.host).to.eql('host');
+      expect(RdGlobalConfig.proxy.host).to.eql(proxy_host_actual_value);
       expect(RdGlobalConfig.proxy.port).to.eql(9687);
       expect(RdGlobalConfig.proxy.username).to.eql(undefined);
       expect(RdGlobalConfig.proxy.password).to.eql(undefined);
@@ -211,11 +222,11 @@ describe('CommandLineManager', function () {
 
     // --port
     it("sets the port of Requests Debugger Tool Proxy using the '--port' argument", function () {
-      argv = argv.concat(['--port', '9098']);
+      argv = argv.concat(['--port', '9687']);
       sinon.stub(console, 'log');
       CommandLineManager.processArgs(argv);
       console.log.restore();
-      expect(RdGlobalConfig.RD_HANDLER_PORT).to.eql(9098);
+      expect(RdGlobalConfig.RD_HANDLER_PROXY_PORT).to.eql(9687);
     });
 
     it('Uses the default port of Requests Debugger Tool Proxy if not provided via arguments', function () {
@@ -251,6 +262,95 @@ describe('CommandLineManager', function () {
       sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--port', '\n');
       console.log.restore();
       sinon.assert.called(process.exit);
+    });
+
+    // --reverse-proxy-port
+    it("sets the port of Requests Debugger Tool Reverse Proxy using the '--reverse-proxy-port' argument", function () {
+      argv = argv.concat(['--reverse-proxy-port', '9688']);
+      CommandLineManager.processArgs(argv);
+      expect(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT).to.eql(9688);
+    });
+
+    it('Uses the default reverse port of Requests Debugger Tool Proxy if not provided via arguments', function () {
+      var portBeforeParsing = RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT;
+      CommandLineManager.processArgs(argv);
+      expect(RdGlobalConfig.RD_HANDLER_REVERSE_PROXY_PORT).to.eql(portBeforeParsing);
+    });
+
+    it("exits with invalid args if reverse port provided doesn't lie in the Max Min Range", function () {
+      argv = argv.concat(['--reverse-proxy-port', '99999']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--reverse-proxy-port', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the reverse port provided is not a number', function () {
+      argv = argv.concat(['--reverse-proxy-port', 'random string']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--reverse-proxy-port', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the reverse port arg is provided without any value', function () {
+      argv = argv.concat(['--reverse-proxy-port']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--reverse-proxy-port', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the reverse port arg is provided without any value', function () {
+      argv = argv.concat(['--reverse-proxy-port']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--reverse-proxy-port', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    // --scheme
+    it('Uses the default https scheme for Requests Debugger Tool Proxy if not provided via arguments', function () {
+      sinon.stub(console, 'log');
+      var schemeBeforeParsing = RdGlobalConfig.SCHEME;
+      CommandLineManager.processArgs(argv);
+      console.log.restore();
+      expect(RdGlobalConfig.SCHEME).to.eql(schemeBeforeParsing);
+    });
+
+    it("sets the port of Requests Debugger Tool Reverse scheme to http using the '--scheme' argument", function () {
+      argv = argv.concat(['--scheme', 'http']);
+      CommandLineManager.processArgs(argv);
+      expect(RdGlobalConfig.SCHEME).to.eql('http');
+    });
+
+    it('exits with invalid args if the scheme arg is provided with wrong value', function () {
+      argv = argv.concat(['--scheme', 'random string']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--scheme', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    it('exits with invalid args if the scheme arg is provided without any value', function () {
+      argv = argv.concat(['--scheme']);
+      sinon.stub(console, 'log');
+      CommandLineManager.processArgs(argv);
+      sinon.assert.calledWith(console.log, '\nInvalid Argument(s): ', '--scheme', '\n');
+      console.log.restore();
+      sinon.assert.called(process.exit);
+    });
+
+    // --reverse-proxy-port
+    it("sets the port of Requests Debugger Tool Reverse scheme to https using the '--scheme' argument", function () {
+      argv = argv.concat(['--scheme', 'https']);
+      CommandLineManager.processArgs(argv);
+      expect(RdGlobalConfig.SCHEME).to.eql('https');
     });
 
     // --request-timeout

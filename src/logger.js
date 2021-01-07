@@ -19,7 +19,7 @@ var LogManager = {
    * Initializes a logger to the given file and returns the methods to
    * interact with the logger.
    * Currently, 'info' and 'error' are defined. THe rest can be taken up later if required.
-   * @param {String} filename 
+   * @param {String} filename
    */
   initializeLogger: function (filename) {
     var newLogger = LogManager.getLogger(filename);
@@ -36,7 +36,7 @@ var LogManager = {
     newLogger.transports.file.json = false;
 
     newLogger.info("************* LOGGER INITIALIZED **************\r\n");
-    
+
     return {
       info: function (topic, message, stringify, data, uuid) {
         stringify = stringify || false;
