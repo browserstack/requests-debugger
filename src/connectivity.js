@@ -12,14 +12,16 @@ var constants = require('../config/constants');
 var RdGlobalConfig = constants.RdGlobalConfig;
 var Utils = require('./utils');
 var https = require('https');
+var HttpProxyAgent = require('http-proxy-agent');
+var HttpsProxyAgent = require('https-proxy-agent');
 
 /**
  * Fires the requests to perform connectivity checks
- * @param {Object} requestOptions 
- * @param {'http'|'https'} requestType 
- * @param {String} description 
- * @param {Array<Number>} successCodes 
- * @param {Function} callback 
+ * @param {Object} requestOptions
+ * @param {'http'|'https'} requestType
+ * @param {String} description
+ * @param {Array<Number>} successCodes
+ * @param {Function} callback
  */
 var fireRequest = function (requestOptions, requestType, description, successCodes, callback) {
   var httpOrHttps = requestType === 'http' ? http : https;
@@ -66,7 +68,8 @@ var ConnectivityChecker = {
   connectionChecks: [],
 
   reqOpsWithoutProxy: function () {},
-  reqOpsWithProxy: function () {},
+  reqOpsHttpWithProxy: function () {},
+  reqOpsHttpsWithProxy: function () {},
 
   httpToHubWithoutProxy: function (callback) {
     var requestUrl = constants.HUB_STATUS_URL;
@@ -85,7 +88,7 @@ var ConnectivityChecker = {
   },
 
   httpsToHubWithoutProxy: function (callback) {
-    var requestUrl = constants.HUB_STATUS_URL;
+    var requestUrl = constants.HUB_STATUS_URL_HTTPS;
     var requestOptions = ConnectivityChecker.reqOpsWithoutProxy(requestUrl, 'https');
     fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' Without Proxy', [200], function (response) {
       callback(response);
@@ -93,7 +96,7 @@ var ConnectivityChecker = {
   },
 
   httpsToRailsWithoutProxy: function (callback) {
-    var requestUrl = constants.RAILS_AUTOMATE;
+    var requestUrl = constants.RAILS_AUTOMATE_HTTPS;
     var requestOptions = ConnectivityChecker.reqOpsWithoutProxy(requestUrl, 'https');
     fireRequest(requestOptions, 'https', 'HTTPS Request to ' + requestUrl + ' Without Proxy', [301, 302], function (response) {
       callback(response);
@@ -102,7 +105,7 @@ var ConnectivityChecker = {
 
   httpToHubWithProxy: function (callback) {
     var requestUrl = constants.HUB_STATUS_URL;
-    var requestOptions = ConnectivityChecker.reqOpsWithProxy(requestUrl, 'http');
+    var requestOptions = ConnectivityChecker.reqOpsHttpWithProxy(requestUrl, 'http');
     fireRequest(requestOptions, 'http', 'HTTP Request To ' + requestUrl + ' With Proxy', [200], function (response) {
       callback(response);
     });
@@ -110,12 +113,27 @@ var ConnectivityChecker = {
 
   httpToRailsWithProxy: function (callback) {
     var requestUrl = constants.RAILS_AUTOMATE;
-    var requestOptions = ConnectivityChecker.reqOpsWithProxy(requestUrl, 'http');
-    fireRequest(requestOptions, 'http', 'HTTP Request To ' + requestUrl + ' With Proxy', [301], function (response) {
+    var requestOptions = ConnectivityChecker.reqOpsHttpWithProxy(requestUrl, 'http');
+    fireRequest(requestOptions, 'http', 'HTTP Request To ' + requestUrl + ' With Proxy', [301, 302], function (response) {
       callback(response);
     });
   },
 
+  httpsToHubWithProxy: function (callback) {
+    var requestUrl = constants.HUB_STATUS_URL_HTTPS;
+    var requestOptions = ConnectivityChecker.reqOpsHttpsWithProxy(requestUrl, 'https');
+    fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' With Proxy', [200], function (response) {
+      callback(response);
+    });
+  },
+
+  httpsToRailsWithProxy: function (callback) {
+    var requestUrl = constants.RAILS_AUTOMATE_HTTPS;
+    var requestOptions = ConnectivityChecker.reqOpsHttpsWithProxy(requestUrl, 'https');
+    fireRequest(requestOptions, 'https', 'HTTPS Request To ' + requestUrl + ' With Proxy', [301, 302], function (response) {
+      callback(response);
+    });
+  },
 
   /**
    * Decides the checks to perform based on whether any proxy is provided by the
@@ -137,21 +155,40 @@ var ConnectivityChecker = {
         return reqOptions;
       };
 
+
       if (RdGlobalConfig.proxy) {
+        var proxyOpts = url.parse(RdGlobalConfig.proxy.host + ":" +RdGlobalConfig.proxy.port);
+        if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
+          proxyOpts.auth = RdGlobalConfig.proxy.username + ":" + RdGlobalConfig.proxy.password;
+        }
+
         ConnectivityChecker.connectionChecks.push(this.httpToHubWithProxy, this.httpToRailsWithProxy);
         /* eslint-disable-next-line no-unused-vars */
-        ConnectivityChecker.reqOpsWithProxy = function (reqUrl, reqType) {
+        ConnectivityChecker.reqOpsHttpWithProxy = function (reqUrl, reqType) {
           var parsedUrl = url.parse(reqUrl);
           var reqOptions = {
             method: 'GET',
             headers: {},
-            host: RdGlobalConfig.proxy.host,
-            port: RdGlobalConfig.proxy.port,
-            path: parsedUrl.href
+            host: parsedUrl.hostname,
+            port: parsedUrl.port || 80,
+            path: parsedUrl.path,
+            agent: new HttpProxyAgent(proxyOpts)
           };
-          if (RdGlobalConfig.proxy.username && RdGlobalConfig.proxy.password) {
-            reqOptions.headers['Proxy-Authorization'] = Utils.proxyAuthToBase64(RdGlobalConfig.proxy);
-          }
+          return reqOptions;
+        };
+
+        ConnectivityChecker.connectionChecks.push(this.httpsToHubWithProxy, this.httpsToRailsWithProxy);
+        /* eslint-disable-next-line no-unused-vars */
+        ConnectivityChecker.reqOpsHttpsWithProxy = function (reqUrl, reqType) {
+          var parsedUrl = url.parse(reqUrl);
+          var reqOptions = {
+            method: 'GET',
+            headers: {},
+            host: parsedUrl.hostname,
+            port: parsedUrl.port || 443,
+            path: parsedUrl.path,
+            agent: new HttpsProxyAgent(proxyOpts)
+          };
           return reqOptions;
         };
       }
@@ -160,9 +197,9 @@ var ConnectivityChecker = {
 
   /**
    * Fires the Connectivity Checks in Async Manner
-   * @param {String} topic 
-   * @param {Number|String} uuid 
-   * @param {Function} callback 
+   * @param {String} topic
+   * @param {Number|String} uuid
+   * @param {Function} callback
    */
   fireChecks: function (topic, uuid, callback) {
     ConnectivityChecker.decideConnectionChecks();

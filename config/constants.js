@@ -1,6 +1,12 @@
-module.exports.VERSION = '1.0.0';
-module.exports.HUB_STATUS_URL = 'http://hub-cloud.browserstack.com/wd/hub/status';
-module.exports.RAILS_AUTOMATE = 'http://automate.browserstack.com';
+module.exports.VERSION = '1.1.0';
+module.exports.BS_DOMAIN = 'browserstack.com';
+module.exports.HUB_HOST = 'hub-cloud.' + this.BS_DOMAIN;
+module.exports.RAILS_HOST = 'automate.' + this.BS_DOMAIN;
+module.exports.HUB_STATUS_PATH = '/wd/hub/status';
+module.exports.HUB_STATUS_URL = 'http://' + this.HUB_HOST + this.HUB_STATUS_PATH;
+module.exports.HUB_STATUS_URL_HTTPS = 'https://' + this.HUB_HOST + this.HUB_STATUS_PATH;
+module.exports.RAILS_AUTOMATE = 'http://' + this.RAILS_HOST;
+module.exports.RAILS_AUTOMATE_HTTPS = 'https://' + this.RAILS_HOST;
 module.exports.CONNECTIVITY_REQ_TIMEOUT = 30000;
 module.exports.DEFAULT_PROXY_PORT = 3128;
 module.exports.CUSTOM_ERROR_RESPONSE_CODE = 502;
@@ -10,6 +16,8 @@ module.exports.PORTS = {
   MAX: 65535,
   MIN: 1
 };
+
+module.exports.LINE_LENGTH = 70;
 module.exports.PROTOCOL_REGEX = /(^\w+:|^)\/\//;
 
 module.exports.LOGS = Object.freeze({
@@ -23,13 +31,15 @@ module.exports.LOGS = Object.freeze({
 
 module.exports.RdGlobalConfig = {
   RETRY_DELAY: 1000, // in ms
-  RD_HANDLER_PORT: process.env.NODE_ENV === 'test' ? 8787 : 9687,
+  RD_HANDLER_PROXY_PORT: process.env.NODE_ENV === 'test' ? 8787 : 9687,
+  RD_HANDLER_REVERSE_PROXY_PORT: process.env.NODE_ENV === 'test' ? 8788 : 9688,
   CLIENT_REQ_TIMEOUT: 260000, // in ms
+  SCHEME: 'https'
 };
 
 module.exports.COMMON = Object.freeze({
-  PING_HUB: 'ping -c 5 hub-cloud.browserstack.com',
-  PING_AUTOMATE: 'ping -c 5 automate.browserstack.com'
+  PING_HUB: 'ping -c 5 ' + this.HUB_HOST,
+  PING_AUTOMATE: 'ping -c 5 ' + this.RAILS_HOST
 });
 
 module.exports.MAC = Object.freeze({
@@ -49,8 +59,8 @@ module.exports.WIN = Object.freeze({
   NETSTAT_ROUTING_TABLE: 'netstat -r',
   IPCONFIG_ALL: 'ipconfig /all',
   SWAP_USAGE: 'pagefile get AllocatedBaseSize, CurrentUsage', // this is a WMIC command. Prefix with WMIC Path
-  PING_HUB: 'ping -n 5 hub-cloud.browserstack.com',
-  PING_AUTOMATE: 'ping -n 5 automate.browserstack.com',
+  PING_HUB: 'ping -n 5 ' + this.HUB_HOST,
+  PING_AUTOMATE: 'ping -n 5 ' + this.RAILS_HOST,
   LOAD_PERCENTAGE: 'cpu get loadpercentage', // prefix wmic path
 });
 
@@ -78,8 +88,10 @@ module.exports.STATIC_MESSAGES = Object.freeze({
   CHECK_NETWORK_STATS: 'Stats : Checking Network Stats',
   CHECK_MEMORY_STATS: 'Stats : Checking Memory Stats',
   CHECK_CONNECTIVITY: 'Checks : Checking Connectivity With BrowserStack',
-  ERR_STARTING_TOOL: 'Error in starting Requests Debugger Tool Proxy: ',
-  TOOL_STARTED_ON_PORT: 'Requests Debugger Tool Proxy Started on Port: ',
+  ERR_STARTING_TOOL_PROXY: 'Error in starting Requests Debugger Tool Proxy: ',
+  ERR_STARTING_TOOL_REVERSE_PROXY: 'Error in starting Requests Debugger Tool Reverse Proxy: ',
+  TOOL_PROXY_STARTED_ON_PORT: 'Requests Debugger Tool Proxy Server Started on Port: ',
+  TOOL_REVESE_PROXY_STARTED_ON_PORT: 'Requests Debugger Tool Reverse Proxy Server Started on Port: ',
   CPU_STATS_COLLECTED: 'Stats : Initial CPU Stats Collected',
   NETWORK_STATS_COLLECTED: 'Stats : Initial Network Stats Collected',
   MEMORY_STATS_COLLECTED: 'Stats : Initial Memory Stats Collected',
