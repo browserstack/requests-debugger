@@ -19,7 +19,7 @@
 ## How to run
 - Code
   - Install all the required packages: `npm install`
-  - Start Requests Debugger with the required arguments: `npm run start -- <args>`. 
+  - Start Requests Debugger with the required arguments: `npm run start -- <args>`. On windows, use  `node src\requestsDebugger.js` if npm run start fails.
   - Supported `args`:
     - `--port <port>`: Port on which the Requests Debugger Tool's Proxy will run. Default: 9687
     - `--reverse-proxy-port <port>`: Port on which the Requests Debugger Tool's Reverse Proxy will run. Default: 9688
